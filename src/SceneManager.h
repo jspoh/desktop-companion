@@ -25,8 +25,8 @@ public:
 
 	void update() {
 
-		if (!next) {
-			if (!curr) curr->cleanup();
+		if (next) {
+			if (curr) curr->cleanup();
 			next->load();
 			next->init();
 			curr = next;
