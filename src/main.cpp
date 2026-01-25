@@ -9,8 +9,12 @@
 
 int main()
 {
+	// if fullscreen, can never be a proper overlay
+	auto videoMode = sf::VideoMode::getDesktopMode();
+	--videoMode.size.y;
+
 	// Create the main window
-	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Desktop Companion", sf::Style::None);
+	sf::RenderWindow window(videoMode, "Desktop Companion", sf::Style::None);
 
 #ifdef _WIN32
 	window.setActive(true);
