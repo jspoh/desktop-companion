@@ -18,7 +18,7 @@ public:
 
 	void load() override {
 		tm.registerTexture("idle_cat_texture", "assets/Idle.png");
-		//music = sf::Music("assets/Cutie-Patootie.mp3");
+		music = sf::Music("assets/Cutie-Patootie.mp3");
 	}
 
 	void init() override {
@@ -29,7 +29,7 @@ public:
 		sf::Text& text = tm.registerText("text", "hello", 50);
 		text.setPosition({ 100, 0 });
 
-		//music.play();
+		music.play();
 	}
 
 	void update() override {
