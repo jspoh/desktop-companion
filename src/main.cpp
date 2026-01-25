@@ -1,3 +1,5 @@
+#define SFML_STATIC
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -7,15 +9,15 @@ int main()
     sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "SFML window");
 
     // Load a sprite to display
-    const sf::Texture texture("cute_image.jpg");
+    const sf::Texture texture("assets/Idle.png");
     sf::Sprite sprite(texture);
 
     // Create a graphical text to display
-    const sf::Font font("arial.ttf");
+    const sf::Font font("assets/arial.ttf");
     sf::Text text(font, "Hello SFML", 50);
 
     // Load a music to play
-    sf::Music music("nice_music.ogg");
+    sf::Music music("assets/Cutie-Patootie.mp3");
 
     // Play the music
     music.play();
