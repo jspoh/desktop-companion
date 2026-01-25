@@ -39,8 +39,6 @@ int main()
 
 	GameManager::get().init(sf::Color(255, 0, 255));
 
-	sf::Color transparentColor(255, 0, 255);
-
 	// Load a sprite to display
 	const sf::Texture texture("assets/Idle.png");
 	sf::Sprite sprite(texture);

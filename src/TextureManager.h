@@ -28,6 +28,13 @@ public:
 		return tm;
 	}
 
+	void cleanup() {
+		textures.clear();
+		sprites.clear();
+		spritesValues.clear();
+		texts.clear();
+	}
+
 	bool registerTexture(const std::string& ref, const std::string& path) {
 		try {
 			textures[ref] = sf::Texture(path);
@@ -61,11 +68,11 @@ public:
 		return textures.at(ref);
 	}
 
-	sf::Sprite getSprite(const std::string& ref) {
+	sf::Sprite& getSprite(const std::string& ref) {
 		return sprites.at(ref);
 	}
 
-	const sf::Sprite getSprite(const std::string& ref) const {
+	const sf::Sprite& getSprite(const std::string& ref) const {
 		return sprites.at(ref);
 	}
 

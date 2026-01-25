@@ -2,17 +2,8 @@
 
 
 #include <memory>
+#include "Scene.h"
 
-
-class Scene {
-public:
-	virtual ~Scene() {};
-	virtual void load() {};
-	virtual void init() {};
-	virtual void update() {};
-	virtual void render() {};
-	virtual void cleanup() {};
-};
 
 class SceneManager {
 private:
