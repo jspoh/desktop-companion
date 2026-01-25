@@ -26,8 +26,8 @@ public:
 		sf::Sprite& idle_cat = tm.getSprite("idle_cat");
 		idle_cat.setPosition({ 100.f, 100.f });
 
-		//sf::Text& text = tm.registerText("text", "hello", 50);
-		//text.setPosition({ 100, 0 });
+		sf::Text& text = tm.registerText("text", "hello", 50);
+		text.setPosition({ 100, 0 });
 
 		//music.play();
 	}

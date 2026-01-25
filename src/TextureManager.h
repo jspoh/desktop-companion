@@ -17,7 +17,7 @@ private:
 	std::unordered_map<std::string, sf::Texture> textures;		// loaded into gpu vram
 	std::unordered_map<std::string, sf::Sprite> sprites;
 	std::vector<std::reference_wrapper<sf::Sprite>> spritesValues;						// for fast access of sprites.values()
-	//std::unordered_map<std::string, sf::Text> texts;
+	std::unordered_map<std::string, sf::Text> texts;
 
 public:
 	static TextureManager& get() {
@@ -29,7 +29,7 @@ public:
 		textures.clear();
 		sprites.clear();
 		spritesValues.clear();
-		//texts.clear();
+		texts.clear();
 	}
 
 	void render() {
@@ -37,9 +37,9 @@ public:
 			win.draw(sprite);
 		}
 
-		//for (const auto& [ref, txt] : texts) {
-		//	win.draw(txt);
-		//}
+		for (const auto& [ref, txt] : texts) {
+			win.draw(txt);
+		}
 	}
 
 	bool registerTexture(const std::string& ref, const std::string& path) {
@@ -88,13 +88,21 @@ public:
 	}
 
 	sf::Text& registerText(const std::string& ref, const std::string& content, int fontSize) {
-		//if (texts.find(ref) != texts.end()) {
-		//	std::cerr << "TextureManager > drawText > ref " << ref << " is already in use" << std::endl;
-		//}
-		//texts.emplace(ref, sf::Text(font, content, fontSize));
-		//return texts[ref];
+		if (texts.find(ref) != texts.end()) {
+			std::cerr << "TextureManager > drawText > ref " << ref << " is already in use" << std::endl;
+		}
 
-		auto a = new sf::Text(font, "hi", 50);
-		return *a;
+		// Create a Text object with the font first, then emplace it
+		auto [it, inserted] = texts.emplace(
+			std::piecewise_construct,
+			std::forward_as_tuple(ref),
+			std::forward_as_tuple(font)  // Construct sf::Text with font reference
+		);
+
+		// Now set the string and character size
+		it->second.setString(content);
+		it->second.setCharacterSize(fontSize);
+
+		return it->second;
 	}
 };
