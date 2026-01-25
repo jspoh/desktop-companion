@@ -23,7 +23,7 @@ public:
 		next = scn;
 	}
 
-	void update() {
+	void update(float dt) {
 
 		if (next) {
 			if (curr) curr->cleanup();
@@ -34,7 +34,7 @@ public:
 		}
 
 		if (!curr) return;
-		curr->update();
+		curr->update(dt);
 		curr->render();
 	}
 

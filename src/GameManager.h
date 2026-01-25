@@ -46,7 +46,7 @@ public:
 
 			// 
 			win.clear(WIN32_TRANSPARENT_COLOR);
-			sm.update();
+			sm.update(dt);
 			tm.render();
 			win.display();
 

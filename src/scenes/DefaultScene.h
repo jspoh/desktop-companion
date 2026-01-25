@@ -32,7 +32,7 @@ public:
 		music.play();
 	}
 
-	void update() override {
+	void update(float dt) override {
 
 	}
 
