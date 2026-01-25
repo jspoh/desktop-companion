@@ -1,7 +1,7 @@
 #include "GameManager.h"
 #include "Window.h"
 
-#ifdef DEBUG
+#ifdef _DEBUG
 int main()
 #else
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
