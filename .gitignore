@@ -1,0 +1,7 @@
+.vs/
+.vscode/
+venv/
+*.exe
+/bin
+/dependencies/SFML-3.0.2/examples
+/dependencies/SFML-3.0.2/doc
