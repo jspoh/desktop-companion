@@ -13,16 +13,24 @@ int main()
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Desktop Companion", sf::Style::None);
 
 #ifdef _WIN32
-	// Windows: Set window to be always on top and click-through
+	window.setActive(true);
 	HWND hwnd = window.getNativeHandle();
+
+	// SWP_NOMOVE ignores x,y params. no move
+	// SWP_NOSIZE ignores w,h params, no size
+	// SWP_NOACTIVATE never steals focus
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
-	// Make window click-through (so you can interact with windows behind it)
-	SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-	SetLayeredWindowAttributes(hwnd, RGB(255, 0, 255), 0, LWA_COLORKEY);		// any parts that are pink/magenta will be transparent
+	// GWL_EXSTYLE - extended window styles
+	// WS_EX_TRANSPARENT - window transparent to mouse events (click through)
+	// WS_EX_LAYERED - for transparency effects and setLayeredWindowAttributes
+	SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);	
+
+	// makes all color with 2nd param alpha to 0
+	SetLayeredWindowAttributes(hwnd, RGB(255,0,255), 0, LWA_COLORKEY);
 #endif
 
-	sf::Color transparentColor(255, 0, 255, 0);
+	sf::Color transparentColor(255, 0, 255);
 
 	// Load a sprite to display
 	const sf::Texture texture("assets/Idle.png");
