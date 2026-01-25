@@ -1,8 +1,11 @@
 #include "GameManager.h"
 #include "Window.h"
 
-
+#ifdef DEBUG
 int main()
+#else
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+#endif
 {
 	Window::get().init();
 	sf::RenderWindow& window = Window::get().getWindow();
