@@ -1,8 +1,8 @@
+#pragma once
+
 #include "Scene.h"
 #include "TextureManager.h"
 #include "defines.h"
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
 
 
 class DefaultScene : public Scene {
@@ -10,13 +10,15 @@ private:
 	sf::Music music;
 
 public:
+	DefaultScene() {}
+
 	~DefaultScene() {
 
 	}
 
 	void load() override {
 		tm.registerTexture("idle_cat_texture", "assets/Idle.png");
-		music = sf::Music("assets/Cutie-Patootie.mp3");
+		//music = sf::Music("assets/Cutie-Patootie.mp3");
 	}
 
 	void init() override {
@@ -24,10 +26,10 @@ public:
 		sf::Sprite& idle_cat = tm.getSprite("idle_cat");
 		idle_cat.setPosition({ 100.f, 100.f });
 
-		sf::Text& text = tm.registerText("text", "hello", 50);
-		text.setPosition({ 100, 0 });
+		//sf::Text& text = tm.registerText("text", "hello", 50);
+		//text.setPosition({ 100, 0 });
 
-		music.play();
+		//music.play();
 	}
 
 	void update() override {

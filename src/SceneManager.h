@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <memory>
+#include "defines.h"
 #include "Scene.h"
 
 
@@ -15,8 +15,8 @@ private:
 
 public:
 	static SceneManager& get() {
-		static SceneManager sm;
-		return sm;
+		static SceneManager instance;
+		return instance;
 	}
 
 	void setScene(const std::shared_ptr<Scene>& scn) {
@@ -24,15 +24,21 @@ public:
 	}
 
 	void update() {
-		if (next != nullptr) {
-			if (curr != nullptr) curr->cleanup();
+
+		if (!next) {
+			if (!curr) curr->cleanup();
 			next->load();
 			next->init();
 			curr = next;
 			next = nullptr;
 		}
 
+		if (!curr) return;
 		curr->update();
 		curr->render();
+	}
+
+	void cleanup() {
+		if (curr) curr->cleanup();
 	}
 };
