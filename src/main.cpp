@@ -2,10 +2,13 @@
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #ifdef _WIN32
 	#include <windows.h>
 #endif
+
+#include "GameManager.h"
 
 int main()
 {
@@ -34,6 +37,8 @@ int main()
 	SetLayeredWindowAttributes(hwnd, RGB(255,0,255), 0, LWA_COLORKEY);
 #endif
 
+	GameManager::get().init(sf::Color(255, 0, 255));
+
 	sf::Color transparentColor(255, 0, 255);
 
 	// Load a sprite to display
@@ -42,12 +47,9 @@ int main()
 
 	// Create a graphical text to display
 	const sf::Font font("assets/arial.ttf");
-	sf::Text text(font, "Hello SFML", 50);
+	//sf::Text text(font, "Hello SFML", 50);
 
-	// Load a music to play
 	sf::Music music("assets/Cutie-Patootie.mp3");
-
-	// Play the music
 	music.play();
 
 	// Start the game loop
