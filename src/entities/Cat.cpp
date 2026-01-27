@@ -40,7 +40,7 @@ void Cat::update(float dt) {
 
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
 
-	if (!moveToComplete && (target - pos).lengthSquared() > std::pow(std::numeric_limits<float>::epsilon(), 2.f)) {
+	if (!moveToComplete && (target - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
 		handledStopMoving = false;
 
 		d = target - pos;

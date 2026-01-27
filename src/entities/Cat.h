@@ -78,8 +78,10 @@ private:
 	sf::Vector2f target{ NO_TARGET };
 	sf::Vector2f pos{ 100.f, 100.f };
 	bool moveToComplete = true;
+	static constexpr float MOVEMENT_EPSILON = 25.f;
 
 	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
+
 
 public:
 
