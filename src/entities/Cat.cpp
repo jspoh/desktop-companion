@@ -31,8 +31,6 @@ void Cat::moveTo(float x, float y) {
 	setEntityState(RUNNING, tm.getSprite(catSpriteName));
 
 	target = { x, y };
-	d = (target - pos);
-	if (d.length() != 0) d = d.normalized();
 
 	moveToComplete = false;
 }
@@ -42,8 +40,11 @@ void Cat::update(float dt) {
 
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
 
-	if ((target - pos).lengthSquared() > std::pow(std::numeric_limits<float>::epsilon(), 2.f)) {
+	if (!moveToComplete && (target - pos).lengthSquared() > std::pow(std::numeric_limits<float>::epsilon(), 2.f)) {
 		handledStopMoving = false;
+
+		d = target - pos;
+		if (d.lengthSquared() != 0) d = d.normalized();
 
 		// accelerate cat
 
@@ -78,6 +79,8 @@ void Cat::update(float dt) {
 		setEntityState(IDLE, catSprite);
 		pos = target;
 		moveToComplete = true;
+		move_vector = { 0, 0 };
+		d = { 0, 0 };
 	}
 
 	catSprite.sprite.setPosition(pos);
