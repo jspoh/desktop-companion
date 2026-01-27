@@ -18,8 +18,6 @@ void DefaultScene::init() {
 	Cat::get().init();
 
 	//music.play();
-
-	Cat::get().moveTo(800, 600);
 }
 
 void DefaultScene::update(float dt) {

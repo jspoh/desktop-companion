@@ -67,8 +67,8 @@ private:
 
 	static constexpr const char* catSpriteName = "cat";
 
-	static constexpr float MAX_MOVEMENT_SPEED = 250.f;
-	static constexpr float ACCELERATION = 150.f;
+	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
+	static constexpr float ACCELERATION = 200.f;
 
 	// for movement
 	float movementSpeed{};
@@ -77,6 +77,8 @@ private:
 	sf::Vector2f target{ NO_TARGET };
 	sf::Vector2f pos{ 100.f, 100.f };
 	bool moveToComplete = true;
+
+	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
 
 public:
 
