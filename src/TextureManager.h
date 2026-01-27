@@ -8,6 +8,7 @@ class TextureManager {
 public:
 	struct JS_SPRITE {
 		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
+		JS_SPRITE(const sf::Sprite& s, int left, int top, int width, int height) : sprite(s), left(left), top(top), width(width), height(height) {}
 
 		sf::Sprite sprite;
 
@@ -72,13 +73,13 @@ public:
 	}
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int left=0, int top=0, int width=0, int height=0) {
+	bool createSprite(const std::string& ref, const std::string& texRef, int left = 0, int top = 0, int width = 0, int height = 0) {
 		if (textures.find(texRef) == textures.end()) {
 			std::cerr << "createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;
 		}
 
-		JS_SPRITE s(sf::Sprite(textures.at(texRef)));
+		JS_SPRITE s(sf::Sprite(textures.at(texRef)), left, top, width, height);
 
 		sprites.emplace(ref, s);
 		spritesValues.push_back(sprites.at(ref));
