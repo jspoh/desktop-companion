@@ -8,11 +8,18 @@ class TextureManager {
 public:
 	struct JS_SPRITE {
 		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
-		JS_SPRITE(const sf::Sprite& s, int left, int top, int width, int height) : sprite(s), left(left), top(top), width(width), height(height) {}
+		JS_SPRITE(const sf::Sprite& s, int numFrames, int left, int top, int width, int height) : numFrames{ numFrames }, sprite(s), left(left), top(top), width(width), height(height) {
+			sprite.setTextureRect(sf::IntRect(
+				sf::Vector2i(left + frame * width, top),  // position
+				sf::Vector2i(width, height)                // size
+			));
+		}
 
 		sf::Sprite sprite;
 
 		int frame{};
+		int numFrames{};
+		float animationElapsed{};
 
 		int left{};
 		int top{};
@@ -48,8 +55,16 @@ public:
 	}
 
 	void render() {
-		for (const auto js_sprite : spritesValues) {
-			win.draw(js_sprite.get().sprite);
+		for (JS_SPRITE& js_sprite : spritesValues) {
+			sf::Sprite& s = js_sprite.sprite;
+			//s.getTextureRect(sf::IntRect(
+			//	js_sprite.left + js_sprite.frame * js_sprite.width,
+			//	js_sprite.top,
+			//	js_sprite.width,
+			//	js_sprite.height,
+			//));
+
+			win.draw(s);
 		}
 
 		for (const auto& [ref, txt] : texts) {
@@ -73,13 +88,13 @@ public:
 	}
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int left = 0, int top = 0, int width = 0, int height = 0) {
+	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames=0, int left = 0, int top = 0, int width = 0, int height = 0) {
 		if (textures.find(texRef) == textures.end()) {
-			std::cerr << "createSprite > texRef " << texRef << " does not exist" << std::endl;
+			std::cerr << "TextureManager::createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;
 		}
 
-		JS_SPRITE s(sf::Sprite(textures.at(texRef)), left, top, width, height);
+		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, left, top, width, height);
 
 		sprites.emplace(ref, s);
 		spritesValues.push_back(sprites.at(ref));

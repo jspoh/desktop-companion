@@ -17,12 +17,12 @@ public:
 	}
 
 	void load() override {
-		tm.registerTexture("idle_cat_texture", "assets/Idle.png");
+		tm.registerTexture("idle_cat_texture", "assets/css2.png");
 		//music = sf::Music("assets/Cutie-Patootie.mp3");
 	}
 
 	void init() override {
-		tm.createSprite("idle_cat", "idle_cat_texture");
+		tm.createSprite("idle_cat", "idle_cat_texture", 6, 0, 0, 50, 50);
 		TextureManager::JS_SPRITE& idle_cat = tm.getSprite("idle_cat");
 		idle_cat.sprite.setPosition({ 100.f, 100.f });
 
