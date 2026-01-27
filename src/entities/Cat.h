@@ -68,7 +68,7 @@ private:
 	static constexpr const char* catSpriteName = "cat";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
-	static constexpr float ACCELERATION = 400.f;
+	static constexpr float ACCELERATION = 5000.f;
 
 	// for movement
 	//float movementSpeed{};
