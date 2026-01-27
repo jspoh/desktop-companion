@@ -5,6 +5,20 @@
 
 
 class TextureManager {
+public:
+	struct JS_SPRITE {
+		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
+
+		sf::Sprite sprite;
+
+		int frame{};
+
+		int left{};
+		int top{};
+		int width{};
+		int height{};
+	};
+
 private:
 	sf::Font font;
 
@@ -15,8 +29,8 @@ private:
 	~TextureManager() = default;
 
 	std::unordered_map<std::string, sf::Texture> textures;		// loaded into gpu vram
-	std::unordered_map<std::string, sf::Sprite> sprites;
-	std::vector<std::reference_wrapper<sf::Sprite>> spritesValues;						// for fast access of sprites.values()
+	std::unordered_map<std::string, JS_SPRITE> sprites;
+	std::vector<std::reference_wrapper<JS_SPRITE>> spritesValues;						// for fast access of sprites.values()
 	std::unordered_map<std::string, sf::Text> texts;
 
 public:
@@ -33,8 +47,8 @@ public:
 	}
 
 	void render() {
-		for (const auto& sprite : spritesValues) {
-			win.draw(sprite);
+		for (const auto js_sprite : spritesValues) {
+			win.draw(js_sprite.get().sprite);
 		}
 
 		for (const auto& [ref, txt] : texts) {
@@ -57,12 +71,16 @@ public:
 		return true;
 	}
 
-	bool createSprite(const std::string& ref, const std::string& texRef) {
+	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
+	bool createSprite(const std::string& ref, const std::string& texRef, int left=0, int top=0, int width=0, int height=0) {
 		if (textures.find(texRef) == textures.end()) {
 			std::cerr << "createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;
 		}
-		sprites.emplace(ref, sf::Sprite(textures.at(texRef)));
+
+		JS_SPRITE s(sf::Sprite(textures.at(texRef)));
+
+		sprites.emplace(ref, s);
 		spritesValues.push_back(sprites.at(ref));
 		return true;
 	}
@@ -75,15 +93,15 @@ public:
 		return textures.at(ref);
 	}
 
-	sf::Sprite& getSprite(const std::string& ref) {
+	JS_SPRITE& getSprite(const std::string& ref) {
 		return sprites.at(ref);
 	}
 
-	const sf::Sprite& getSprite(const std::string& ref) const {
+	const JS_SPRITE& getSprite(const std::string& ref) const {
 		return sprites.at(ref);
 	}
 
-	const std::vector<std::reference_wrapper<sf::Sprite>>& getAllSprites() const {
+	const std::vector<std::reference_wrapper<JS_SPRITE>>& getAllSprites() const {
 		return spritesValues;
 	}
 

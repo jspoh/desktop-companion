@@ -23,8 +23,8 @@ public:
 
 	void init() override {
 		tm.createSprite("idle_cat", "idle_cat_texture");
-		sf::Sprite& idle_cat = tm.getSprite("idle_cat");
-		idle_cat.setPosition({ 100.f, 100.f });
+		TextureManager::JS_SPRITE& idle_cat = tm.getSprite("idle_cat");
+		idle_cat.sprite.setPosition({ 100.f, 100.f });
 
 		sf::Text& text = tm.registerText("text", "hello", 50);
 		text.setPosition({ 100, 0 });
