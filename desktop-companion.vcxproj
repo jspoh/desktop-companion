@@ -133,6 +133,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;SFML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="src\GameManager.h" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\scenes\DefaultScene.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.h" />
   </ItemGroup>
   <ItemGroup>

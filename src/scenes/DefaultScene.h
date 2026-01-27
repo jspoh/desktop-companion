@@ -10,33 +10,15 @@ private:
 	sf::Music music;
 
 public:
-	DefaultScene() {}
+	DefaultScene();
 
-	~DefaultScene() {
+	~DefaultScene();
 
-	}
+	void load() override;
 
-	void load() override {
-		tm.registerTexture("idle_cat_texture", "assets/css2.png");
-		//music = sf::Music("assets/Cutie-Patootie.mp3");
-	}
+	void init() override;
 
-	void init() override {
-		tm.createSprite("idle_cat", "idle_cat_texture", 6, 0, 0, 50, 50, true, 0.1f);
-		TextureManager::JS_SPRITE& idle_cat = tm.getSprite("idle_cat");
-		idle_cat.sprite.setPosition({ 100.f, 100.f });
+	void update(float dt) override;
 
-		sf::Text& text = tm.registerText("text", "hello", 50);
-		text.setPosition({ 100, 0 });
-
-		//music.play();
-	}
-
-	void update(float dt) override {
-
-	}
-
-	void cleanup() override {
-		tm.cleanup();
-	}
+	void cleanup() override;
 };
