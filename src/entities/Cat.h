@@ -68,10 +68,10 @@ private:
 	static constexpr const char* catSpriteName = "cat";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
-	static constexpr float ACCELERATION = 200.f;
+	static constexpr float ACCELERATION = 400.f;
 
 	// for movement
-	float movementSpeed{};
+	//float movementSpeed{};
 	sf::Vector2f d{ 0, 0 };
 	sf::Vector2f move_vector{ 0,0 };	// actual movement vector
 	static constexpr sf::Vector2f NO_TARGET{ -1.f, -1.f };

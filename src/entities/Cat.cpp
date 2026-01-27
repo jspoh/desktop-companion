@@ -46,12 +46,11 @@ void Cat::update(float dt) {
 		handledStopMoving = false;
 
 		// accelerate cat
-		if (movementSpeed < MAX_MOVEMENT_SPEED) {
-			movementSpeed += dt * ACCELERATION;
-			if (movementSpeed > MAX_MOVEMENT_SPEED) movementSpeed = MAX_MOVEMENT_SPEED;
-		}
 
-		move_vector = movementSpeed * d;
+		move_vector += d * (dt * ACCELERATION);
+		if (move_vector.length() > MAX_MOVEMENT_SPEED) {
+			move_vector = move_vector.normalized() * MAX_MOVEMENT_SPEED;
+		}
 
 		// P = A + td where d = B-A
 		pos += dt * move_vector;
