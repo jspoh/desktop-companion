@@ -32,6 +32,8 @@ void Cat::moveTo(float x, float y) {
 
 	target = { x, y };
 	d = (target - pos).normalized();
+
+	moveToComplete = false;
 }
 
 void Cat::update(float dt) {
@@ -62,6 +64,7 @@ void Cat::update(float dt) {
 
 		setEntityState(IDLE, tm.getSprite(catSpriteName));
 		pos = target;
+		moveToComplete = true;
 	}
 
 	tm.getSprite(catSpriteName).sprite.setPosition(pos);
