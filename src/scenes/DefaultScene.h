@@ -22,7 +22,7 @@ public:
 	}
 
 	void init() override {
-		tm.createSprite("idle_cat", "idle_cat_texture", 6, 0, 0, 50, 50);
+		tm.createSprite("idle_cat", "idle_cat_texture", 6, 0, 0, 50, 50, true, 0.1f);
 		TextureManager::JS_SPRITE& idle_cat = tm.getSprite("idle_cat");
 		idle_cat.sprite.setPosition({ 100.f, 100.f });
 

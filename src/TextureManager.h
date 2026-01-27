@@ -8,7 +8,7 @@ class TextureManager {
 public:
 	struct JS_SPRITE {
 		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
-		JS_SPRITE(const sf::Sprite& s, int numFrames, int left, int top, int width, int height) : numFrames{ numFrames }, sprite(s), left(left), top(top), width(width), height(height) {
+		JS_SPRITE(const sf::Sprite& s, int numFrames, int left, int top, int width, int height, bool playingAnimation, float animationAdvanceTime=0.1f) : numFrames{numFrames}, sprite(s), left(left), top(top), width(width), height(height), playingAnimation{playingAnimation}, animationAdvanceTime{animationAdvanceTime} {
 			sprite.setTextureRect(sf::IntRect(
 				sf::Vector2i(left + frame * width, top),  // position
 				sf::Vector2i(width, height)                // size
@@ -20,6 +20,8 @@ public:
 		int frame{};
 		int numFrames{};
 		float animationElapsed{};
+		bool playingAnimation{ false };
+		float animationAdvanceTime{};
 
 		int left{};
 		int top{};
@@ -54,17 +56,23 @@ public:
 		texts.clear();
 	}
 
-	void render() {
-		for (JS_SPRITE& js_sprite : spritesValues) {
-			sf::Sprite& s = js_sprite.sprite;
-			//s.getTextureRect(sf::IntRect(
-			//	js_sprite.left + js_sprite.frame * js_sprite.width,
-			//	js_sprite.top,
-			//	js_sprite.width,
-			//	js_sprite.height,
-			//));
+	void render(float dt) {
 
-			win.draw(s);
+
+		for (JS_SPRITE& s : spritesValues) {
+			if (s.playingAnimation) {
+				const int absoluteFrame = std::floor(s.animationElapsed / s.animationAdvanceTime);
+				s.frame = absoluteFrame % s.numFrames;
+
+				s.animationElapsed += dt;
+
+				s.sprite.setTextureRect(sf::IntRect(
+					{ s.left + s.frame * s.width, s.top },
+					{ s.width, s.height }
+				));
+			}
+
+			win.draw(s.sprite);
 		}
 
 		for (const auto& [ref, txt] : texts) {
@@ -88,13 +96,13 @@ public:
 	}
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames=0, int left = 0, int top = 0, int width = 0, int height = 0) {
+	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation=false, float animationAdvanceTime=0.1f) {
 		if (textures.find(texRef) == textures.end()) {
 			std::cerr << "TextureManager::createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;
 		}
 
-		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, left, top, width, height);
+		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, left, top, width, height, playingAnimation, animationAdvanceTime);
 
 		sprites.emplace(ref, s);
 		spritesValues.push_back(sprites.at(ref));

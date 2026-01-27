@@ -47,12 +47,15 @@ public:
 			// 
 			win.clear(WIN32_TRANSPARENT_COLOR);
 			sm.update(dt);
-			tm.render();
+			tm.render(dt);
 			win.display();
 
 			auto end = std::chrono::high_resolution_clock::now();
 
-			dt = static_cast<float>(std::chrono::duration_cast<std::chrono::seconds>(end - start).count());
+			const float dt_ms = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
+			dt = dt_ms / 1000.f;
+
+			//std::cout << dt << std::endl;
 		}
 	}
 
