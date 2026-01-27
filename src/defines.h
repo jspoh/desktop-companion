@@ -1,5 +1,7 @@
 #pragma once
 
+// !TODO: turn into pch
+
 #include <chrono>
 #include <memory>
 #include <SFML/Audio.hpp>
@@ -11,6 +13,7 @@
 #include <exception>
 #include <functional>
 #include <optional>
+#include <limits>
 
 
 #define tm TextureManager::get()

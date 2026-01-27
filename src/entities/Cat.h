@@ -67,6 +67,16 @@ private:
 
 	static constexpr const char* catSpriteName = "cat";
 
+	static constexpr float MAX_MOVEMENT_SPEED = 250.f;
+	static constexpr float ACCELERATION = 150.f;
+
+	// for movement
+	float movementSpeed{};
+	sf::Vector2f d{ 0, 0 };
+	static constexpr sf::Vector2f NO_TARGET{ -1.f, -1.f };
+	sf::Vector2f target{ NO_TARGET };
+	sf::Vector2f pos{ 100.f, 100.f };
+
 public:
 
 	static Cat& get() {
@@ -76,6 +86,8 @@ public:
 
 	void init();
 
+	void update(float dt);
+
 	EntityStates getActiveState() const {
 		return activeState;
 	}
@@ -83,6 +95,8 @@ public:
 	std::string getCatSpriteName() {
 		return catSpriteName;
 	}
+
+	void moveTo(float x, float y);
 
 	void setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
 };
