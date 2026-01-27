@@ -8,7 +8,7 @@
 
 class Cat {
 public:
-	enum EntityStates {
+	enum class EntityAnimationStates {
 		IDLE = 0,
 		EXCITED,
 		LAZING,
@@ -41,28 +41,28 @@ private:
 	static constexpr int height = 45;
 	static constexpr float animationAdvanceTime = 0.1f;
 
-	EntityStates activeState = IDLE;
+	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;
 	float stateElapsedTime{};
-	const std::unordered_map<EntityStates, int> STATE_FRAMES_MAP{
-		{IDLE, 6},
-		{EXCITED, 3},
-		{LAZING, 1 },
-		{SLEEPING, 4},
-		{HAPPY, 10},
-		{RUNNING, 6},
-		{LEAPING, 12},
-		{BOX_1, 12},
-		{BOX_2, 10},
-		{BOX_3, 12},
-		{CRYING, 4},
-		{DANCING, 4},
-		{CHILLING, 8},
-		{SURPRISED, 2},
-		{LAUGHING, 4},
-		{DIE_1, 6},
-		{DIE_2, 6},
-		{HURT, 8},
-		{ATTACK, 7},
+	const std::unordered_map<EntityAnimationStates, int> STATE_FRAMES_MAP{
+		{EntityAnimationStates::IDLE, 6},
+		{EntityAnimationStates::EXCITED, 3},
+		{EntityAnimationStates::LAZING, 1 },
+		{EntityAnimationStates::SLEEPING, 4},
+		{EntityAnimationStates::HAPPY, 10},
+		{EntityAnimationStates::RUNNING, 6},
+		{EntityAnimationStates::LEAPING, 12},
+		{EntityAnimationStates::BOX_1, 12},
+		{EntityAnimationStates::BOX_2, 10},
+		{EntityAnimationStates::BOX_3, 12},
+		{EntityAnimationStates::CRYING, 4},
+		{EntityAnimationStates::DANCING, 4},
+		{EntityAnimationStates::CHILLING, 8},
+		{EntityAnimationStates::SURPRISED, 2},
+		{EntityAnimationStates::LAUGHING, 4},
+		{EntityAnimationStates::DIE_1, 6},
+		{EntityAnimationStates::DIE_2, 6},
+		{EntityAnimationStates::HURT, 8},
+		{EntityAnimationStates::ATTACK, 7},
 	};
 
 	static constexpr const char* catSpriteName = "cat";
@@ -94,8 +94,8 @@ public:
 
 	void update(float dt);
 
-	EntityStates getActiveState() const {
-		return activeState;
+	EntityAnimationStates getActiveState() const {
+		return activeAnimationState;
 	}
 
 	std::string getCatSpriteName() {
@@ -104,5 +104,5 @@ public:
 
 	void moveTo(float x, float y);
 
-	void setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
+	void setEntityState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
 };

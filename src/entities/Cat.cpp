@@ -4,7 +4,7 @@
 void Cat::init() {
 	tm.registerTexture("cat_texture", "assets/css2.png");
 
-	tm.createSprite("cat", "cat_texture", STATE_FRAMES_MAP.at(activeState), xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
+	tm.createSprite("cat", "cat_texture", STATE_FRAMES_MAP.at(activeAnimationState), xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
 	catSprite.sprite.setPosition(pos);
 
@@ -13,8 +13,8 @@ void Cat::init() {
 }
 
 
-void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite) {
-	activeState = s;
+void Cat::setEntityState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite) {
+	activeAnimationState = s;
 
 	if (opt_sprite == std::nullopt) return;
 
@@ -28,7 +28,7 @@ void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<Te
 
 
 void Cat::moveTo(float x, float y) {
-	setEntityState(RUNNING, tm.getSprite(catSpriteName));
+	setEntityState(EntityAnimationStates::RUNNING, tm.getSprite(catSpriteName));
 
 	target = { x, y };
 
@@ -76,7 +76,7 @@ void Cat::update(float dt) {
 		// handle what happens when stop moving
 		handledStopMoving = true;
 
-		setEntityState(IDLE, catSprite);
+		setEntityState(EntityAnimationStates::IDLE, catSprite);
 		pos = target;
 		moveToComplete = true;
 		move_vector = { 0, 0 };
