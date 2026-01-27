@@ -65,28 +65,6 @@ private:
 		{ATTACK, 7},
 	};
 
-	//const std::unordered_map<EntityStates, int> STATE_TOP_MAP{
-	//	{IDLE, 0},
-	//	{EXCITED, 50},
-	//	{LAZING, 100},
-	//	{SLEEPING, 150},
-	//	{HAPPY, 200},
-	//	{RUNNING, 250},
-	//	{LEAPING, 300},
-	//	{BOX_1, 350},
-	//	{BOX_2, 400},
-	//	{BOX_3, 450},
-	//	{CRYING, 500},
-	//	{DANCING, 550},
-	//	{CHILLING, 600},
-	//	{SURPRISED, 650},
-	//	{LAUGHING, 700},
-	//	{DIE_1, 750},
-	//	{DIE_2, 800},
-	//	{HURT, 850},
-	//	{ATTACK, 900},
-	//};
-
 	static constexpr const char* catSpriteName = "cat";
 
 public:

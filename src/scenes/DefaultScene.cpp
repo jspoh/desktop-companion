@@ -21,6 +21,7 @@ void DefaultScene::init() {
 }
 
 void DefaultScene::update(float dt) {
+#ifdef DEBUG_ANIMATIONS
 	static bool prevIsRightPressed = false;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right) && !prevIsRightPressed) {
@@ -31,6 +32,9 @@ void DefaultScene::update(float dt) {
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
 		prevIsRightPressed = false;
 	}
+#endif
+
+
 }
 
 void DefaultScene::cleanup() {
