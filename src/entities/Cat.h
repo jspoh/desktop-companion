@@ -28,17 +28,18 @@ public:
 		DIE_2,
 		HURT,
 		ATTACK,
+		NUM_ENTITY_STATES,
 	};
 
 private:
 
-	const int xoffset = 5;
-	const int yoffset = 50;
-	const int leftOffset = 0;
-	const int topOffset = 15;
-	const int width = 45;
-	const int height = 35;
-	const float animationAdvanceTime = 0.1f;
+	static constexpr int xoffset = 5;
+	static constexpr int yoffset = 50;
+	static constexpr int leftOffset = 0;
+	static constexpr int topOffset = 5;
+	static constexpr int width = 45;
+	static constexpr int height = 45;
+	static constexpr float animationAdvanceTime = 0.1f;
 
 	EntityStates activeState = IDLE;
 	float stateElapsedTime{};
@@ -64,9 +65,46 @@ private:
 		{ATTACK, 7},
 	};
 
+	//const std::unordered_map<EntityStates, int> STATE_TOP_MAP{
+	//	{IDLE, 0},
+	//	{EXCITED, 50},
+	//	{LAZING, 100},
+	//	{SLEEPING, 150},
+	//	{HAPPY, 200},
+	//	{RUNNING, 250},
+	//	{LEAPING, 300},
+	//	{BOX_1, 350},
+	//	{BOX_2, 400},
+	//	{BOX_3, 450},
+	//	{CRYING, 500},
+	//	{DANCING, 550},
+	//	{CHILLING, 600},
+	//	{SURPRISED, 650},
+	//	{LAUGHING, 700},
+	//	{DIE_1, 750},
+	//	{DIE_2, 800},
+	//	{HURT, 850},
+	//	{ATTACK, 900},
+	//};
+
+	static constexpr const char* catSpriteName = "cat";
+
 public:
 
+	static Cat& get() {
+		static Cat instance;
+		return instance;
+	}
+
 	void init();
+
+	EntityStates getActiveState() const {
+		return activeState;
+	}
+
+	std::string getCatSpriteName() {
+		return catSpriteName;
+	}
 
 	void setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
 };

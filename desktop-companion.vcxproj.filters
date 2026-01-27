@@ -50,5 +50,8 @@
     <ClInclude Include="src\entities\Cat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\input\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
