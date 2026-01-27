@@ -51,8 +51,10 @@ void Cat::update(float dt) {
 			if (movementSpeed > MAX_MOVEMENT_SPEED) movementSpeed = MAX_MOVEMENT_SPEED;
 		}
 
+		move_vector = movementSpeed * d;
+
 		// P = A + td where d = B-A
-		pos += (dt * movementSpeed) * d;
+		pos += dt * move_vector;
 
 		// ensure no overshot using dot product
 		// same dir = +ve, orthogonal = 0, opposite dir = -ve

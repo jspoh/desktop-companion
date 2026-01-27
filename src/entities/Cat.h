@@ -73,6 +73,7 @@ private:
 	// for movement
 	float movementSpeed{};
 	sf::Vector2f d{ 0, 0 };
+	sf::Vector2f move_vector{ 0,0 };	// actual movement vector
 	static constexpr sf::Vector2f NO_TARGET{ -1.f, -1.f };
 	sf::Vector2f target{ NO_TARGET };
 	sf::Vector2f pos{ 100.f, 100.f };
