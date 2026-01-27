@@ -11,3 +11,16 @@ void Cat::init() {
 	sf::Text& text = tm.registerText("text", "hello", 50);
 	text.setPosition({ 100, 0 });
 }
+
+
+void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite) {
+	activeState = s;
+
+	if (opt_sprite == std::nullopt) return;
+
+	TextureManager::JS_SPRITE& sprite = opt_sprite.value();
+
+	sprite.top = (int)s * yoffset;
+	sprite.left = leftOffset;
+	sprite.numFrames = STATE_FRAMES_MAP.at(s);
+}

@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <exception>
 #include <functional>
+#include <optional>
 
 
 #define tm TextureManager::get()
