@@ -146,6 +146,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entities\Cat.cpp" />
     <ClCompile Include="src\GameManager.h" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneManager.h" />
+    <ClInclude Include="src\entities\Cat.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
