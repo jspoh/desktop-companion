@@ -52,7 +52,7 @@ public:
 
 			auto end = std::chrono::high_resolution_clock::now();
 
-			dt = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+			dt = static_cast<float>(std::chrono::duration_cast<std::chrono::seconds>(end - start).count());
 		}
 	}
 

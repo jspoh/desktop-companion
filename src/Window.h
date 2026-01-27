@@ -32,7 +32,8 @@ public:
 		window = sf::RenderWindow(videoMode, "Desktop Companion", sf::Style::None);
 
 #ifdef _WIN32
-		window.setActive(true);
+		bool success = window.setActive(true);
+		if (!success) throw std::runtime_error("Setting window to active failed in Window.h > Window::init");
 		HWND hwnd = window.getNativeHandle();
 
 		// SWP_NOMOVE ignores x,y params. no move
