@@ -33,12 +33,12 @@ public:
 
 private:
 
-	static constexpr int xoffset = 5;
-	static constexpr int yoffset = 50;
+	static constexpr int xoffset = 0;
+	static constexpr int yoffset = 0;
 	static constexpr int leftOffset = 0;
-	static constexpr int topOffset = 5;
-	static constexpr int width = 45;
-	static constexpr int height = 45;
+	static constexpr int topOffset = 0;
+	static constexpr int width = 64;
+	static constexpr int height = 64;
 	static constexpr float animationAdvanceTime = 0.1f;
 
 	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;

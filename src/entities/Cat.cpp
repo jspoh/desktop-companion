@@ -2,7 +2,7 @@
 
 
 void Cat::init() {
-	tm.registerTexture("cat_texture", "assets/css2.png");
+	tm.registerTexture("cat_texture", "assets/Cats/AllCatsGreyWhite.png");
 
 	tm.createSprite("cat", "cat_texture", STATE_FRAMES_MAP.at(activeAnimationState), xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
@@ -21,7 +21,7 @@ void Cat::setEntityState(EntityAnimationStates s, std::optional<std::reference_w
 	TextureManager::JS_SPRITE& sprite = opt_sprite.value();
 
 	//sprite.top = STATE_TOP_MAP.at(s);
-	sprite.top = (int)s * yoffset;
+	sprite.top = topOffset + (int)s * (yoffset + height);
 	sprite.left = leftOffset;
 	sprite.numFrames = STATE_FRAMES_MAP.at(s);
 }

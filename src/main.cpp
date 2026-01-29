@@ -1,6 +1,8 @@
 #include "GameManager.h"
 #include "Window.h"
 
+#include "defines.h"
+
 #ifdef _DEBUG
 int main()
 #else
