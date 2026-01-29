@@ -8,7 +8,10 @@
 class DefaultScene : public Scene {
 private:
 	sf::Music music;
+
+#ifndef NDEBUG
 	sf::Text* fps_display_text;
+#endif
 public:
 	DefaultScene();
 

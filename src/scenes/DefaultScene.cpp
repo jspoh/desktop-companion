@@ -21,13 +21,16 @@ void DefaultScene::init() {
 
 	//music.play();
 
-
+#ifndef NDEBUG
 	fps_display_text = &tm.registerText("text", std::to_string(gm.getFps()), 50);
 	fps_display_text->setPosition({ 10, 10});
+#endif
 }
 
 void DefaultScene::update(float dt) {
+#ifndef NDEBUG
 	fps_display_text->setString(std::to_string(gm.getFps()));
+#endif
 
 //#define DEBUG_ANIMATIONS
 #ifdef DEBUG_ANIMATIONS

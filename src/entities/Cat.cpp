@@ -236,7 +236,7 @@ void Cat::update(float dt) {
 	}
 
 	// summon cat to mouse
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
 		tm.setTextContent(textRef, "I'm cominggggggggg");
 		moveTo((float)mX, (float)mY);
 	}
