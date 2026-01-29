@@ -32,5 +32,9 @@ inline sf::Vector2f operator/(const sf::Vector2u& v, float divisor) {
 	return sf::Vector2f{ v } / divisor;
 }
 
+inline sf::Vector2f operator*(const sf::Vector2i& v, float mul) {
+	return { v.x * mul, v.y * mul };
+}
+
 
 #endif

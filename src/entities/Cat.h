@@ -39,6 +39,7 @@ public:
 		HURTING,
 		ANGRY,
 		DEAD,
+		DRAGGED,		// if dragged by mouse
 		NUM_ENTITY_STATES,
 	};
 
@@ -56,48 +57,59 @@ private:
 	const std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
 		{EntityStates::HAPPY,			// movement to leaping
 			{
-				EntityAnimationStates::EXCITED,
-				EntityAnimationStates::DANCING,
-				EntityAnimationStates::SURPRISED,
-				EntityAnimationStates::LAUGHING,
-			}
-		},
-		{EntityStates::WANDERING,
-			{
-				EntityAnimationStates::LAZING,
-				EntityAnimationStates::SLEEPING,
-				EntityAnimationStates::CHILLING,
-				EntityAnimationStates::IDLE,
-			}
-		},
-		{EntityStates::SAD,
-			{
-				EntityAnimationStates::CRYING,
-				EntityAnimationStates::IDLE,
-			}
-		},
-		{EntityStates::HURTING,		// movement type to the hurting
-			{
-				EntityAnimationStates::CRYING,
-				EntityAnimationStates::IDLE,
-			}
-		},
-		{EntityStates::ANGRY,
-			{
-				EntityAnimationStates::CRYING,
-				EntityAnimationStates::IDLE,
-			}
-		},
-		{EntityStates::DEAD,
-			{
-				EntityAnimationStates::DIE_1,
-				EntityAnimationStates::DIE_2,
-			}
-		},
+			//EntityAnimationStates::EXCITED,
+			EntityAnimationStates::DANCING,
+			EntityAnimationStates::SURPRISED,
+			EntityAnimationStates::LAUGHING,
+			EntityAnimationStates::CHILLING,
+		}
+	},
+	{EntityStates::WANDERING,
+		{
+			EntityAnimationStates::LAZING,
+			EntityAnimationStates::SLEEPING,
+			EntityAnimationStates::CHILLING,
+			EntityAnimationStates::IDLE,
+		}
+	},
+	{EntityStates::SAD,
+		{
+			EntityAnimationStates::CRYING,
+			EntityAnimationStates::IDLE,
+		}
+	},
+	{EntityStates::HURTING,		// movement type to the hurting
+		{
+			EntityAnimationStates::CRYING,
+			EntityAnimationStates::IDLE,
+		}
+	},
+	{EntityStates::ANGRY,
+		{
+			EntityAnimationStates::CRYING,
+			EntityAnimationStates::IDLE,
+		}
+	},
+	{EntityStates::DEAD,
+		{
+			EntityAnimationStates::DIE_1,
+			EntityAnimationStates::DIE_2,
+		}
+	},
+	{EntityStates::DRAGGED,
+		{
+			EntityAnimationStates::EXCITED,
+		}
+	},
 	};
 
-	int happiness{ 100 };
-	int HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
+	const std::vector<EntityAnimationStates> MOVEMENT_ANIMATION_STATES{
+		EntityAnimationStates::LEAPING,
+		EntityAnimationStates::RUNNING,
+	};
+
+	float happiness{ 100 };
+	float HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
 	void setHappiness(int nh) {
@@ -170,7 +182,13 @@ private:
 
 	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
 
+	float idleTimeLeft{};	// how much time Cat can idle before moving to another position
+	static constexpr int MIN_IDLE_TIME = 2;
+	static constexpr int MAX_IDLE_TIME = 5;
 
+	static constexpr float SPRITE_SCALE = 1.f;
+
+	static constexpr float RAND_POS_PADDING = 0.05;		// do not go to extreme 5% of screen
 public:
 
 	static Cat& get() {
@@ -182,8 +200,12 @@ public:
 
 	void update(float dt);
 
-	EntityAnimationStates getActiveState() const {
+	EntityAnimationStates getAnimationState() const {
 		return activeAnimationState;
+	}
+
+	EntityStates getEntityState() const {
+		return entityState;
 	}
 
 	std::string getCatSpriteName() {
@@ -195,4 +217,10 @@ public:
 	void setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
 
 	void setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount);
+
+	bool isColliding(const sf::Vector2f& p) {
+		if (p.x < pos.x || p.x > pos.x + width) return false;
+		if (p.y < pos.y || p.y > pos.y + height) return false;
+		return true;
+	}
 };

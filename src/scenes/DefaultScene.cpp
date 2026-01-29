@@ -90,6 +90,16 @@ void DefaultScene::update(float dt) {
 	}
 #endif
 
+	// allow user to drag cat
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && Cat::get().isColliding((sf::Mouse::getPosition() * 1.f))) {
+		// save last state to return entity to that state 
+		static Cat::EntityStates lastState = Cat::get().getEntityState();
+		if (lastState != Cat::EntityStates::DRAGGED) {
+			lastState = Cat::get().getEntityState();
+			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, tm.getSprite(Cat::get().getCatSpriteName()));
+		}
+	}
+
 
 }
 

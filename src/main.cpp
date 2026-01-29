@@ -9,6 +9,8 @@ int main()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
+	srand(time(0));
+
 	Window::get().init();
 	sf::RenderWindow& window = Window::get().getWindow();
 

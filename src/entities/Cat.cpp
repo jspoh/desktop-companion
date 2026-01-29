@@ -9,6 +9,7 @@ void Cat::init() {
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
+	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
 
 	sf::Text& text = tm.registerText("text", "hello", 50);
 	text.setPosition({ 100, 0 });
@@ -26,6 +27,8 @@ void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<Te
 
 
 void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount=-1) {
+	if (s == activeAnimationState) return;
+	
 	// setup queue system for after this animation state
 	activeAnimationState = s;
 
@@ -64,6 +67,9 @@ void Cat::moveTo(float x, float y) {
 }
 
 void Cat::update(float dt) {
+	const auto [winX, winY] = win.getSize();
+	const auto [mX, mY] = sf::Mouse::getPosition();
+
 	static bool handledStopMoving = true;
 
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
@@ -95,11 +101,11 @@ void Cat::update(float dt) {
 		// facing left/right
 		if (d.dot(RIGHT_VECTOR) < 0) {
 			// is moving left
-			catSprite.sprite.setScale({ -1, 1 });
+			catSprite.sprite.setScale({ -SPRITE_SCALE, SPRITE_SCALE });
 			facing = FACING_DIRECTIONS::LEFT;
 		}
 		else {
-			catSprite.sprite.setScale({ 1, 1 });
+			catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
 			facing = FACING_DIRECTIONS::RIGHT;
 		}
 	}
@@ -123,10 +129,35 @@ void Cat::update(float dt) {
 	// set state according to happiness level
 	for (const auto [est, s] : entityStateThresholds) {
 		if (happiness <= est) {
-			setEntityState(s, tm.getSprite(catSpriteName));
+			setEntityState(s, catSprite);
 			break;
 		}
 	}
 
 	entityStateElapsedS += dt;
+
+	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
+	static bool prevIsMovingAnimationPlaying = true;
+
+	// just stopped moving animation, play an idle animation dependent on happiness level
+	if (!isMovingAnimationPlaying && prevIsMovingAnimationPlaying) {
+		const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
+		setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite);
+
+		// set idle time
+		idleTimeLeft = (float)(rand() % (MAX_IDLE_TIME - MIN_IDLE_TIME) + MIN_IDLE_TIME);
+		//std::cout << "Idling for " << idleTimeLeft << std::endl;
+	}
+
+	prevIsMovingAnimationPlaying = isMovingAnimationPlaying;
+	idleTimeLeft -= dt;
+
+	if (idleTimeLeft <= 0) {
+		//std::cout << "Idle time over" << std::endl;
+		idleTimeLeft = std::numeric_limits<float>::max();
+		moveTo(
+			rand() % (int)((winX * RAND_POS_PADDING - winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
+			rand() % (int)((winY * RAND_POS_PADDING - winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
+		);
+	}
 }
