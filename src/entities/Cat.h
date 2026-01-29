@@ -45,6 +45,7 @@ public:
 	};
 
 private:
+
 	sf::Text* speech;
 	static constexpr const char* textRef = "cat_speech";
 	static constexpr float SPEECH_FADE_OUT_S = 5.f;
@@ -149,7 +150,7 @@ private:
 	};
 
 	const std::vector<EntityAnimationStates> MOVEMENT_ANIMATION_STATES{
-		EntityAnimationStates::LEAPING,
+		//EntityAnimationStates::LEAPING,
 		EntityAnimationStates::RUNNING,
 	};
 

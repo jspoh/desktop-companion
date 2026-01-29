@@ -14,7 +14,7 @@ void Cat::init() {
 
 	idleTimeLeft = 2.f;
 
-	speech = &tm.registerText(textRef, "", 14);
+	speech = &tm.registerText(textRef, "", 16);
 	tm.setTextContent(textRef, "Yippee! I'm happy to be here!");
 }
 
@@ -240,7 +240,9 @@ void Cat::update(float dt) {
 	// summon cat to mouse
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
 		tm.setTextContent(textRef, "I'm cominggggggggg");
-		moveTo((float)mX, (float)mY);
+		if ((sf::Vector2f(mX * 1.f, mY * 1.f) - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
+			moveTo((float)mX, (float)mY);
+		}
 	}
 
 	catSprite.sprite.setPosition(pos);
