@@ -1,8 +1,8 @@
 #pragma once
 
+#include "pch.h"
 #include "Scene.h"
 #include "TextureManager.h"
-#include "defines.h"
 
 
 class DefaultScene : public Scene {

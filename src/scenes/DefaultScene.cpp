@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DefaultScene.h"
 #include "entities/Cat.h"
 

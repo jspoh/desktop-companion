@@ -2,7 +2,7 @@
 
 #include "TextureManager.h"
 #include "SceneManager.h"
-#include "defines.h"
+#include "pch.h"
 #include "scenes/DefaultScene.h"
 #include "Window.h"
 

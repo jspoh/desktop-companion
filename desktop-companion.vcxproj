@@ -115,6 +115,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;SFML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +138,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>false</ShowIncludes>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,13 +153,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\entities\Cat.cpp" />
-    <ClCompile Include="src\GameManager.h" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
-    <ClCompile Include="src\scenes\DefaultScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\defines.h" />
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\input\InputManager.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneManager.h" />

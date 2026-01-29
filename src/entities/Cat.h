@@ -1,6 +1,6 @@
 #pragma once
 
-#include "defines.h"
+#include "pch.h"
 #include "TextureManager.h"
 
 // create Entity parent class if implementing more animals/types

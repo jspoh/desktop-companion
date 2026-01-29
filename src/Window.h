@@ -44,7 +44,8 @@ public:
 		// GWL_EXSTYLE - extended window styles
 		// WS_EX_TRANSPARENT - window transparent to mouse events (click through)
 		// WS_EX_LAYERED - for transparency effects and setLayeredWindowAttributes
-		SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+		// WS_EX_TOOLWINDOW - removes from taskbar and Alt+Tab
+		SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
 
 		// makes all color with 2nd param alpha to 0
 		SetLayeredWindowAttributes(hwnd, RGB(255, 0, 255), 0, LWA_COLORKEY);
