@@ -10,8 +10,11 @@ void Cat::init() {
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
 	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
-	
+
 	idleTimeLeft = 2.f;
+
+	speech = &tm.registerText(textRef, "", 14);
+	tm.setTextContent(textRef, "Yippee! I'm happy to be here!");
 }
 
 
@@ -28,11 +31,9 @@ void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<Te
 void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount = -1) {
 	if (s == activeAnimationState) return;
 
-	// setup queue system for after this animation state
 	activeAnimationState = s;
 
 	if (opt_sprite == std::nullopt) return;
-
 	TextureManager::JS_SPRITE& sprite = opt_sprite.value();
 
 	//sprite.top = STATE_TOP_MAP.at(s);
@@ -53,6 +54,8 @@ void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::re
 
 
 void Cat::moveTo(float x, float y) {
+	if (!alive) return;
+
 	setEntityAnimationState(MOVEMENT_ANIMATION_STATES.at(rand() % (int)MOVEMENT_ANIMATION_STATES.size()), tm.getSprite(catSpriteName), -1);
 
 	static constexpr int w_offset = width / 2;
@@ -87,6 +90,23 @@ void Cat::update(float dt) {
 	idleTimeLeft -= dt;
 	timeToNextIdleAnimation -= dt;
 
+	// fade out speech
+	sf::Color sfc = speech->getFillColor();
+	int alpha = static_cast<int>(sfc.a);
+	alpha -= dt * 255.f / SPEECH_FADE_OUT_S;
+	if (alpha < 0) alpha = 0;
+	sfc.a = alpha;
+	speech->setFillColor(sfc);
+
+	if (happiness <= 0) {
+		//alive = false;
+		happiness = 0;
+	}
+
+	if (!alive) {
+		setEntityState(EntityStates::DEAD, tm.getSprite(catSpriteName));
+	}
+
 #pragma region user_dragging
 	// allow user to drag cat
 	static bool isUserDragging = false;
@@ -101,7 +121,7 @@ void Cat::update(float dt) {
 	}
 
 	if (isUserDragging) {
-		pos = {mX - width / 2.f, mY - height / 2.f};		// set pos to mouse pos
+		pos = { mX - width / 2.f, mY - height / 2.f };		// set pos to mouse pos
 		// cancel movement
 		target = pos;
 		handledStopMoving = true;
@@ -166,7 +186,7 @@ void Cat::update(float dt) {
 		handledStopMoving = true;
 
 		// set up queue system
-		setEntityAnimationState(EntityAnimationStates::IDLE, catSprite, -1);
+		setEntityAnimationState(EntityAnimationStates::IDLE, catSprite, 0);
 		pos = target;
 		moveToComplete = true;
 		move_vector = { 0, 0 };
@@ -190,14 +210,17 @@ void Cat::update(float dt) {
 			// set idle time
 			idleTimeLeft = (float)(rand() % (MAX_IDLE_TIME - MIN_IDLE_TIME) + MIN_IDLE_TIME);
 			//std::cout << "Idling for " << idleTimeLeft << std::endl;
+
+			// talk to user
+			tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 
 		if (idleTimeLeft <= 0) {
 			//std::cout << "Idle time over" << std::endl;
 			idleTimeLeft = std::numeric_limits<float>::max();
 			moveTo(
-				rand() % (int)((winX * -RAND_POS_PADDING + winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
-				rand() % (int)((winY * -RAND_POS_PADDING + winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
+				winX* RAND_POS_PADDING + rand() % (int)(winX * (1.f - 2.f * RAND_POS_PADDING)),
+				winY* RAND_POS_PADDING + rand() % (int)(winY * (1.f - 2.f * RAND_POS_PADDING))
 			);
 		}
 		else {
@@ -211,10 +234,19 @@ void Cat::update(float dt) {
 
 	// summon cat to mouse
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) {
+		tm.setTextContent(textRef, "I'm cominggggggggg");
 		moveTo((float)mX, (float)mY);
 	}
 
 	catSprite.sprite.setPosition(pos);
+
+
+	speech->setPosition({ pos.x + width / 2.f, pos.y });
+	//if (facing == FACING_DIRECTIONS::LEFT) {
+	//	speech->setPosition({ pos.x, pos.y });
+	//}
+	//else {
+	//}
 
 	// update prevs static vars
 	prevIsMovingAnimationPlaying = isMovingAnimationPlaying;

@@ -60,7 +60,7 @@ private:
 	sf::Font font;
 
 	TextureManager() {
-		font = sf::Font("assets/arial.ttf");
+		font = sf::Font("assets/Consolas-Regular.ttf");
 	}
 
 	~TextureManager() = default;
@@ -183,5 +183,18 @@ public:
 		it->second.setCharacterSize(fontSize);
 
 		return it->second;
+	}
+
+	void setTextContent(const std::string& ref, const std::string& content) {
+		if (texts.find(ref) == texts.end()) {
+			std::cerr << "TextureManager > drawText > ref " << ref << " does not exist" << std::endl;
+		}
+
+		sf::Text& text = texts.at(ref);
+		text.setString(content);
+		sf::FloatRect textBounds = text.getLocalBounds();
+		text.setOrigin(textBounds.position + textBounds.size / 2.f);
+		text.setOutlineColor({ 255,255,255, 255 });
+		text.setFillColor({ 255,255,255,255 });
 	}
 };

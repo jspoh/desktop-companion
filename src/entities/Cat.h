@@ -37,6 +37,7 @@ public:
 		HAPPY,		// BOX, LEAPING movement, DANCING, 
 		SAD,
 		HURTING,
+		ON_EDGE,
 		ANGRY,
 		DEAD,
 		DRAGGED,		// if dragged by mouse
@@ -44,6 +45,11 @@ public:
 	};
 
 private:
+	sf::Text* speech;
+	static constexpr const char* textRef = "cat_speech";
+	static constexpr float SPEECH_FADE_OUT_S = 3.f;
+
+	bool alive = true;
 
 	struct EntityAnimationData {
 		EntityAnimationData(EntityAnimationStates s, int frames, int loops, int staticIdx)
@@ -82,10 +88,11 @@ private:
 	const std::map<int, EntityStates> entityStateThresholds{
 		{std::numeric_limits<int>::max(), EntityStates::HAPPY},
 		{80, EntityStates::WANDERING},
-		{30, EntityStates::SAD},
-		{15, EntityStates::HURTING},
-		{10, EntityStates::ANGRY},
-		{0, EntityStates::DEAD}
+		{20, EntityStates::ON_EDGE},
+		{10, EntityStates::SAD},
+		{0, EntityStates::ANGRY},
+		//{0, EntityStates::DEAD}
+		{std::numeric_limits<int>::min(), EntityStates::SAD},
 	};
 
 	const std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
@@ -111,26 +118,21 @@ private:
 			EntityAnimationStates::HAPPY,
 		}
 	},
+	{EntityStates::ON_EDGE,
+		{
+			EntityAnimationStates::IDLE,
+		}
+	},
 	{EntityStates::SAD,
 		{
 			EntityAnimationStates::CRYING,
-			EntityAnimationStates::IDLE,
-						EntityAnimationStates::LAZING,
-			EntityAnimationStates::SLEEPING,
-		}
-	},
-	{EntityStates::HURTING,		// movement type to the hurting
-		{
 			EntityAnimationStates::CRYING,
 			EntityAnimationStates::IDLE,
-						EntityAnimationStates::LAZING,
-			EntityAnimationStates::SLEEPING,
 		}
 	},
 	{EntityStates::ANGRY,		// ignored, chases mouse instead
 		{
 			EntityAnimationStates::CRYING,
-			EntityAnimationStates::IDLE,
 		}
 	},
 	{EntityStates::DEAD,
@@ -151,9 +153,64 @@ private:
 		EntityAnimationStates::RUNNING,
 	};
 
-	float happiness{ 100 };
-	float HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
-	float happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
+	const std::unordered_map<EntityStates, std::vector<std::string>> STATE_SPEECH_OPTIONS{
+		{EntityStates::HAPPY, {
+			"I am nature's most ferocious hunter",
+			"meow meow pussycat",
+			"body scrubbers? who needs them?",
+			"*yawns",
+			"bow down to me puny human",
+	}},
+		{
+			EntityStates::WANDERING, {
+			"I wonder what's over here",
+			"What are you doing? :)",
+			"Being productive?",
+			"Study hard!",
+			"FOCUSSS",
+			"Stay hydrated"
+}
+},
+		{
+			EntityStates::ON_EDGE, {
+			"I'm getting a little tired",
+			"Time for a break?",
+			"I could really use a good stretch right now",
+			"I'm tired of sitting",
+			"I want to stand!",
+			"Rest your eyes a little?",
+			"You worked hard, you deserve some rest",
+			"Sitting too long is bad",
+			"Please rest :)",
+			"Take a break, come back fresher?",
+			"Toilet breaaakk"
+}
+},
+		{
+			EntityStates::SAD, {
+			"Please? Just a 5 minute break? For me?",
+			"You're going to make me cry..",
+			":(",
+			"Break?",
+			"..."
+}
+},
+		{
+			EntityStates::ANGRY, {
+			"Break nowwwwwwwwwww",
+			"I will snatch your mouse",
+			"Time for a break lets gooooo",
+			"BREAK BREAK BREAK",
+			"IM HUNGRY LETS GO GET SOME FOOD"
+}
+},
+
+	};
+
+	static constexpr float MAX_HAPPINESS = 100.f;
+	float happiness{ MAX_HAPPINESS };
+	float HAPPINESS_LIFESPAN = 10.f;		// how many minutes before happiness fully drains
+	float happiness_drain_rate_s = MAX_HAPPINESS / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
 	void setHappiness(int nh) {
 		happiness = nh;
@@ -204,16 +261,16 @@ private:
 	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
 
 	float idleTimeLeft{};	// how much time Cat can idle before moving to another position
-	static constexpr int MIN_IDLE_TIME = 20;
-	static constexpr int MAX_IDLE_TIME = 90;
+	static constexpr int MIN_IDLE_TIME = 2;
+	static constexpr int MAX_IDLE_TIME = 9;
 
 	float timeToNextIdleAnimation{};
 	static constexpr int MIN_TTNIA = 10;
 	static constexpr int MAX_TTNIA = 20;
 
-	static constexpr float SPRITE_SCALE = 1.f;
+	static constexpr float SPRITE_SCALE = 1.5f;
 
-	static constexpr float RAND_POS_PADDING = 0.05;		// do not go to extreme 5% of screen
+	static constexpr float RAND_POS_PADDING = 0.2f;		// do not go to extreme 5% of screen
 public:
 
 	static Cat& get() {
