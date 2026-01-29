@@ -51,7 +51,7 @@ public:
 			}
 
 			// 
-			win.clear(WIN32_TRANSPARENT_COLOR);
+			win.clear(sf::Color::Transparent);
 			sm.update(dt);
 			tm.render(dt);
 			win.display();

@@ -194,7 +194,8 @@ public:
 		text.setString(content);
 		sf::FloatRect textBounds = text.getLocalBounds();
 		text.setOrigin(textBounds.position + textBounds.size / 2.f);
-		text.setOutlineColor({ 255,255,255, 255 });
+		text.setOutlineColor({ 0,0,0, 255 });
 		text.setFillColor({ 255,255,255,255 });
+		text.setOutlineThickness(1.f);
 	}
 };

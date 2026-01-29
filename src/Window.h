@@ -7,6 +7,9 @@
 	#include <windows.h>
 #endif
 
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
+
 #include <SFML/Graphics.hpp>
 
 
@@ -48,7 +51,14 @@ public:
 		SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
 
 		// makes all color with 2nd param alpha to 0
-		SetLayeredWindowAttributes(hwnd, RGB(255, 0, 255), 0, LWA_COLORKEY);
+		//SetLayeredWindowAttributes(hwnd, RGB(255, 0, 255), 0, LWA_COLORKEY);
+
+		// this is so much better for the transparent window
+		MARGINS margins = { -1, -1, -1, -1 };
+		DwmExtendFrameIntoClientArea(hwnd, &margins);
+
+		window.setVerticalSyncEnabled(false);
+		window.setFramerateLimit(60);
 #endif
 	}
 

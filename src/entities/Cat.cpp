@@ -92,11 +92,14 @@ void Cat::update(float dt) {
 
 	// fade out speech
 	sf::Color sfc = speech->getFillColor();
+	sf::Color soc = speech->getOutlineColor();
 	int alpha = static_cast<int>(sfc.a);
 	alpha -= dt * 255.f / SPEECH_FADE_OUT_S;
 	if (alpha < 0) alpha = 0;
 	sfc.a = alpha;
 	speech->setFillColor(sfc);
+	soc.a = alpha;
+	speech->setOutlineColor(soc);
 
 	if (happiness <= 0) {
 		//alive = false;

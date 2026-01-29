@@ -47,7 +47,7 @@ public:
 private:
 	sf::Text* speech;
 	static constexpr const char* textRef = "cat_speech";
-	static constexpr float SPEECH_FADE_OUT_S = 3.f;
+	static constexpr float SPEECH_FADE_OUT_S = 5.f;
 
 	bool alive = true;
 
@@ -209,7 +209,7 @@ private:
 
 	static constexpr float MAX_HAPPINESS = 100.f;
 	float happiness{ MAX_HAPPINESS };
-	float HAPPINESS_LIFESPAN = 10.f;		// how many minutes before happiness fully drains
+	float HAPPINESS_LIFESPAN = 60.f;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = MAX_HAPPINESS / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
 	void setHappiness(int nh) {
@@ -261,16 +261,16 @@ private:
 	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
 
 	float idleTimeLeft{};	// how much time Cat can idle before moving to another position
-	static constexpr int MIN_IDLE_TIME = 2;
-	static constexpr int MAX_IDLE_TIME = 9;
+	static constexpr int MIN_IDLE_TIME = 20;
+	static constexpr int MAX_IDLE_TIME = 60;
 
 	float timeToNextIdleAnimation{};
-	static constexpr int MIN_TTNIA = 10;
+	static constexpr int MIN_TTNIA = 5;
 	static constexpr int MAX_TTNIA = 20;
 
-	static constexpr float SPRITE_SCALE = 1.5f;
+	static constexpr float SPRITE_SCALE = 1.f;
 
-	static constexpr float RAND_POS_PADDING = 0.2f;		// do not go to extreme 5% of screen
+	static constexpr float RAND_POS_PADDING = 0.05f;		// do not go to extreme 5% of screen
 public:
 
 	static Cat& get() {
