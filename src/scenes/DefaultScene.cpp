@@ -21,7 +21,7 @@ void DefaultScene::init() {
 }
 
 void DefaultScene::update(float dt) {
-#define DEBUG_ANIMATIONS
+//#define DEBUG_ANIMATIONS
 #ifdef DEBUG_ANIMATIONS
 	static bool prevIsNPressed = false;
 
@@ -35,7 +35,7 @@ void DefaultScene::update(float dt) {
 	}
 #endif
 
-#define DEBUG_SS
+//#define DEBUG_SS
 #ifdef DEBUG_SS
 	static bool prevIsRightPressed = false;
 	static bool prevIsLeftPressed = false;

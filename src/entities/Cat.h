@@ -41,6 +41,13 @@ private:
 	static constexpr int height = 64;
 	static constexpr float animationAdvanceTime = 0.1f;
 
+	enum FACING_DIRECTIONS {
+		LEFT,
+		RIGHT
+	};
+
+	FACING_DIRECTIONS facing = FACING_DIRECTIONS::RIGHT;
+
 	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;
 	float stateElapsedTime{};
 	const std::unordered_map<EntityAnimationStates, int> STATE_FRAMES_MAP{

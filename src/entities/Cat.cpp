@@ -30,7 +30,18 @@ void Cat::setEntityState(EntityAnimationStates s, std::optional<std::reference_w
 void Cat::moveTo(float x, float y) {
 	setEntityState(EntityAnimationStates::RUNNING, tm.getSprite(catSpriteName));
 
+	static constexpr int w_offset = width / 2;
+	static constexpr int h_offset = (height / 2) + yoffset;
+
 	target = { x, y };
+
+	if (facing == FACING_DIRECTIONS::LEFT) {
+		target.x += w_offset;
+	}
+	else {
+		target.x -= w_offset;
+	}
+	target.y -= h_offset;
 
 	moveToComplete = false;
 }
@@ -67,9 +78,11 @@ void Cat::update(float dt) {
 		if (d.dot(RIGHT_VECTOR) < 0) {
 			// is moving left
 			catSprite.sprite.setScale({ -1, 1 });
+			facing = FACING_DIRECTIONS::LEFT;
 		}
 		else {
 			catSprite.sprite.setScale({ 1, 1 });
+			facing = FACING_DIRECTIONS::RIGHT;
 		}
 	}
 	else if (!handledStopMoving) {
