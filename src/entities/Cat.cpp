@@ -201,7 +201,7 @@ void Cat::update(float dt) {
 			);
 		}
 		else {
-			if (timeToNextIdleAnimation <= 0) {
+			if (!isMovingAnimationPlaying && timeToNextIdleAnimation <= 0) {
 				timeToNextIdleAnimation = rand() % (MAX_TTNIA - MIN_TTNIA) + MIN_TTNIA;
 				const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
 				setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite, 0);
