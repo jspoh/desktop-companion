@@ -26,9 +26,9 @@ void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<Te
 }
 
 
-void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount=-1) {
+void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount = -1) {
 	if (s == activeAnimationState) return;
-	
+
 	// setup queue system for after this animation state
 	activeAnimationState = s;
 
@@ -48,7 +48,7 @@ void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::re
 
 
 void Cat::moveTo(float x, float y) {
-	setEntityAnimationState(EntityAnimationStates::RUNNING, tm.getSprite(catSpriteName), -1);
+	setEntityAnimationState(MOVEMENT_ANIMATION_STATES.at(rand() % (int)MOVEMENT_ANIMATION_STATES.size()), tm.getSprite(catSpriteName), -1);
 
 	static constexpr int w_offset = width / 2;
 	static constexpr int h_offset = (height / 2) + yoffset;
@@ -69,8 +69,54 @@ void Cat::moveTo(float x, float y) {
 void Cat::update(float dt) {
 	const auto [winX, winY] = win.getSize();
 	const auto [mX, mY] = sf::Mouse::getPosition();
-
 	static bool handledStopMoving = true;
+
+	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
+	static bool prevIsMovingAnimationPlaying = true;
+
+	// happiness decrement
+	happiness -= dt * happiness_drain_rate_s;
+
+	// entity state elapsed time
+	entityStateElapsedS += dt;
+	idleTimeLeft -= dt;
+
+#pragma region user_dragging
+	// allow user to drag cat
+	static bool isUserDragging = false;
+	static bool handledUserDrag = false;
+	static auto lastState = entityState;
+	if (!isUserDragging && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && Cat::get().isColliding((sf::Mouse::getPosition() * 1.f))) {
+		//std::cout << "dragging" << std::endl;
+
+		if (lastState != EntityStates::DRAGGED) lastState = entityState;		// save last state to revert
+
+		isUserDragging = true;
+	}
+
+	if (isUserDragging) {
+		pos = {mX - width / 2.f, mY - height / 2.f};		// set pos to mouse pos
+		// cancel movement
+		target = pos;
+		handledStopMoving = true;
+		moveToComplete = true;
+		idleTimeLeft = 0.5f;			// stay for n seconds after user drags
+
+		if (!handledUserDrag) {
+			handledUserDrag = true;
+			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, tm.getSprite(Cat::get().getCatSpriteName()));
+			setEntityAnimationState(STATE_ANIMATION_MAP.at(entityState).at(rand() % (int)STATE_ANIMATION_MAP.at(entityState).size()), tm.getSprite(Cat::get().getCatSpriteName()));
+		}
+	}
+
+	if (isUserDragging && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+		//std::cout << "stopped dragging" << std::endl;
+		isUserDragging = false;
+		handledUserDrag = false;
+		setEntityState(lastState, tm.getSprite(catSpriteName));
+
+	}
+#pragma endregion user_dragging
 
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
 
@@ -121,43 +167,37 @@ void Cat::update(float dt) {
 		d = { 0, 0 };
 	}
 
-	catSprite.sprite.setPosition(pos);
-
-	// happiness decrement
-	happiness -= dt * happiness_drain_rate_s;
-
 	// set state according to happiness level
-	for (const auto [est, s] : entityStateThresholds) {
-		if (happiness <= est) {
-			setEntityState(s, catSprite);
-			break;
+	if (!isUserDragging) {
+		for (const auto [est, s] : entityStateThresholds) {
+			if (happiness <= est) {
+				setEntityState(s, catSprite);
+				break;
+			}
+		}
+
+		// just stopped moving animation, play an idle animation dependent on happiness level
+		if (!isMovingAnimationPlaying && prevIsMovingAnimationPlaying) {
+			const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
+			setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite);
+
+			// set idle time
+			idleTimeLeft = (float)(rand() % (MAX_IDLE_TIME - MIN_IDLE_TIME) + MIN_IDLE_TIME);
+			//std::cout << "Idling for " << idleTimeLeft << std::endl;
+		}
+
+		if (idleTimeLeft <= 0) {
+			//std::cout << "Idle time over" << std::endl;
+			idleTimeLeft = std::numeric_limits<float>::max();
+			moveTo(
+				rand() % (int)((winX * RAND_POS_PADDING - winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
+				rand() % (int)((winY * RAND_POS_PADDING - winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
+			);
 		}
 	}
 
-	entityStateElapsedS += dt;
+	catSprite.sprite.setPosition(pos);
 
-	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
-	static bool prevIsMovingAnimationPlaying = true;
-
-	// just stopped moving animation, play an idle animation dependent on happiness level
-	if (!isMovingAnimationPlaying && prevIsMovingAnimationPlaying) {
-		const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
-		setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite);
-
-		// set idle time
-		idleTimeLeft = (float)(rand() % (MAX_IDLE_TIME - MIN_IDLE_TIME) + MIN_IDLE_TIME);
-		//std::cout << "Idling for " << idleTimeLeft << std::endl;
-	}
-
+	// update prevs static vars
 	prevIsMovingAnimationPlaying = isMovingAnimationPlaying;
-	idleTimeLeft -= dt;
-
-	if (idleTimeLeft <= 0) {
-		//std::cout << "Idle time over" << std::endl;
-		idleTimeLeft = std::numeric_limits<float>::max();
-		moveTo(
-			rand() % (int)((winX * RAND_POS_PADDING - winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
-			rand() % (int)((winY * RAND_POS_PADDING - winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
-		);
-	}
 }

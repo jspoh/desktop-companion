@@ -62,6 +62,7 @@ private:
 			EntityAnimationStates::SURPRISED,
 			EntityAnimationStates::LAUGHING,
 			EntityAnimationStates::CHILLING,
+			EntityAnimationStates::IDLE,
 		}
 	},
 	{EntityStates::WANDERING,
@@ -84,7 +85,7 @@ private:
 			EntityAnimationStates::IDLE,
 		}
 	},
-	{EntityStates::ANGRY,
+	{EntityStates::ANGRY,		// ignored, chases mouse instead
 		{
 			EntityAnimationStates::CRYING,
 			EntityAnimationStates::IDLE,
@@ -92,7 +93,7 @@ private:
 	},
 	{EntityStates::DEAD,
 		{
-			EntityAnimationStates::DIE_1,
+			//EntityAnimationStates::DIE_1,
 			EntityAnimationStates::DIE_2,
 		}
 	},
@@ -108,7 +109,7 @@ private:
 		EntityAnimationStates::RUNNING,
 	};
 
-	float happiness{ 100 };
+	float happiness{ 0 };
 	float HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 

@@ -97,7 +97,7 @@ public:
 
 				if (s.animationElapsedLoops == s.animationLoopCount) {
 					s.playingAnimation = false;
-					s.frame = 0;
+					s.frame = s.numFrames-1;	// last frame
 				}
 
 				s.animationElapsed += dt;
