@@ -10,6 +10,7 @@ void Cat::init() {
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
 	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
+	catSprite.sprite.setOrigin(catSprite.sprite.getLocalBounds().size / 2.f);
 
 	idleTimeLeft = 2.f;
 
@@ -58,18 +59,18 @@ void Cat::moveTo(float x, float y) {
 
 	setEntityAnimationState(MOVEMENT_ANIMATION_STATES.at(rand() % (int)MOVEMENT_ANIMATION_STATES.size()), tm.getSprite(catSpriteName), -1);
 
-	static constexpr int w_offset = width / 2;
-	static constexpr int h_offset = (height / 2) + yoffset;
+	//static constexpr int w_offset = width / 2;
+	//static constexpr int h_offset = (height / 2) + yoffset;
 
 	target = { x, y };
 
-	if (facing == FACING_DIRECTIONS::LEFT) {
-		target.x += w_offset;
-	}
-	else {
-		target.x -= w_offset;
-	}
-	target.y -= h_offset;
+	//if (facing == FACING_DIRECTIONS::LEFT) {
+	//	target.x += w_offset;
+	//}
+	//else {
+	//	target.x -= w_offset;
+	//}
+	//target.y -= h_offset;
 
 	moveToComplete = false;
 }
@@ -103,7 +104,7 @@ void Cat::update(float dt) {
 
 	if (happiness <= 0) {
 		//alive = false;
-		happiness = 0;
+		happiness = 100;			// !TODO: disable reset for prod
 	}
 
 	if (!alive) {
@@ -124,7 +125,7 @@ void Cat::update(float dt) {
 	}
 
 	if (isUserDragging) {
-		pos = { mX - width / 2.f, mY - height / 2.f };		// set pos to mouse pos
+		pos = { mX * 1.f, mY * 1.f };		// set pos to mouse pos
 		// cancel movement
 		target = pos;
 		handledStopMoving = true;
@@ -135,6 +136,7 @@ void Cat::update(float dt) {
 			handledUserDrag = true;
 			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, tm.getSprite(Cat::get().getCatSpriteName()));
 			setEntityAnimationState(STATE_ANIMATION_MAP.at(entityState).at(rand() % (int)STATE_ANIMATION_MAP.at(entityState).size()), tm.getSprite(Cat::get().getCatSpriteName()));
+			tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 	}
 
@@ -244,7 +246,7 @@ void Cat::update(float dt) {
 	catSprite.sprite.setPosition(pos);
 
 
-	speech->setPosition({ pos.x + width / 2.f, pos.y });
+	speech->setPosition({ pos.x + width / 2.f, pos.y - height / 2.f });
 	//if (facing == FACING_DIRECTIONS::LEFT) {
 	//	speech->setPosition({ pos.x, pos.y });
 	//}

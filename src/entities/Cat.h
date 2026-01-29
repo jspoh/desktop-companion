@@ -204,7 +204,16 @@ private:
 			"IM HUNGRY LETS GO GET SOME FOOD"
 }
 },
-
+		{
+			EntityStates::DRAGGED, {
+			"Where are we going? :D",
+			"Stop touching meeee I'm ticklish",
+			"hiiiiiiiiiiii",
+			"lets gooo :D",
+			"that tickles!",
+			"be careful!"
+}
+}
 	};
 
 	static constexpr float MAX_HAPPINESS = 100.f;

@@ -48,14 +48,12 @@ public:
 				// Close window: exit
 				if (event->is<sf::Event::Closed>())
 					win.close();
+			}
 
-				if (event->is<sf::Event::KeyPressed>()) {
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)
-						&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift)
-						&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
-						win.close();
-					}
-				}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)
+				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift)
+				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
+				win.close();
 			}
 
 			// 
