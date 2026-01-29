@@ -196,8 +196,8 @@ private:
 	static constexpr sf::Vector2f RIGHT_VECTOR{ 1, 0 };
 
 	float idleTimeLeft{};	// how much time Cat can idle before moving to another position
-	static constexpr int MIN_IDLE_TIME = 2;
-	static constexpr int MAX_IDLE_TIME = 5;
+	static constexpr int MIN_IDLE_TIME = 30;
+	static constexpr int MAX_IDLE_TIME = 120;
 
 	static constexpr float SPRITE_SCALE = 1.f;
 

@@ -196,8 +196,8 @@ void Cat::update(float dt) {
 			//std::cout << "Idle time over" << std::endl;
 			idleTimeLeft = std::numeric_limits<float>::max();
 			moveTo(
-				rand() % (int)((winX * RAND_POS_PADDING - winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
-				rand() % (int)((winY * RAND_POS_PADDING - winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
+				rand() % (int)((winX * -RAND_POS_PADDING + winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
+				rand() % (int)((winY * -RAND_POS_PADDING + winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
 			);
 		}
 	}
@@ -208,5 +208,5 @@ void Cat::update(float dt) {
 	prevIsMovingAnimationPlaying = isMovingAnimationPlaying;
 
 	// dbg
-	std::cout << catSprite.animationLoopCount << std::endl;
+	//std::cout << catSprite.animationLoopCount << std::endl;
 }
