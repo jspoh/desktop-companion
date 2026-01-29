@@ -209,7 +209,7 @@ void Cat::update(float dt) {
 		}
 	}
 
-	// summon cat to mouse
+	// summon cat
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) {
 		moveTo((float)mX, (float)mY);
 	}

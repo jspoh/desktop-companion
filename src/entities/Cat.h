@@ -91,12 +91,15 @@ private:
 	const std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
 		{EntityStates::HAPPY,			// movement to leaping
 			{
-			//EntityAnimationStates::EXCITED,
-			EntityAnimationStates::DANCING,
+			EntityAnimationStates::EXCITED,
+			//EntityAnimationStates::DANCING,
 			EntityAnimationStates::SURPRISED,
-			EntityAnimationStates::LAUGHING,
+			//EntityAnimationStates::LAUGHING,
 			EntityAnimationStates::CHILLING,
 			EntityAnimationStates::IDLE,
+			EntityAnimationStates::LAZING,
+			EntityAnimationStates::SLEEPING,
+			EntityAnimationStates::HAPPY,
 		}
 	},
 	{EntityStates::WANDERING,
@@ -105,18 +108,23 @@ private:
 			EntityAnimationStates::SLEEPING,
 			EntityAnimationStates::CHILLING,
 			EntityAnimationStates::IDLE,
+			EntityAnimationStates::HAPPY,
 		}
 	},
 	{EntityStates::SAD,
 		{
 			EntityAnimationStates::CRYING,
 			EntityAnimationStates::IDLE,
+						EntityAnimationStates::LAZING,
+			EntityAnimationStates::SLEEPING,
 		}
 	},
 	{EntityStates::HURTING,		// movement type to the hurting
 		{
 			EntityAnimationStates::CRYING,
 			EntityAnimationStates::IDLE,
+						EntityAnimationStates::LAZING,
+			EntityAnimationStates::SLEEPING,
 		}
 	},
 	{EntityStates::ANGRY,		// ignored, chases mouse instead
