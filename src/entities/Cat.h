@@ -45,6 +45,40 @@ public:
 
 private:
 
+	struct EntityAnimationData {
+		EntityAnimationData(EntityAnimationStates s, int frames, int loops, int staticIdx)
+			: state{ s }, frameCount{ frames }, loopCount{ loops }, staticFrameIdx{ staticIdx }
+		{
+		}
+
+		EntityAnimationStates state{};
+		int frameCount{};
+		int loopCount{};
+		int staticFrameIdx{};
+	};
+
+	const std::unordered_map<EntityAnimationStates, EntityAnimationData> EntityAnimationDatas{
+	{EntityAnimationStates::IDLE,{EntityAnimationStates::IDLE, 6, -1, 0}},
+	{EntityAnimationStates::EXCITED,{EntityAnimationStates::EXCITED, 3, -1, 0}},
+	{EntityAnimationStates::LAZING,{EntityAnimationStates::LAZING, 1 , -1, 0}},
+	{EntityAnimationStates::SLEEPING,{EntityAnimationStates::SLEEPING, 4, -1, 0}},
+	{EntityAnimationStates::HAPPY,{EntityAnimationStates::HAPPY, 10, -1, 0}},
+	{EntityAnimationStates::RUNNING,{EntityAnimationStates::RUNNING, 6, -1, 0}},
+	{EntityAnimationStates::LEAPING,{EntityAnimationStates::LEAPING, 12, -1, 0}},
+	{EntityAnimationStates::BOX_1,{EntityAnimationStates::BOX_1, 12, -1, 0}},
+	{EntityAnimationStates::BOX_2,{EntityAnimationStates::BOX_2, 10, -1, 0}},
+	{EntityAnimationStates::BOX_3,{EntityAnimationStates::BOX_3, 12, -1, 0}},
+	{EntityAnimationStates::CRYING,{EntityAnimationStates::CRYING, 4, -1, 0}},
+	{EntityAnimationStates::DANCING,{EntityAnimationStates::DANCING, 4, -1, 0}},
+	{EntityAnimationStates::CHILLING,{EntityAnimationStates::CHILLING, 8, -1, 0}},
+	{EntityAnimationStates::SURPRISED,{EntityAnimationStates::SURPRISED, 2, -1, 0}},
+	{EntityAnimationStates::LAUGHING,{EntityAnimationStates::LAUGHING, 4, -1, 0}},
+	{EntityAnimationStates::DIE_1,{EntityAnimationStates::DIE_1, 6, 1, 5}},
+	{EntityAnimationStates::DIE_2,{EntityAnimationStates::DIE_2, 5, 1, 4}},
+	{EntityAnimationStates::HURT,{EntityAnimationStates::HURT, 8, -1, 0}},
+	{EntityAnimationStates::ATTACK,{EntityAnimationStates::ATTACK, 7, -1, 0}},
+	};
+
 	const std::map<int, EntityStates> entityStateThresholds{
 		{std::numeric_limits<int>::max(), EntityStates::HAPPY},
 		{80, EntityStates::WANDERING},
@@ -109,7 +143,7 @@ private:
 		EntityAnimationStates::RUNNING,
 	};
 
-	float happiness{ 0 };
+	float happiness{ 100 };
 	float HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
@@ -143,28 +177,6 @@ private:
 
 	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;
 	float stateElapsedTime{};
-	const std::unordered_map<EntityAnimationStates, int> STATE_FRAMES_MAP{
-		{EntityAnimationStates::IDLE, 6},
-		{EntityAnimationStates::EXCITED, 3},
-		{EntityAnimationStates::LAZING, 1 },
-		{EntityAnimationStates::SLEEPING, 4},
-		{EntityAnimationStates::HAPPY, 10},
-		{EntityAnimationStates::RUNNING, 6},
-		{EntityAnimationStates::LEAPING, 12},
-		{EntityAnimationStates::BOX_1, 12},
-		{EntityAnimationStates::BOX_2, 10},
-		{EntityAnimationStates::BOX_3, 12},
-		{EntityAnimationStates::CRYING, 4},
-		{EntityAnimationStates::DANCING, 4},
-		{EntityAnimationStates::CHILLING, 8},
-		{EntityAnimationStates::SURPRISED, 2},
-		{EntityAnimationStates::LAUGHING, 4},
-		{EntityAnimationStates::DIE_1, 6},
-		{EntityAnimationStates::DIE_2, 6},
-		{EntityAnimationStates::HURT, 8},
-		{EntityAnimationStates::ATTACK, 7},
-	};
-
 	static constexpr const char* catSpriteName = "cat";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;

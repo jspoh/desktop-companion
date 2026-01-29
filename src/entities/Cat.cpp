@@ -5,7 +5,7 @@
 void Cat::init() {
 	tm.registerTexture("cat_texture", "assets/Cats/AllCatsGreyWhite.png");
 
-	tm.createSprite("cat", "cat_texture", STATE_FRAMES_MAP.at(activeAnimationState), xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
+	tm.createSprite("cat", "cat_texture", EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
@@ -39,9 +39,15 @@ void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::re
 	//sprite.top = STATE_TOP_MAP.at(s);
 	sprite.top = topOffset + (int)s * (yoffset + height);
 	sprite.left = leftOffset;
-	sprite.numFrames = STATE_FRAMES_MAP.at(s);
+	sprite.numFrames = EntityAnimationDatas.at(s).frameCount;
 
-	sprite.animationLoopCount = animationLoopCount;
+	if (animationLoopCount == 0) {
+		sprite.animationLoopCount = EntityAnimationDatas.at(s).loopCount;
+		sprite.staticFrameIdx = EntityAnimationDatas.at(s).staticFrameIdx;
+	}
+	else {
+		sprite.animationLoopCount = animationLoopCount;
+	}
 	sprite.animationElapsedLoops = 0;
 	if (sprite.animationLoopCount != 0) sprite.playingAnimation = true;
 }
@@ -179,7 +185,7 @@ void Cat::update(float dt) {
 		// just stopped moving animation, play an idle animation dependent on happiness level
 		if (!isMovingAnimationPlaying && prevIsMovingAnimationPlaying) {
 			const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
-			setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite);
+			setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite, 0);
 
 			// set idle time
 			idleTimeLeft = (float)(rand() % (MAX_IDLE_TIME - MIN_IDLE_TIME) + MIN_IDLE_TIME);
@@ -200,4 +206,7 @@ void Cat::update(float dt) {
 
 	// update prevs static vars
 	prevIsMovingAnimationPlaying = isMovingAnimationPlaying;
+
+	// dbg
+	std::cout << catSprite.animationLoopCount << std::endl;
 }

@@ -47,6 +47,7 @@ public:
 		int animationElapsedLoops{};
 		float animationAdvanceTime{};
 		int xoffset{};
+		int staticFrameIdx{};		// for when no animation or animation ends, which frame to display
 		//int yoffset{};
 
 		int left{};
@@ -95,9 +96,9 @@ public:
 					//std::cout << s.animationElapsedLoops << std::endl;
 				}
 
-				if (s.animationElapsedLoops == s.animationLoopCount) {
+				if (s.animationLoopCount >= 0 && s.animationElapsedLoops > s.animationLoopCount) {
 					s.playingAnimation = false;
-					s.frame = s.numFrames-1;	// last frame
+					s.frame = s.staticFrameIdx;
 				}
 
 				s.animationElapsed += dt;
