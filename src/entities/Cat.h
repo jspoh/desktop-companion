@@ -111,5 +111,5 @@ public:
 
 	void moveTo(float x, float y);
 
-	void setEntityState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
+	void setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount);
 };

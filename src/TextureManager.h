@@ -8,7 +8,29 @@ class TextureManager {
 public:
 	struct JS_SPRITE {
 		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
-		JS_SPRITE(const sf::Sprite& s, int numFrames, int xoffset, int left, int top, int width, int height, bool playingAnimation, float animationAdvanceTime = 0.1f) : numFrames{ numFrames }, xoffset{ xoffset }, sprite(s), left(left), top(top), width(width), height(height), playingAnimation{ playingAnimation }, animationAdvanceTime{ animationAdvanceTime } {
+		JS_SPRITE(
+			const sf::Sprite& s,
+			int numFrames,
+			int xoffset,
+			int left,
+			int top,
+			int width,
+			int height,
+			bool playingAnimation,
+			float animationAdvanceTime = 0.1f,
+			int animationLoopCount = -1
+		)
+			: numFrames{ numFrames },
+			xoffset{ xoffset },
+			sprite(s),
+			left(left),
+			top(top),
+			width(width),
+			height(height),
+			playingAnimation{ playingAnimation },
+			animationAdvanceTime{ animationAdvanceTime },
+			animationLoopCount{ animationLoopCount }
+		{
 			sprite.setTextureRect(sf::IntRect(
 				sf::Vector2i(left + frame * (width + xoffset), top),  // position
 				sf::Vector2i(width, height)                // size
@@ -21,6 +43,8 @@ public:
 		int numFrames{};
 		float animationElapsed{};
 		bool playingAnimation{ false };
+		int animationLoopCount{ -1 };	// -1 = infinite loop
+		int animationElapsedLoops{};
 		float animationAdvanceTime{};
 		int xoffset{};
 		//int yoffset{};
@@ -66,10 +90,20 @@ public:
 				const int absoluteFrame = (int)std::floor(s.animationElapsed / s.animationAdvanceTime);
 				s.frame = absoluteFrame % s.numFrames;
 
+				if (absoluteFrame != 0 && absoluteFrame % s.numFrames == 0) {
+					++s.animationElapsedLoops;
+					//std::cout << s.animationElapsedLoops << std::endl;
+				}
+
+				if (s.animationElapsedLoops == s.animationLoopCount) {
+					s.playingAnimation = false;
+					s.frame = 0;
+				}
+
 				s.animationElapsed += dt;
 
 				s.sprite.setTextureRect(sf::IntRect(
-					{ s.left + s.frame * (s.width + s.xoffset), s.top},
+					{ s.left + s.frame * (s.width + s.xoffset), s.top },
 					{ s.width, s.height }
 				));
 			}
@@ -98,7 +132,7 @@ public:
 	}
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset=0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation=false, float animationAdvanceTime=0.1f) {
+	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation = false, float animationAdvanceTime = 0.1f) {
 		if (textures.find(texRef) == textures.end()) {
 			std::cerr << "TextureManager::createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;

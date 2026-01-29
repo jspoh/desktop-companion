@@ -14,7 +14,8 @@ void Cat::init() {
 }
 
 
-void Cat::setEntityState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite) {
+void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount=-1) {
+	// setup queue system for after this animation state
 	activeAnimationState = s;
 
 	if (opt_sprite == std::nullopt) return;
@@ -25,11 +26,15 @@ void Cat::setEntityState(EntityAnimationStates s, std::optional<std::reference_w
 	sprite.top = topOffset + (int)s * (yoffset + height);
 	sprite.left = leftOffset;
 	sprite.numFrames = STATE_FRAMES_MAP.at(s);
+
+	sprite.animationLoopCount = animationLoopCount;
+	sprite.animationElapsedLoops = 0;
+	if (sprite.animationLoopCount != 0) sprite.playingAnimation = true;
 }
 
 
 void Cat::moveTo(float x, float y) {
-	setEntityState(EntityAnimationStates::RUNNING, tm.getSprite(catSpriteName));
+	setEntityAnimationState(EntityAnimationStates::RUNNING, tm.getSprite(catSpriteName), -1);
 
 	static constexpr int w_offset = width / 2;
 	static constexpr int h_offset = (height / 2) + yoffset;
@@ -90,7 +95,8 @@ void Cat::update(float dt) {
 		// handle what happens when stop moving
 		handledStopMoving = true;
 
-		setEntityState(EntityAnimationStates::IDLE, catSprite);
+		// set up queue system
+		setEntityAnimationState(EntityAnimationStates::IDLE, catSprite, -1);
 		pos = target;
 		moveToComplete = true;
 		move_vector = { 0, 0 };

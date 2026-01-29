@@ -28,7 +28,7 @@ void DefaultScene::update(float dt) {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::N) && !prevIsNPressed) {
 		prevIsNPressed = true;
-		Cat::get().setEntityState((Cat::EntityAnimationStates)(((int)Cat::get().getActiveState() + 1) % (int)Cat::EntityAnimationStates::NUM_ENTITY_STATES), tm.getSprite(Cat::get().getCatSpriteName()));
+		Cat::get().setEntityAnimationState((Cat::EntityAnimationStates)(((int)Cat::get().getActiveState() + 1) % (int)Cat::EntityAnimationStates::NUM_ENTITY_STATES), tm.getSprite(Cat::get().getCatSpriteName()));
 		std::cout << "EntityState: " << (int)Cat::get().getActiveState() << std::endl;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::N)) {
