@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DefaultScene.h"
 #include "entities/Cat.h"
+#include "GameManager.h"
 
 DefaultScene::DefaultScene() {
 
@@ -19,9 +20,15 @@ void DefaultScene::init() {
 	Cat::get().init();
 
 	//music.play();
+
+
+	fps_display_text = &tm.registerText("text", std::to_string(gm.getFps()), 50);
+	fps_display_text->setPosition({ 10, 10});
 }
 
 void DefaultScene::update(float dt) {
+	fps_display_text->setString(std::to_string(gm.getFps()));
+
 //#define DEBUG_ANIMATIONS
 #ifdef DEBUG_ANIMATIONS
 	static bool prevIsNPressed = false;

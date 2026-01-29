@@ -157,11 +157,13 @@
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\input\InputManager.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\entities\Cat.h" />
+    <ClInclude Include="src\scenes\DefaultScene.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

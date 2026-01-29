@@ -10,9 +10,8 @@ void Cat::init() {
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
 	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
-
-	sf::Text& text = tm.registerText("text", "hello", 50);
-	text.setPosition({ 100, 0 });
+	
+	idleTimeLeft = 2.f;
 }
 
 
@@ -78,7 +77,7 @@ void Cat::update(float dt) {
 	static bool handledStopMoving = true;
 
 	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
-	static bool prevIsMovingAnimationPlaying = true;
+	static bool prevIsMovingAnimationPlaying = false;
 
 	// happiness decrement
 	happiness -= dt * happiness_drain_rate_s;
@@ -86,6 +85,7 @@ void Cat::update(float dt) {
 	// entity state elapsed time
 	entityStateElapsedS += dt;
 	idleTimeLeft -= dt;
+	timeToNextIdleAnimation -= dt;
 
 #pragma region user_dragging
 	// allow user to drag cat
@@ -199,6 +199,13 @@ void Cat::update(float dt) {
 				rand() % (int)((winX * -RAND_POS_PADDING + winX * (1.f - RAND_POS_PADDING)) + winX * RAND_POS_PADDING),
 				rand() % (int)((winY * -RAND_POS_PADDING + winY * (1.f - RAND_POS_PADDING)) + winY * RAND_POS_PADDING)
 			);
+		}
+		else {
+			if (timeToNextIdleAnimation <= 0) {
+				timeToNextIdleAnimation = rand() % (MAX_TTNIA - MIN_TTNIA) + MIN_TTNIA;
+				const auto& availableAnimations = STATE_ANIMATION_MAP.at(entityState);
+				setEntityAnimationState(availableAnimations.at(rand() % (int)availableAnimations.size()), catSprite, 0);
+			}
 		}
 	}
 

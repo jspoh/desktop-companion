@@ -18,12 +18,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameManager.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scenes\DefaultScene.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\scenes\DefaultScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\input\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenes\DefaultScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

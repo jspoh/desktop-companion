@@ -15,6 +15,7 @@ private:
 
 	bool running = true;
 	float dt = 0.f;
+	int fps = 0;
 public:
 	static GameManager& get() {
 		static GameManager instance;
@@ -25,6 +26,10 @@ public:
 		return dt;
 	}
 
+	int getFps() {
+		return fps;
+	}
+
 	void init(const sf::Color& win32_transparent_color) {
 		WIN32_TRANSPARENT_COLOR = win32_transparent_color;
 
@@ -32,6 +37,7 @@ public:
 	}
 
 	void update() {
+		static float elapsed{};
 		while (running && win.isOpen()) {
 
 			auto start = std::chrono::high_resolution_clock::now();
@@ -56,6 +62,12 @@ public:
 			dt = dt_ms / 1000.f;
 
 			//std::cout << dt << std::endl;
+			elapsed += dt;
+
+			if (elapsed > 1) {
+				elapsed = 0;
+				fps = std::floor(1 / dt);
+			}
 		}
 	}
 

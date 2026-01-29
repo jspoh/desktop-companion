@@ -8,7 +8,7 @@
 class DefaultScene : public Scene {
 private:
 	sf::Music music;
-
+	sf::Text* fps_display_text;
 public:
 	DefaultScene();
 
