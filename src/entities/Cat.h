@@ -31,7 +31,87 @@ public:
 		NUM_ENTITY_STATES,
 	};
 
+	enum class EntityStates {
+		IDLE,
+		WANDERING,
+		HAPPY,		// BOX, LEAPING movement, DANCING, 
+		SAD,
+		HURTING,
+		ANGRY,
+		DEAD,
+		NUM_ENTITY_STATES,
+	};
+
 private:
+
+	const std::map<int, EntityStates> entityStateThresholds{
+		{std::numeric_limits<int>::max(), EntityStates::HAPPY},
+		{80, EntityStates::WANDERING},
+		{30, EntityStates::SAD},
+		{15, EntityStates::HURTING},
+		{10, EntityStates::ANGRY},
+		{0, EntityStates::DEAD}
+	};
+
+	const std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
+		{EntityStates::HAPPY,			// movement to leaping
+			{
+				EntityAnimationStates::EXCITED,
+				EntityAnimationStates::DANCING,
+				EntityAnimationStates::SURPRISED,
+				EntityAnimationStates::LAUGHING,
+			}
+		},
+		{EntityStates::WANDERING,
+			{
+				EntityAnimationStates::LAZING,
+				EntityAnimationStates::SLEEPING,
+				EntityAnimationStates::CHILLING,
+				EntityAnimationStates::IDLE,
+			}
+		},
+		{EntityStates::SAD,
+			{
+				EntityAnimationStates::CRYING,
+				EntityAnimationStates::IDLE,
+			}
+		},
+		{EntityStates::HURTING,		// movement type to the hurting
+			{
+				EntityAnimationStates::CRYING,
+				EntityAnimationStates::IDLE,
+			}
+		},
+		{EntityStates::ANGRY,
+			{
+				EntityAnimationStates::CRYING,
+				EntityAnimationStates::IDLE,
+			}
+		},
+		{EntityStates::DEAD,
+			{
+				EntityAnimationStates::DIE_1,
+				EntityAnimationStates::DIE_2,
+			}
+		},
+	};
+
+	int happiness{ 100 };
+	int HAPPINESS_LIFESPAN = 10;		// how many minutes before happiness fully drains
+	float happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
+
+	void setHappiness(int nh) {
+		happiness = nh;
+		happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);
+	}
+
+	void setHappinessLifespan(int nh) {
+		HAPPINESS_LIFESPAN = nh;
+		happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);
+	}
+
+	EntityStates entityState = EntityStates::WANDERING;
+	float entityStateElapsedS{};
 
 	static constexpr int xoffset = 0;
 	static constexpr int yoffset = 0;
@@ -75,7 +155,8 @@ private:
 	static constexpr const char* catSpriteName = "cat";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
-	static constexpr float ACCELERATION = 5000.f;
+	static constexpr float ACCELERATION = MAX_MOVEMENT_SPEED * 10.f;
+	static constexpr float MAX_WANDER_SPEED = MAX_MOVEMENT_SPEED / 5.f;
 
 	// for movement
 	//float movementSpeed{};
@@ -110,6 +191,8 @@ public:
 	}
 
 	void moveTo(float x, float y);
+
+	void setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite);
 
 	void setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount);
 };

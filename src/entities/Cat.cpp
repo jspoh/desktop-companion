@@ -7,10 +7,21 @@ void Cat::init() {
 
 	tm.createSprite("cat", "cat_texture", STATE_FRAMES_MAP.at(activeAnimationState), xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
+	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
 
 	sf::Text& text = tm.registerText("text", "hello", 50);
 	text.setPosition({ 100, 0 });
+}
+
+
+void Cat::setEntityState(EntityStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite) {
+	if (entityState == s) return;
+
+	entityState = s;
+	entityStateElapsedS = 0.f;
+
+	if (opt_sprite == std::nullopt) return;
 }
 
 
@@ -53,10 +64,11 @@ void Cat::moveTo(float x, float y) {
 }
 
 void Cat::update(float dt) {
-	static bool handledStopMoving = false;
+	static bool handledStopMoving = true;
 
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
 
+	// movement
 	if (!moveToComplete && (target - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
 		handledStopMoving = false;
 
@@ -104,4 +116,17 @@ void Cat::update(float dt) {
 	}
 
 	catSprite.sprite.setPosition(pos);
+
+	// happiness decrement
+	happiness -= dt * happiness_drain_rate_s;
+
+	// set state according to happiness level
+	for (const auto [est, s] : entityStateThresholds) {
+		if (happiness <= est) {
+			setEntityState(s, tm.getSprite(catSpriteName));
+			break;
+		}
+	}
+
+	entityStateElapsedS += dt;
 }

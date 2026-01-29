@@ -81,11 +81,16 @@ void DefaultScene::update(float dt) {
 
 	Cat::get().update(dt);
 
+//#define MOVE_TO_MOUSE
+#ifdef MOVE_TO_MOUSE
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		sf::Vector2i mpos = sf::Mouse::getPosition();
 
 		Cat::get().moveTo(mpos.x, mpos.y);
 	}
+#endif
+
+
 }
 
 void DefaultScene::cleanup() {
