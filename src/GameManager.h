@@ -11,8 +11,12 @@ class GameManager {
 private:
 	sf::Color WIN32_TRANSPARENT_COLOR;
 
-	GameManager() {};
-	~GameManager() {};
+	GameManager() {
+		Settings::init();
+	};
+	~GameManager() {
+		Settings::save();
+	};
 
 	bool running = true;
 	float dt = 0.f;

@@ -17,9 +17,13 @@
 #include <limits>
 #include <map>
 #include <filesystem>
+#include <fstream>
+#include <cstring>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
+
+#include "Settings.h"
 
 
 #define tm TextureManager::get()

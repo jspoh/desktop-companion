@@ -28,7 +28,8 @@ Room::Room() {
 	tm.createSprite(ref, roomRefs.at(0), 0, 0, 0, 0, width, height, false, 0.f, true);
 	sprite = &tm.getSprite(ref);
 	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
-	static const int scale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
+	int scale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
+	scale *= Settings::roomScale;
 	sprite->sprite.setScale({ scale * 1.f, scale * 1.f });
 	sprite->sprite.setPosition(Window::get().getWindow().getSize() / 2.f);
 
