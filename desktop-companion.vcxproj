@@ -178,6 +178,7 @@
     </ClCompile>
     <ClCompile Include="src\entities\Cat.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Room\Room.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +194,7 @@
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\input\InputManager.h" />
+    <ClInclude Include="src\Room\Room.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\entities\Cat.h" />

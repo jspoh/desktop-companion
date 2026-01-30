@@ -15,32 +15,38 @@ public:
 		
 	}
 
-	static void skinSelect() {
-		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+	template<typename fn>
+	static void renderImageButtons(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, float w, float h, fn callback) {
+		ImGui::SetNextWindowPos(pos, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
-		ImGui::Begin("Companion skin", nullptr,
+		ImGui::Begin(title.c_str(), nullptr,
 			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoMove);
 
-		ImGui::Text("Select skin");
+		ImGui::Text(instruction.c_str());
 		ImGui::Separator();
 
 		ImGui::BeginGroup();
-		for (const auto& texRef : Cat::get().catSpriteRefs) {
+		for (const std::string& ref : refs) {
 			ImGui::SameLine();
-			//ImGui::Image(tm.getSprite(texRef).sprite, sf::Color::White, sf::Color::Transparent);
 
-			if (ImGui::ImageButton(texRef.c_str(), tm.getSprite(texRef).sprite, sf::Vector2f(Cat::get().getWidth(), Cat::get().getHeight()))) {
-				//std::cout << "Selected " << texRef << " skin" << std::endl;
-				//Cat::get().setCatSpriteName(spriteRef);
-				tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(texRef));
-				Cat::get().init(false);
+			if (ImGui::ImageButton(ref.c_str(), tm.getSprite(ref).sprite, sf::Vector2f(w, h))) {
+				callback(ref);
 			}
 		}
 		ImGui::EndGroup();
 
 		ImGui::End();
+	}
+
+	static void skinSelect() {
+		auto onChange = [](const std::string& ref) {
+			tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(ref));
+			Cat::get().init(false);
+			};
+
+		renderImageButtons({ 10, 10 }, "Companion skin", "Select skin", Cat::get().catSpriteRefs, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
 	}
 
 	static void render() {
