@@ -16,15 +16,20 @@ public:
 	}
 
 	static void skinSelect() {
-		ImGui::Begin("Companion skin");
+		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Companion skin", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
 
 		ImGui::Text("Select skin");
 		ImGui::Separator();
 
 		ImGui::BeginGroup();
 		for (const auto& spriteRef : Cat::get().catSpriteRefs) {
-			ImGui::SameLine();
-			ImGui::Image(tm.getSprite(spriteRef).sprite, sf::Color::White, sf::Color::Transparent);
+			//ImGui::SameLine();
+			//ImGui::Image(tm.getSprite(spriteRef).sprite, sf::Color::White, sf::Color::Transparent);
 		}
 		ImGui::EndGroup();
 
