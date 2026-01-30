@@ -152,58 +152,58 @@ public:
 		};
 
 		const std::unordered_map<TYPE, OffsetData> spritesheetOffsets{
-			{WINDOW_1, {0, 0, 95, 95}},
-			{WINDOW_2, {95, 0, 95, 95}},
-			{WINDOW_3, {0, 95, 95, 95}},
-			{WINDOW_4, {95, 95, 95, 95}},
+			{WINDOW_1, OffsetData{0, 0, 95, 95}},
+			{WINDOW_2, OffsetData{95, 0, 95, 95}},
+			{WINDOW_3, OffsetData{0, 95, 95, 95}},
+			{WINDOW_4, OffsetData{95, 95, 95, 95}},
 
-			{STAND_1, 180, 0, 90, 130},
-			{STAND_2, 270, 0, 90, 130},
-			{STAND_3, 360, 0, 90, 130},
+			{STAND_1, OffsetData{180, 0, 90, 130}},
+			{STAND_2, OffsetData{270, 0, 90, 130}},
+			{STAND_3, OffsetData{360, 0, 90, 130}},
 
-			{BIG_BALL_1, {450, 5, 25, 20}},
-			{SMALL_BALL_1, {485, 5, 25, 20}},
+			{BIG_BALL_1, OffsetData{450, 5, 25, 20}},
+			{SMALL_BALL_1, OffsetData{485, 5, 25, 20}},
 
-			{EXTENDED_STAND_1, {580, 15, 85, 175}},
+			{EXTENDED_STAND_1, OffsetData{580, 15, 85, 175}},
 
-			{BIG_WINDOW_1, {865, 0, 60, 125}},
+			{BIG_WINDOW_1, OffsetData{865, 0, 60, 125}},
 
-			{SMALL_WINDOW_1, {10, 225, 40, 65}},
+			{SMALL_WINDOW_1, OffsetData{10, 225, 40, 65}},
 
-			{PLANT_1, {130, 190, 25, 30}},
+			{PLANT_1, OffsetData{130, 190, 25, 30}},
 
-			{BED_1, {200, 135, 110, 85}},
+			{BED_1, OffsetData{200, 135, 110, 85}},
 
-			{PHOTO_1, {450, 200, 30, 45}},
+			{PHOTO_1, OffsetData{450, 200, 30, 45}},
 
-			{PAINTING_PINEAPPLE, {715, 195, 35, 90}},
+			{PAINTING_PINEAPPLE, OffsetData{715, 195, 35, 90}},
 
-			{PLAYHOUSE_1, {555, 220, 115, 165}},
+			{PLAYHOUSE_1, OffsetData{555, 220, 115, 165}},
 
-			{WIDE_WINDOW_1, {675, 305, 90, 140}},
+			{WIDE_WINDOW_1, OffsetData{675, 305, 90, 140}},
 
-			{BIG_PLANT_1, {140, 300, 45, 105}},
+			{BIG_PLANT_1, OffsetData{140, 300, 45, 105}},
 
-			{D_1, {200, 435, 55, 75}},
+			{D_1, OffsetData{200, 435, 55, 75}},
 
-			{FOOD_1, {265, 435, 45, 40}},
+			{FOOD_1, OffsetData{265, 435, 45, 40}},
 
-			{WATER_1, {395, 415, 45, 40}},
+			{WATER_1, OffsetData{395, 415, 45, 40}},
 
-			{FOOD_BAG_1, {525, 550, 35, 50}},
+			{FOOD_BAG_1, OffsetData{525, 550, 35, 50}},
 
-			{DICE_1, {195, 615, 20, 15}},
+			{DICE_1, OffsetData{195, 615, 20, 15}},
 
-			{CHEW_1, {200, 685, 45, 35}},
+			{CHEW_1, OffsetData{200, 685, 45, 35}},
 
-			{BOWTIE_1, {385, 620, 25, 10}},
+			{BOWTIE_1, OffsetData{385, 620, 25, 10}},
 
-			{MOUSE, {450, 620, 55, 35}},
+			{MOUSE, OffsetData{450, 620, 55, 35}},
 
-			{CHAIR_1, {675, 610, 60, 60}},
+			{CHAIR_1, OffsetData{675, 610, 60, 60}},
 
 
-		}
+		};
 	};
 
 private:
