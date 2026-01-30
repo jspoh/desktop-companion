@@ -160,20 +160,42 @@ private:
 
 	const std::unordered_map<EntityStates, std::vector<std::string>> STATE_SPEECH_OPTIONS{
 		{EntityStates::HAPPY, {
+			"Press ` or ~ to see my room ;D",
 			"I am nature's most ferocious hunter",
 			"meow meow pussycat",
 			"body scrubbers? who needs them?",
 			"*yawns",
 			"bow down to me puny human",
+			"I once caught a mouse all by myself",
+			"My secret is no cigarette",
+			"mmm french toast",
+			"I pooped a real big one the other day",
+			"What is a wheel?",
+			"I am the prettiest cat",
+			"I am the prettiest dog",
+			"I will eat your homework",
+			"MY PARCEL IS HEREE",
+			"i am microwave mmmmmmmmmmmmm",
 	}},
 		{
 			EntityStates::WANDERING, {
+			"Press ` or ~ to see my room ;D",
 			"I wonder what's over here",
 			"What are you doing? :)",
 			"Being productive?",
 			"Study hard!",
 			"FOCUSSS",
 			"Stay hydrated"
+			"I am so smart",
+			"I once caught a mouse all by myself",
+			"So why did the chicken cross the road?",
+			"God I am cute",
+			"I rubbed my butt on your pillow",
+			"Am I a boy cat or a girl cat?",
+			"omnomnom",
+			"why do japanese cats say nya",
+			"i am so fast",
+			"i kinda like that uncle roger guy"
 }
 },
 		{
@@ -217,6 +239,12 @@ private:
 			"lets gooo :D",
 			"that tickles!",
 			"be careful!"
+			"LET ME GOOO",
+			"UNHAND ME PEASANT",
+			"AAAAAAAAAAAAAA",
+			"Pretty sure I was sleeping",
+			"you touch me too much",
+			"PUT ME DOWN",
 }
 }
 	};
