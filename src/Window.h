@@ -19,6 +19,8 @@ private:
 	Window() {};
 	~Window() {};
 
+	HWND hwnd;
+
 public:
 	static Window& get() {
 		static Window instance;
@@ -36,7 +38,7 @@ public:
 #ifdef _WIN32
 		bool success = window.setActive(true);
 		if (!success) throw std::runtime_error("Setting window to active failed in Window.h > Window::init");
-		HWND hwnd = window.getNativeHandle();
+		hwnd = window.getNativeHandle();
 
 		// SWP_NOMOVE ignores x,y params. no move
 		// SWP_NOSIZE ignores w,h params, no size
@@ -65,6 +67,11 @@ public:
 			std::cerr << "ImGui init failed" << std::endl;
 			throw std::runtime_error("Window.h > Window::init > ImGui init failed");
 		}
+	}
+
+	void setClickThrough(bool ct) {
+		if (ct) SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
+		else SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);		// NAND
 	}
 
 	sf::RenderWindow& getWindow() {

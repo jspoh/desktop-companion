@@ -38,6 +38,8 @@ public:
 
 	void update() {
 		static float elapsed{};
+		bool showEditor{};
+		sf::Color clearColor{ sf::Color::Transparent };
 
 		while (running && win.isOpen()) {
 
@@ -59,20 +61,44 @@ public:
 				running = false;
 			}
 
+			static bool prevGravePressed = false;
+			if (!prevGravePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Grave)) {
+				prevGravePressed = true;
+				showEditor = !showEditor;
+			}
+			else if (prevGravePressed && !sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Grave)) {
+				prevGravePressed = false;
+			}
+
+			if (showEditor) {
+				clearColor = { 0, 0, 0, 220 };
+				Window::get().setClickThrough(false);
+			}
+			else {
+				clearColor = sf::Color::Transparent;
+				Window::get().setClickThrough(true);
+			}
+			
 			ImGui::SFML::Update(win, sf::seconds(dt));
 
 			//ImGui::Begin();
 
 			ImGui::ShowDemoWindow();
 
+			ImGui::Begin("Hello, world!");
+			ImGui::Button("Look at this pretty button");
+			ImGui::End();
+
 			// 
-			win.clear(sf::Color::Transparent);
+			win.clear(clearColor);
 			sm.update(dt);
 			tm.render(dt);
-			ImGui::SFML::Render(win);
+			if (showEditor) {
+				ImGui::SFML::Render(win);
+			} 
 			win.display();
 
-			ImGui::EndFrame();
+			//ImGui::EndFrame();
 
 			auto end = std::chrono::high_resolution_clock::now();
 
