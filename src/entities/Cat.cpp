@@ -3,9 +3,20 @@
 
 
 void Cat::init() {
-	tm.registerTexture("cat_texture", "assets/Cats/AllCatsGreyWhite.png");
+	const std::string path = "assets/Cats";
+	for (const auto& entry : std::filesystem::directory_iterator(path)) {
+		if (!entry.is_regular_file()) continue;
+		const auto filename = entry.path().filename().string();
+		tm.registerTexture(filename, path + "/" + filename);
 
-	tm.createSprite("cat", "cat_texture", EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
+		catTextures.push_back(filename);
+	}
+
+	catTextureRef = catTextures.at(rand() % (int)catTextures.size());
+
+	//tm.registerTexture("cat_texture", "assets/Cats/AllCatsGreyWhite.png");
+
+	tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime);
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite("cat");
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);

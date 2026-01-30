@@ -44,6 +44,8 @@ public:
 		NUM_ENTITY_STATES,
 	};
 
+	std::vector<std::string> catTextures;
+
 private:
 
 	sf::Text* speech;
@@ -253,6 +255,7 @@ private:
 	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;
 	float stateElapsedTime{};
 	static constexpr const char* catSpriteName = "cat";
+	std::string catTextureRef = "";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
 	static constexpr float ACCELERATION = MAX_MOVEMENT_SPEED * 10.f;

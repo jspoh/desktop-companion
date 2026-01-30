@@ -198,6 +198,7 @@
     <ClInclude Include="src\entities\Cat.h" />
     <ClInclude Include="src\scenes\DefaultScene.h" />
     <ClInclude Include="src\TextureManager.h" />
+    <ClInclude Include="src\ui\ui.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

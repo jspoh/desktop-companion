@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "scenes/DefaultScene.h"
 #include "Window.h"
+#include "ui/ui.h"
 
 class GameManager {
 private:
@@ -83,11 +84,13 @@ public:
 
 			//ImGui::Begin();
 
-			ImGui::ShowDemoWindow();
+			//ImGui::ShowDemoWindow();
 
-			ImGui::Begin("Hello, world!");
-			ImGui::Button("Look at this pretty button");
-			ImGui::End();
+			//ImGui::Begin("Hello, world!");
+			//ImGui::Button("Look at this pretty button");
+			//ImGui::End();
+
+			UI::render();
 
 			// 
 			win.clear(clearColor);

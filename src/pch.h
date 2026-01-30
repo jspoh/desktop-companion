@@ -16,6 +16,7 @@
 #include <optional>
 #include <limits>
 #include <map>
+#include <filesystem>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
