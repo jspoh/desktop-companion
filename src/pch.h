@@ -17,6 +17,9 @@
 #include <limits>
 #include <map>
 
+#include "imgui.h"
+#include "imgui-SFML.h"
+
 
 #define tm TextureManager::get()
 #define gm GameManager::get()

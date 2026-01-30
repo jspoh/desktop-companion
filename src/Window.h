@@ -1,16 +1,15 @@
 #pragma once
 
+#include "pch.h"
+
 // define in project properties
 //#define SFML_STATIC
 
 #ifdef _WIN32
 	#include <windows.h>
+	#include <dwmapi.h>
+	#pragma comment(lib, "dwmapi.lib")
 #endif
-
-#include <dwmapi.h>
-#pragma comment(lib, "dwmapi.lib")
-
-#include <SFML/Graphics.hpp>
 
 
 class Window {
@@ -60,6 +59,12 @@ public:
 		window.setVerticalSyncEnabled(false);
 		window.setFramerateLimit(60);
 #endif
+
+		bool imgui_success = ImGui::SFML::Init(window);
+		if (!imgui_success) {
+			std::cerr << "ImGui init failed" << std::endl;
+			throw std::runtime_error("Window.h > Window::init > ImGui init failed");
+		}
 	}
 
 	sf::RenderWindow& getWindow() {

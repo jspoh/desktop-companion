@@ -38,6 +38,7 @@ public:
 
 	void update() {
 		static float elapsed{};
+
 		while (running && win.isOpen()) {
 
 			auto start = std::chrono::high_resolution_clock::now();
@@ -47,20 +48,31 @@ public:
 			{
 				// Close window: exit
 				if (event->is<sf::Event::Closed>())
-					win.close();
+					running = false;
+
+				ImGui::SFML::ProcessEvent(win, *event);
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)
 				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift)
 				&& sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
-				win.close();
+				running = false;
 			}
+
+			ImGui::SFML::Update(win, sf::seconds(dt));
+
+			//ImGui::Begin();
+
+			ImGui::ShowDemoWindow();
 
 			// 
 			win.clear(sf::Color::Transparent);
 			sm.update(dt);
 			tm.render(dt);
+			ImGui::SFML::Render(win);
 			win.display();
+
+			ImGui::EndFrame();
 
 			auto end = std::chrono::high_resolution_clock::now();
 
@@ -75,6 +87,9 @@ public:
 				fps = std::floor(1 / dt);
 			}
 		}
+
+		win.close();
+		ImGui::SFML::Shutdown();
 	}
 
 	void cleanup() {
