@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Room.h"
-#include "TextureManager.h"
+#include "GameManager.h"
 
 
 Room::Room() {
@@ -11,8 +11,10 @@ Room::Room() {
 		if (entry.is_directory()) continue;
 
 		const std::string filename = entry.path().filename().string();
-		tm.registerTexture(filename, path + filename);
-		tm.createSprite(filename, filename, 0, 0, 0, 0, 0, 0, false, 0.1f, false);
+		tm.registerTexture(filename, path + "/" + filename);
+		
+		// all sprites needed for imgui rendering
+		tm.createSprite(filename, filename, 0, 0, 0, 0, width, height, false, 0.1f, false);
 		roomRefs.push_back(filename);
 	}
 
@@ -20,4 +22,29 @@ Room::Room() {
 	path = "assets/CatItems/Decorations";
 
 
+}
+
+void Room::init() {
+	for (const auto& ref : roomRefs) {
+		auto& js = tm.getSprite(ref);
+		auto& s = js.sprite;
+
+		js.visible = false;
+	}
+
+	tm.createSprite(ref, roomRefs.at(0), 0, 0, 0, 0, width, height, false, 0.f, true);
+	sprite = &tm.getSprite(ref);
+	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
+	static const int scale = (int)(1.f / width * (win.getSize().x / 2.f));
+	sprite->sprite.setScale({ scale * 1.f, scale * 1.f });
+	sprite->sprite.setPosition(Window::get().getWindow().getSize() / 2.f);
+}
+
+void Room::update(float dt) {
+	if (gm.showEditor) {
+		sprite->visible = true;
+	}
+	else {
+		sprite->visible = false;
+	}
 }

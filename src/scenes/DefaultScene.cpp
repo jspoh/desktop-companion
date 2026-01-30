@@ -14,9 +14,13 @@ DefaultScene::~DefaultScene() {
 void DefaultScene::load() {
 	
 	//music = sf::Music("assets/Cutie-Patootie.mp3");
+
+	Room::get();
+	Cat::get();
 }
 
 void DefaultScene::init() {
+	Room::get().init();
 	Cat::get().init();
 
 	//music.play();
@@ -90,6 +94,7 @@ void DefaultScene::update(float dt) {
 #endif
 
 	Cat::get().update(dt);
+	Room::get().update(dt);
 
 //#define MOVE_TO_MOUSE
 #ifdef MOVE_TO_MOUSE

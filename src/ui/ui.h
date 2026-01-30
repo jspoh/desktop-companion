@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "TextureManager.h"
 #include "entities/Cat.h"
+#include "Room/Room.h"
 
 
 class UI {
@@ -16,8 +17,8 @@ public:
 	}
 
 	template<typename fn>
-	static void renderImageButtons(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, float w, float h, fn callback) {
-		ImGui::SetNextWindowPos(pos, ImGuiCond_FirstUseEver);
+	static void renderImageButtons(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
+		ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
 		ImGui::Begin(title.c_str(), nullptr,
@@ -28,8 +29,10 @@ public:
 		ImGui::Separator();
 
 		ImGui::BeginGroup();
+
+		int entries{};
 		for (const std::string& ref : refs) {
-			ImGui::SameLine();
+			if (entries++ % entriesPerLine != 0) ImGui::SameLine();
 
 			if (ImGui::ImageButton(ref.c_str(), tm.getSprite(ref).sprite, sf::Vector2f(w, h))) {
 				callback(ref);
@@ -46,10 +49,19 @@ public:
 			Cat::get().init(false);
 			};
 
-		renderImageButtons({ 10, 10 }, "Companion skin", "Select skin", Cat::get().catSpriteRefs, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
+		renderImageButtons({ 5, 5 }, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
+	}
+
+	static void roomSelect() {
+		auto onChange = [](const std::string& ref) {
+			Room::get().sprite->sprite.setTexture(tm.getTexture(ref));
+			};
+
+		renderImageButtons({ 5, 150 }, "Room", "Select color", Room::get().getRoomRefs(), 3, 50.f, 50.f, onChange);
 	}
 
 	static void render() {
 		skinSelect();
+		roomSelect();
 	}
 };

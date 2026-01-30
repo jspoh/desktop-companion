@@ -37,9 +37,9 @@ public:
 		sm.setScene(std::make_shared<DefaultScene>());
 	}
 
+	bool showEditor{};
 	void update() {
 		static float elapsed{};
-		bool showEditor{};
 		sf::Color clearColor{ sf::Color::Transparent };
 
 		while (running && win.isOpen()) {
