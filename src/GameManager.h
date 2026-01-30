@@ -95,10 +95,10 @@ public:
 			// 
 			win.clear(clearColor);
 			sm.update(dt);
-			tm.render(dt);
 			if (showEditor) {
 				ImGui::SFML::Render(win);
 			} 
+			tm.render(dt);
 			win.display();
 
 			ImGui::EndFrame();

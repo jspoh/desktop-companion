@@ -61,7 +61,7 @@ public:
 	}
 
 	static void render() {
-		skinSelect();
 		roomSelect();
+		skinSelect();
 	}
 };

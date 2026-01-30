@@ -18,13 +18,6 @@ Room::Room() {
 		roomRefs.push_back(filename);
 	}
 
-	// load furniture
-	path = "assets/CatItems/Decorations";
-
-
-}
-
-void Room::init() {
 	for (const auto& ref : roomRefs) {
 		auto& js = tm.getSprite(ref);
 		auto& s = js.sprite;
@@ -35,9 +28,18 @@ void Room::init() {
 	tm.createSprite(ref, roomRefs.at(0), 0, 0, 0, 0, width, height, false, 0.f, true);
 	sprite = &tm.getSprite(ref);
 	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
-	static const int scale = (int)(1.f / width * (win.getSize().x / 2.f));
+	static const int scale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
 	sprite->sprite.setScale({ scale * 1.f, scale * 1.f });
 	sprite->sprite.setPosition(Window::get().getWindow().getSize() / 2.f);
+
+	// load furniture
+	path = "assets/CatItems/Decorations";
+
+
+}
+
+void Room::init() {
+
 }
 
 void Room::update(float dt) {
