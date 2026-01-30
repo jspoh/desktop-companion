@@ -12,6 +12,8 @@ public:
 	static constexpr int MAX_WIDTH = 512;
 	static constexpr int MAX_HEIGHT = MAX_WIDTH;
 
+	int localScale;
+
 private:
 	Room();
 

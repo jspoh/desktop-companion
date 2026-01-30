@@ -28,9 +28,8 @@ Room::Room() {
 	tm.createSprite(ref, roomRefs.at(0), 0, 0, 0, 0, width, height, false, 0.f, true);
 	sprite = &tm.getSprite(ref);
 	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
-	int scale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
-	scale *= Settings::roomScale;
-	sprite->sprite.setScale({ scale * 1.f, scale * 1.f });
+	localScale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
+	sprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
 	sprite->sprite.setPosition(Window::get().getWindow().getSize() / 2.f);
 
 	// load furniture
@@ -50,4 +49,6 @@ void Room::update(float dt) {
 	else {
 		sprite->visible = false;
 	}
+
+	sprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
 }

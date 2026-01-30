@@ -30,7 +30,7 @@ void Cat::init(bool resetPos) {
 		pos = Window::get().getWindow().getSize() / 2.f;
 		catSprite.sprite.setPosition(pos);
 	}
-	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
+	catSprite.sprite.setScale({ SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale });
 	catSprite.sprite.setOrigin(catSprite.sprite.getLocalBounds().size / 2.f);
 	catSprite.visible = true;
 
@@ -38,7 +38,7 @@ void Cat::init(bool resetPos) {
 
 	// text
 
-	tm.setTextContent(textRef, "Yippee! I'm happy to be here!");
+	tm.setTextContent(textRef, "Yippee! I'm so happy to be here!");
 }
 
 
@@ -106,6 +106,8 @@ void Cat::update(float dt) {
 	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
 	static bool prevIsMovingAnimationPlaying = false;
 
+	tm.getSprite(catSpriteName).sprite.setScale({SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale});
+
 	// happiness decrement
 	happiness -= dt * happiness_drain_rate_s;
 
@@ -159,7 +161,7 @@ void Cat::update(float dt) {
 			handledUserDrag = true;
 			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, tm.getSprite(Cat::get().getCatSpriteName()));
 			setEntityAnimationState(STATE_ANIMATION_MAP.at(entityState).at(rand() % (int)STATE_ANIMATION_MAP.at(entityState).size()), tm.getSprite(Cat::get().getCatSpriteName()));
-			tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
+			if (Settings::catTalks) tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 	}
 
@@ -201,11 +203,11 @@ void Cat::update(float dt) {
 		// facing left/right
 		if (d.dot(RIGHT_VECTOR) < 0) {
 			// is moving left
-			catSprite.sprite.setScale({ -SPRITE_SCALE, SPRITE_SCALE });
+			catSprite.sprite.setScale({ -SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale });
 			facing = FACING_DIRECTIONS::LEFT;
 		}
 		else {
-			catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
+			catSprite.sprite.setScale({ SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale });
 			facing = FACING_DIRECTIONS::RIGHT;
 		}
 	}
@@ -261,7 +263,7 @@ void Cat::update(float dt) {
 	}
 
 	// summon cat to mouse
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
+	if (Settings::catFollowsMouseClick && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		tm.setTextContent(textRef, "I'm cominggggggggg");
 		if ((sf::Vector2f(mX * 1.f, mY * 1.f) - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
 			moveTo((float)mX, (float)mY);

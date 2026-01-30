@@ -13,7 +13,7 @@ private:
 
 public:
 	static void init() {
-		
+
 	}
 
 	template<typename fn>
@@ -49,7 +49,7 @@ public:
 			Cat::get().init(false);
 			};
 
-		renderImageButtons({ 5, 5 }, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
+		renderImageButtons({ 5, 50 }, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
 	}
 
 	static void roomSelect() {
@@ -57,11 +57,49 @@ public:
 			Room::get().sprite->sprite.setTexture(tm.getTexture(ref));
 			};
 
-		renderImageButtons({ 5, 150 }, "Room", "Select color", Room::get().getRoomRefs(), 3, 50.f, 50.f, onChange);
+		renderImageButtons({ 5, 350 }, "Room", "Select color", Room::get().getRoomRefs(), 3, 50.f, 50.f, onChange);
+	}
+
+	static void settingsView() {
+		ImGui::SetNextWindowPos({ 5,200 }, ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Settings", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		ImGui::Checkbox("Summon cat to mouse on left click", &Settings::catFollowsMouseClick);
+		ImGui::Checkbox("Cat talks", &Settings::catTalks);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::DragFloat("Cat scale", &Settings::catScale);
+		ImGui::DragFloat("Room scale", &Settings::roomScale);
+
+		ImGui::End();
+	}
+
+	static void coinsView() {
+		ImGui::SetNextWindowPos({ 5,5 }, ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Coins", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		std::stringstream ss;
+		ss << "Coins: " << Settings::coins;
+		ImGui::Text(ss.str().c_str());
+
+		ImGui::End();
 	}
 
 	static void render() {
+		coinsView();
 		roomSelect();
 		skinSelect();
+		settingsView();
 	}
 };

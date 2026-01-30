@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <fstream>
 #include <cstring>
+#include <sstream>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
