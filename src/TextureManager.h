@@ -18,7 +18,8 @@ public:
 			int height,
 			bool playingAnimation,
 			float animationAdvanceTime = 0.1f,
-			int animationLoopCount = -1
+			int animationLoopCount = -1,
+			bool visible = true
 		)
 			: numFrames{ numFrames },
 			xoffset{ xoffset },
@@ -29,7 +30,8 @@ public:
 			height(height),
 			playingAnimation{ playingAnimation },
 			animationAdvanceTime{ animationAdvanceTime },
-			animationLoopCount{ animationLoopCount }
+			animationLoopCount{ animationLoopCount },
+			visible{ visible }
 		{
 			sprite.setTextureRect(sf::IntRect(
 				sf::Vector2i(left + frame * (width + xoffset), top),  // position
@@ -38,6 +40,8 @@ public:
 		}
 
 		sf::Sprite sprite;
+
+		bool visible{ true };
 
 		int frame{};
 		int numFrames{};
@@ -87,6 +91,8 @@ public:
 
 
 		for (JS_SPRITE& s : spritesValues) {
+			if (!s.visible) continue;
+
 			if (s.playingAnimation) {
 				const int absoluteFrame = (int)std::floor(s.animationElapsed / s.animationAdvanceTime);
 				s.frame = absoluteFrame % s.numFrames;
@@ -133,13 +139,13 @@ public:
 	}
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation = false, float animationAdvanceTime = 0.1f) {
+	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation = false, float animationAdvanceTime = 0.1f, bool visible = true) {
 		if (textures.find(texRef) == textures.end()) {
 			std::cerr << "TextureManager::createSprite > texRef " << texRef << " does not exist" << std::endl;
 			return false;
 		}
 
-		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, xoffset, left, top, width, height, playingAnimation, animationAdvanceTime);
+		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, xoffset, left, top, width, height, playingAnimation, animationAdvanceTime, -1, visible);
 
 		sprites.emplace(ref, s);
 		spritesValues.push_back(sprites.at(ref));
@@ -155,6 +161,7 @@ public:
 	}
 
 	JS_SPRITE& getSprite(const std::string& ref) {
+		if (sprites.find(ref) == sprites.end()) throw std::runtime_error("Invalid sprite ref");
 		return sprites.at(ref);
 	}
 

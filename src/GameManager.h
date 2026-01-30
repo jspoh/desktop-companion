@@ -101,7 +101,7 @@ public:
 			} 
 			win.display();
 
-			//ImGui::EndFrame();
+			ImGui::EndFrame();
 
 			auto end = std::chrono::high_resolution_clock::now();
 

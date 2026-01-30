@@ -22,9 +22,9 @@ public:
 		ImGui::Separator();
 
 		ImGui::BeginGroup();
-		for (const auto& texRef : Cat::get().catTextures) {
+		for (const auto& spriteRef : Cat::get().catSpriteRefs) {
 			ImGui::SameLine();
-			ImGui::Image(tm.getSprite(texRef).sprite, sf::Color::White, sf::Color::Transparent);
+			ImGui::Image(tm.getSprite(spriteRef).sprite, sf::Color::White, sf::Color::Transparent);
 		}
 		ImGui::EndGroup();
 
