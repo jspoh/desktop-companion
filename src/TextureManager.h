@@ -109,11 +109,11 @@ public:
 
 				s.animationElapsed += dt;
 
-				s.sprite.setTextureRect(sf::IntRect(
-					{ s.left + s.frame * (s.width + s.xoffset), s.top },
-					{ s.width, s.height }
-				));
 			}
+			s.sprite.setTextureRect(sf::IntRect(
+				{ s.left + s.frame * (s.width + s.xoffset), s.top },
+				{ s.width, s.height }
+			));
 
 			win.draw(s.sprite);
 		}

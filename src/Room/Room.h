@@ -18,11 +18,13 @@ public:
 	public:
 
 		struct OffsetData {
-			int left, right, width, height;
+			int left, top, width, height;
 		};
 
 		// L -> R, T -> B
 		enum TYPE {
+			NONE,
+
 			WINDOW_1,
 			WINDOW_2,
 			WINDOW_3,
@@ -151,7 +153,7 @@ public:
 			NUM_FURNITURE_TYPES,
 		};
 
-		const std::unordered_map<TYPE, OffsetData> spritesheetOffsets{
+		inline static const std::unordered_map<TYPE, OffsetData> spritesheetOffsets{
 			{WINDOW_1, OffsetData{0, 0, 95, 95}},
 			{WINDOW_2, OffsetData{95, 0, 95, 95}},
 			{WINDOW_3, OffsetData{0, 95, 95, 95}},
@@ -220,6 +222,10 @@ public:
 
 	static constexpr const char* ref = "room";
 	TextureManager::JS_SPRITE* sprite = nullptr;
+
+	static constexpr const char* furnitureRef = "furniture";
+	TextureManager::JS_SPRITE* furnitureSprite = nullptr;
+	Furniture::TYPE currentFurniture = Furniture::TYPE::NONE;
 
 	void init();
 

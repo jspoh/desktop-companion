@@ -43,6 +43,37 @@ public:
 		ImGui::End();
 	}
 
+	static void furnitureSelect() {
+		ImGui::SetNextWindowPos({100, 5}, ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Furnitures", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		ImGui::Text("Click to purchase (Cost: 100)");
+		ImGui::Separator();
+
+		ImGui::BeginGroup();
+
+		int entries{};
+		for (const auto& [type, od] : Room::Furniture::spritesheetOffsets) {
+			if (entries++ % 6 != 0) ImGui::SameLine();
+
+			Room::get().furnitureSprite->left = od.left;
+			Room::get().furnitureSprite->top = od.top;
+			Room::get().furnitureSprite->width = od.width;
+			Room::get().furnitureSprite->height = od.height;
+
+			if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), Room::get().furnitureSprite->sprite, sf::Vector2f(50, 50))) {
+				
+			}
+		}
+		ImGui::EndGroup();
+
+		ImGui::End();
+	}
+
 	static void skinSelect() {
 		auto onChange = [](const std::string& ref) {
 			tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(ref));
@@ -104,5 +135,6 @@ public:
 		roomSelect();
 		skinSelect();
 		settingsView();
+		furnitureSelect();
 	}
 };

@@ -33,9 +33,10 @@ Room::Room() {
 	sprite->sprite.setPosition(Window::get().getWindow().getSize() / 2.f);
 
 	// load furniture
-	path = "assets/CatItems/Decorations";
-
-
+	path = "assets/CatItems/Decorations/CatRoomDecorations.png";
+	tm.registerTexture("all_furnitures", path);
+	tm.createSprite(furnitureRef, "all_furnitures", 0, 0, 0, 0, 0, 0, false, 0.f, true);
+	furnitureSprite = &tm.getSprite(furnitureRef);
 }
 
 void Room::init() {
@@ -45,10 +46,13 @@ void Room::init() {
 void Room::update(float dt) {
 	if (gm.showEditor) {
 		sprite->visible = true;
+		furnitureSprite->visible = true;
 	}
 	else {
 		sprite->visible = false;
+		furnitureSprite->visible = false;
 	}
 
 	sprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
+	furnitureSprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
 }
