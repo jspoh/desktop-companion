@@ -44,7 +44,7 @@ public:
 	}
 
 	static void furnitureSelect() {
-		ImGui::SetNextWindowPos({100, 5}, ImGuiCond_Always);
+		ImGui::SetNextWindowPos({5, 750}, ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
 		ImGui::Begin("Furnitures", nullptr,
@@ -54,22 +54,24 @@ public:
 		ImGui::Text("Click to purchase (Cost: 100)");
 		ImGui::Separator();
 
+		static constexpr int NUM_COLUMNS = 6;
+		static constexpr int CELL_WIDTH = 50;
+		ImGui::BeginChild("FurnitureGrid", ImVec2(NUM_COLUMNS * CELL_WIDTH + 120, 200), true);
 		ImGui::BeginGroup();
 
 		int entries{};
-		for (const auto& [type, od] : Room::Furniture::spritesheetOffsets) {
-			if (entries++ % 6 != 0) ImGui::SameLine();
+		for (auto& [type, od] : Room::Furniture::spritesheetOffsets) {
+			if (entries++ % NUM_COLUMNS != 0) ImGui::SameLine();
 
-			Room::get().furnitureSprite->left = od.left;
-			Room::get().furnitureSprite->top = od.top;
-			Room::get().furnitureSprite->width = od.width;
-			Room::get().furnitureSprite->height = od.height;
+			sf::Sprite tempSprite(tm.getTexture("all_furnitures"));
+			tempSprite.setTextureRect(sf::IntRect({ od.left, od.top }, { od.width, od.height }));
 
-			if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), Room::get().furnitureSprite->sprite, sf::Vector2f(50, 50))) {
+			if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), tempSprite, sf::Vector2f(CELL_WIDTH, CELL_WIDTH))) {
 				
 			}
 		}
 		ImGui::EndGroup();
+		ImGui::EndChild();
 
 		ImGui::End();
 	}
