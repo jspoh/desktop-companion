@@ -75,8 +75,8 @@ public:
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		ImGui::DragFloat("Cat scale", &Settings::catScale);
-		ImGui::DragFloat("Room scale", &Settings::roomScale);
+		ImGui::DragFloat("Cat scale", &Settings::catScale, 0.01f, 0.1f, 10.f, "%.1f");
+		ImGui::DragFloat("Room scale", &Settings::roomScale, 0.01f, 1.f, 2.f, "%.1f");
 
 		ImGui::End();
 	}
