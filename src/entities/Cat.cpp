@@ -23,10 +23,13 @@ Cat::Cat() {
 }
 
 
-void Cat::init() {
+void Cat::init(bool resetPos) {
+	//std::cout << resetPos << std::endl;
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
-	pos = Window::get().getWindow().getSize() / 2.f;
-	catSprite.sprite.setPosition(pos);
+	if (resetPos) {
+		pos = Window::get().getWindow().getSize() / 2.f;
+		catSprite.sprite.setPosition(pos);
+	}
 	catSprite.sprite.setScale({ SPRITE_SCALE, SPRITE_SCALE });
 	catSprite.sprite.setOrigin(catSprite.sprite.getLocalBounds().size / 2.f);
 	catSprite.visible = true;

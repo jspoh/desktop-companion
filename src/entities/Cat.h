@@ -293,7 +293,7 @@ public:
 		return instance;
 	}
 
-	void init();
+	void init(bool resetPos = true);
 
 	void update(float dt);
 

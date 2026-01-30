@@ -35,7 +35,7 @@ public:
 				//std::cout << "Selected " << texRef << " skin" << std::endl;
 				//Cat::get().setCatSpriteName(spriteRef);
 				tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(texRef));
-				Cat::get().init();
+				Cat::get().init(false);
 			}
 		}
 		ImGui::EndGroup();
