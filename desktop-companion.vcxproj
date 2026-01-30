@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\intermediate\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\intermediate\</IntDir>
     <LinkIncremental>false</LinkIncremental>
@@ -152,11 +152,44 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\imgui\imgui-SFML.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\entities\Cat.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\imgui\include\imconfig-SFML.h" />
+    <ClInclude Include="dependencies\imgui\include\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\include\imgui-SFML.h" />
+    <ClInclude Include="dependencies\imgui\include\imgui-SFML_export.h" />
+    <ClInclude Include="dependencies\imgui\include\imgui.h" />
+    <ClInclude Include="dependencies\imgui\include\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\include\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\include\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\include\imstb_truetype.h" />
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\input\InputManager.h" />
