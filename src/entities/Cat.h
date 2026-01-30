@@ -356,8 +356,8 @@ public:
 	void setEntityAnimationState(EntityAnimationStates s, std::optional<std::reference_wrapper<TextureManager::JS_SPRITE>> opt_sprite, int animationLoopCount);
 
 	bool isColliding(const sf::Vector2f& p) {
-		if (p.x < pos.x - width / 2.f || p.x > pos.x + width / 2.f) return false;
-		if (p.y < pos.y - height / 2.f || p.y > pos.y + height / 2.f) return false;
+		if (p.x < pos.x - (width * Settings::catScale) / 2.f || p.x > pos.x + (width * Settings::catScale) / 2.f) return false;
+		if (p.y < pos.y - (height * Settings::catScale) / 2.f || p.y > pos.y + (height * Settings::catScale) / 2.f) return false;
 		return true;
 	}
 };
