@@ -9,7 +9,7 @@ public:
 	static constexpr int width = 512;
 	static constexpr int height = width;
 
-	static constexpr int MAX_WIDTH = 512;
+	static constexpr int MAX_WIDTH = 1024;
 	static constexpr int MAX_HEIGHT = MAX_WIDTH;
 
 	int localScale;

@@ -68,17 +68,20 @@ public:
 			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoMove);
 
-		ImGui::Checkbox("Summon cat to mouse on left click", &Settings::catFollowsMouseClick);
-		ImGui::Checkbox("Cat talks", &Settings::catTalks);
+		bool changed = false;
+		if (ImGui::Checkbox("Summon cat to mouse on left click", &Settings::catFollowsMouseClick)) changed = true;
+		if (ImGui::Checkbox("Cat talks", &Settings::catTalks)) changed = true;
 
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		ImGui::DragFloat("Cat scale", &Settings::catScale, 0.01f, 0.1f, 10.f, "%.1f");
-		ImGui::DragFloat("Room scale", &Settings::roomScale, 0.01f, 1.f, 2.f, "%.1f");
+		if (ImGui::DragFloat("Cat scale", &Settings::catScale, 0.01f, 0.1f, 10.f, "%.1f")) changed = true;
+		//if (ImGui::DragFloat("Room scale", &Settings::roomScale, 0.01f, 1.f, 2.f, "%.1f")) changed = true;
 
 		ImGui::End();
+
+		if (changed) Settings::save();
 	}
 
 	static void coinsView() {

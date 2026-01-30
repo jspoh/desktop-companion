@@ -13,7 +13,8 @@ Cat::Cat() {
 		catSpriteRefs.push_back(filename);
 	}
 
-	catTextureRef = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
+	//catTextureRef = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
+	catTextureRef = Settings::unlockedSkins.at(rand() % (int)Settings::unlockedSkins.size());
 	tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
 
 
