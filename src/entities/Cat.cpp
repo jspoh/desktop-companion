@@ -2,7 +2,7 @@
 #include "Cat.h"
 
 
-void Cat::init() {
+Cat::Cat() {
 	const std::string path = "assets/Cats";
 	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (!entry.is_regular_file()) continue;
@@ -13,11 +13,17 @@ void Cat::init() {
 		catSpriteRefs.push_back(filename);
 	}
 
-	catSpriteName = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
+	catTextureRef = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
+	tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
 
-	//tm.registerTexture("cat_texture", "assets/Cats/AllCatsGreyWhite.png");
-	//tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
-	
+
+	// text
+
+	speech = &tm.registerText(textRef, "", 16);
+}
+
+
+void Cat::init() {
 	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
 	pos = Window::get().getWindow().getSize() / 2.f;
 	catSprite.sprite.setPosition(pos);
@@ -27,7 +33,8 @@ void Cat::init() {
 
 	idleTimeLeft = 2.f;
 
-	speech = &tm.registerText(textRef, "", 16);
+	// text
+
 	tm.setTextContent(textRef, "Yippee! I'm happy to be here!");
 }
 

@@ -44,9 +44,11 @@ public:
 		NUM_ENTITY_STATES,
 	};
 
-	std::vector<std::string> catSpriteRefs;
+	std::vector<std::string> catSpriteRefs;		// sprite and texture refs share same name
 
 private:
+
+	Cat();
 
 	sf::Text* speech;
 	static constexpr const char* textRef = "cat_speech";
@@ -254,7 +256,7 @@ private:
 
 	EntityAnimationStates activeAnimationState = EntityAnimationStates::IDLE;
 	float stateElapsedTime{};
-	std::string catSpriteName = "cat";
+	static constexpr const char* catSpriteName = "cat";
 	std::string catTextureRef = "";
 
 	static constexpr float MAX_MOVEMENT_SPEED = 500.f;
@@ -295,6 +297,14 @@ public:
 
 	void update(float dt);
 
+	int getWidth() const {
+		return width;
+	}
+
+	int getHeight() const {
+		return height;
+	}
+
 	EntityAnimationStates getAnimationState() const {
 		return activeAnimationState;
 	}
@@ -306,6 +316,10 @@ public:
 	std::string getCatSpriteName() {
 		return catSpriteName;
 	}
+
+	//void setCatSpriteName(const std::string& sn) {
+	//	catSpriteName = sn;
+	//}
 
 	void moveTo(float x, float y);
 

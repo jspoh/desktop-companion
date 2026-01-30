@@ -27,9 +27,16 @@ public:
 		ImGui::Separator();
 
 		ImGui::BeginGroup();
-		for (const auto& spriteRef : Cat::get().catSpriteRefs) {
-			//ImGui::SameLine();
-			//ImGui::Image(tm.getSprite(spriteRef).sprite, sf::Color::White, sf::Color::Transparent);
+		for (const auto& texRef : Cat::get().catSpriteRefs) {
+			ImGui::SameLine();
+			//ImGui::Image(tm.getSprite(texRef).sprite, sf::Color::White, sf::Color::Transparent);
+
+			if (ImGui::ImageButton(texRef.c_str(), tm.getSprite(texRef).sprite, sf::Vector2f(Cat::get().getWidth(), Cat::get().getHeight()))) {
+				//std::cout << "Selected " << texRef << " skin" << std::endl;
+				//Cat::get().setCatSpriteName(spriteRef);
+				tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(texRef));
+				Cat::get().init();
+			}
 		}
 		ImGui::EndGroup();
 
