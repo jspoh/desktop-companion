@@ -176,6 +176,9 @@ private:
 			"I will eat your homework",
 			"MY PARCEL IS HEREE",
 			"i am microwave mmmmmmmmmmmmm",
+			"kiki, do you love me~~~",
+
+
 	}},
 		{
 			EntityStates::WANDERING, {

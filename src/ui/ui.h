@@ -67,7 +67,7 @@ public:
 			tempSprite.setTextureRect(sf::IntRect({ od.left, od.top }, { od.width, od.height }));
 
 			if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), tempSprite, sf::Vector2f(CELL_WIDTH, CELL_WIDTH))) {
-				
+				Room::get().addFurniture(type);
 			}
 		}
 		ImGui::EndGroup();

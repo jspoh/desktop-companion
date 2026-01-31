@@ -34,8 +34,8 @@ Room::Room() {
 
 	// load furniture
 	path = "assets/CatItems/Decorations/CatRoomDecorations.png";
-	tm.registerTexture("all_furnitures", path);
-	tm.createSprite(furnitureRef, "all_furnitures", 0, 0, 0, 0, 0, 0, false, 0.f, true);
+	tm.registerTexture(furnitureTextureRef, path);
+	tm.createSprite(furnitureRef, furnitureTextureRef, 0, 0, 0, 0, 0, 0, false, 0.f, true);
 	furnitureSprite = &tm.getSprite(furnitureRef);
 }
 
@@ -55,4 +55,24 @@ void Room::update(float dt) {
 
 	sprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
 	furnitureSprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
+
+	//for (Furniture& f : Settings::furnitures) {
+	//	tm.getSprite(f.spriteRef).visible = !f.inInventory;
+	//}
+}
+
+void Room::addFurniture(Furniture::TYPE type) {
+	Furniture f;
+	f.type = type;
+	f.inInventory = false;
+	f.pos = win.getSize() / 2.f;
+	f.spriteRef = "Furniture_" + std::to_string(Furniture::count++);
+
+	const Furniture::OffsetData& od = Furniture::spritesheetOffsets.at(type);
+
+	tm.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
+
+	Settings::furnitures.push_back(f);
+
+	Settings::save();
 }

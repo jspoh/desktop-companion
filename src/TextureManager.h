@@ -115,11 +115,11 @@ public:
 				{ s.width, s.height }
 			));
 
-			win.draw(s.sprite);
+			Window::get().getWindow().draw(s.sprite);
 		}
 
 		for (const auto& [ref, txt] : texts) {
-			win.draw(txt);
+			Window::get().getWindow().draw(txt);
 		}
 	}
 

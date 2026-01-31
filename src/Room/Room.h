@@ -14,6 +14,8 @@ public:
 
 	int localScale;
 
+	bool editing = false;
+
 	class Furniture {
 	public:
 
@@ -22,7 +24,7 @@ public:
 		};
 
 		// L -> R, T -> B
-		enum TYPE {
+		enum class TYPE {
 			NONE,
 
 			WINDOW_1,
@@ -154,58 +156,71 @@ public:
 		};
 
 		inline static const std::unordered_map<TYPE, OffsetData> spritesheetOffsets{
-			{WINDOW_1, OffsetData{0, 0, 95, 95}},
-			{WINDOW_2, OffsetData{95, 0, 95, 95}},
-			{WINDOW_3, OffsetData{0, 95, 95, 95}},
-			{WINDOW_4, OffsetData{95, 95, 95, 95}},
+			{TYPE::WINDOW_1, OffsetData{0, 0, 95, 95}},
+			{TYPE::WINDOW_2, OffsetData{95, 0, 95, 95}},
+			{TYPE::WINDOW_3, OffsetData{0, 95, 95, 95}},
+			{TYPE::WINDOW_4, OffsetData{95, 95, 95, 95}},
 
-			{STAND_1, OffsetData{180, 0, 90, 130}},
-			{STAND_2, OffsetData{270, 0, 90, 130}},
-			{STAND_3, OffsetData{360, 0, 90, 130}},
+			{TYPE::STAND_1, OffsetData{180, 0, 90, 130}},
+			{TYPE::STAND_2, OffsetData{270, 0, 90, 130}},
+			{TYPE::STAND_3, OffsetData{360, 0, 90, 130}},
 
-			{BIG_BALL_1, OffsetData{450, 5, 25, 20}},
-			{SMALL_BALL_1, OffsetData{485, 5, 25, 20}},
+			{TYPE::BIG_BALL_1, OffsetData{450, 5, 25, 20}},
+			{TYPE::SMALL_BALL_1, OffsetData{485, 5, 25, 20}},
 
-			{EXTENDED_STAND_1, OffsetData{580, 15, 85, 175}},
+			{TYPE::EXTENDED_STAND_1, OffsetData{580, 15, 85, 175}},
 
-			{BIG_WINDOW_1, OffsetData{865, 0, 60, 125}},
+			{TYPE::BIG_WINDOW_1, OffsetData{865, 0, 60, 125}},
 
-			{SMALL_WINDOW_1, OffsetData{10, 225, 40, 65}},
+			{TYPE::SMALL_WINDOW_1, OffsetData{10, 225, 40, 65}},
 
-			{PLANT_1, OffsetData{130, 190, 25, 30}},
+			{TYPE::PLANT_1, OffsetData{130, 190, 25, 30}},
 
-			{BED_1, OffsetData{200, 135, 110, 85}},
+			{TYPE::BED_1, OffsetData{200, 135, 110, 85}},
 
-			{PHOTO_1, OffsetData{450, 200, 30, 45}},
+			{TYPE::PHOTO_1, OffsetData{450, 200, 30, 45}},
 
-			{PAINTING_PINEAPPLE, OffsetData{715, 195, 35, 90}},
+			{TYPE::PAINTING_PINEAPPLE, OffsetData{715, 195, 35, 90}},
 
-			{PLAYHOUSE_1, OffsetData{555, 220, 115, 165}},
+			{TYPE::PLAYHOUSE_1, OffsetData{555, 220, 115, 165}},
 
-			{WIDE_WINDOW_1, OffsetData{675, 305, 90, 140}},
+			{TYPE::WIDE_WINDOW_1, OffsetData{675, 305, 90, 140}},
 
-			{BIG_PLANT_1, OffsetData{140, 300, 45, 105}},
+			{TYPE::BIG_PLANT_1, OffsetData{140, 300, 45, 105}},
 
-			{D_1, OffsetData{200, 435, 55, 75}},
+			{TYPE::D_1, OffsetData{200, 435, 55, 75}},
 
-			{FOOD_1, OffsetData{265, 435, 45, 40}},
+			{TYPE::FOOD_1, OffsetData{265, 435, 45, 40}},
 
-			{WATER_1, OffsetData{395, 415, 45, 40}},
+			{TYPE::WATER_1, OffsetData{395, 415, 45, 40}},
 
-			{FOOD_BAG_1, OffsetData{525, 550, 35, 50}},
+			{TYPE::FOOD_BAG_1, OffsetData{525, 550, 35, 50}},
 
-			{DICE_1, OffsetData{195, 615, 20, 15}},
+			{TYPE::DICE_1, OffsetData{195, 615, 20, 15}},
 
-			{CHEW_1, OffsetData{200, 685, 45, 35}},
+			{TYPE::CHEW_1, OffsetData{200, 685, 45, 35}},
 
-			{BOWTIE_1, OffsetData{385, 620, 25, 10}},
+			{TYPE::BOWTIE_1, OffsetData{385, 620, 25, 10}},
 
-			{MOUSE, OffsetData{450, 620, 55, 35}},
+			{TYPE::MOUSE, OffsetData{450, 620, 55, 35}},
 
-			{CHAIR_1, OffsetData{675, 610, 60, 60}},
+			{TYPE::CHAIR_1, OffsetData{675, 610, 60, 60}},
 
 
 		};
+
+	private:
+
+
+	public:
+
+		inline static int count{};
+
+		TYPE type{ TYPE::NONE };
+		bool inInventory{};
+		sf::Vector2f pos{};
+		std::string spriteRef{};
+
 	};
 
 private:
@@ -223,6 +238,7 @@ public:
 	static constexpr const char* ref = "room";
 	TextureManager::JS_SPRITE* sprite = nullptr;
 
+	static constexpr const char* furnitureTextureRef = "all_furnitures";
 	static constexpr const char* furnitureRef = "furniture";
 	TextureManager::JS_SPRITE* furnitureSprite = nullptr;
 	Furniture::TYPE currentFurniture = Furniture::TYPE::NONE;
@@ -238,4 +254,6 @@ public:
 	auto& getFurnitureRefs() const {
 		return furnitureRefs;
 	}
+
+	void addFurniture(Furniture::TYPE type);
 };

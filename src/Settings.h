@@ -1,24 +1,38 @@
 #pragma once
 #include "pch.h"
+#include "Room/Room.h"
+
+
 // could pack struct to optimize space
 struct Settings {
 	static bool unlockAll;
+
 	// coins
 	static int coins;
+
 	// unlocked skins
 	static std::vector<std::string> unlockedSkins;
+
 	// save user cat skin and room
 	static std::string catTexRef;
 	static std::string roomTexRef;
+
+	// furnitures
+	static std::vector<Room::Furniture> furnitures;
+
 	// save user behaviour preferences
 	static float catScale;
 	static float roomScale;
 	static bool catFollowsMouseClick;
 	static bool catTalks;
+
 	// save user furniture config
 	// static std::string favouriteBeanBag
 	// static sf::Vector2f beanBagOffset;		// offset from center of room
+
 	static std::filesystem::path configFilePath;
+
+
 	static void initConfig() {
 		// default values
 		unlockAll = false;
@@ -30,7 +44,10 @@ struct Settings {
 		roomScale = 1.f;
 		catFollowsMouseClick = false;
 		catTalks = true;
+		furnitures = {};
 	}
+
+
 	static void init() {
 		namespace fs = std::filesystem;
 		char* homeDir = nullptr;
@@ -73,6 +90,11 @@ struct Settings {
 				ifs.read((char*)&roomScale, sizeof(float));
 				ifs.read((char*)&catFollowsMouseClick, sizeof(bool));
 				ifs.read((char*)&catTalks, sizeof(bool));
+				ifs.read((char*)&vecSize, sizeof(size_t));
+				furnitures.resize(vecSize);
+				for (size_t i = 0; i < vecSize; ++i) {
+					ifs.read((char*)&furnitures[i], sizeof(Room::Furniture));
+				}
 			}
 			else {
 				configExists = false;
@@ -83,6 +105,8 @@ struct Settings {
 			save();
 		}
 	}
+
+
 	static void save() {
 		std::ofstream ofs(configFilePath, std::ios::binary);
 		ofs.write((char*)&unlockAll, sizeof(unlockAll));
@@ -104,8 +128,15 @@ struct Settings {
 		ofs.write((char*)&roomScale, sizeof(roomScale));
 		ofs.write((char*)&catFollowsMouseClick, sizeof(catFollowsMouseClick));
 		ofs.write((char*)&catTalks, sizeof(catTalks));
+		vecSize = furnitures.size();
+		ofs.write((char*)&vecSize, sizeof(size_t));
+		for (const auto& furniture : furnitures) {
+			ofs.write((char*)&furniture, sizeof(Room::Furniture));
+		}
 	}
 };
+
+
 inline bool Settings::unlockAll;
 inline int Settings::coins;
 inline std::vector<std::string> Settings::unlockedSkins;
@@ -116,3 +147,4 @@ inline float Settings::roomScale;
 inline bool Settings::catFollowsMouseClick;
 inline bool Settings::catTalks;
 inline std::filesystem::path Settings::configFilePath;
+inline std::vector<Room::Furniture> Settings::furnitures;
