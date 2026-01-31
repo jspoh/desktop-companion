@@ -80,129 +80,26 @@ public:
 		return instance;
 	}
 
-	void cleanup() {
-		textures.clear();
-		sprites.clear();
-		spritesValues.clear();
-		texts.clear();
-	}
+	void cleanup();
 
-	void render(float dt) {
+	void render(float dt);
 
-
-		for (JS_SPRITE& s : spritesValues) {
-			if (!s.visible) continue;
-
-			if (s.playingAnimation) {
-				const int absoluteFrame = (int)std::floor(s.animationElapsed / s.animationAdvanceTime);
-				s.frame = absoluteFrame % s.numFrames;
-
-				if (absoluteFrame != 0 && absoluteFrame % s.numFrames == 0) {
-					++s.animationElapsedLoops;
-					//std::cout << s.animationElapsedLoops << std::endl;
-				}
-
-				if (s.animationLoopCount >= 0 && s.animationElapsedLoops > s.animationLoopCount) {
-					s.playingAnimation = false;
-					s.frame = s.staticFrameIdx;
-				}
-
-				s.animationElapsed += dt;
-
-			}
-			s.sprite.setTextureRect(sf::IntRect(
-				{ s.left + s.frame * (s.width + s.xoffset), s.top },
-				{ s.width, s.height }
-			));
-
-			Window::get().getWindow().draw(s.sprite);
-		}
-
-		for (const auto& [ref, txt] : texts) {
-			Window::get().getWindow().draw(txt);
-		}
-	}
-
-	bool registerTexture(const std::string& ref, const std::string& path) {
-		try {
-			textures.emplace(ref, sf::Texture(path));
-		}
-		catch (const std::exception& e) {
-			std::cerr << "Error loading texture '" << ref << "' from path '"
-				<< path << "': " << e.what() << std::endl;
-			return false;
-		}
-		catch (...) {
-			return false;
-		}
-		return true;
-	}
+	bool registerTexture(const std::string& ref, const std::string& path);
 
 	// @param left, top, width, height for sf::IntRect() to set texture rect forr cutting spritesheets
-	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation = false, float animationAdvanceTime = 0.1f, bool visible = true) {
-		if (textures.find(texRef) == textures.end()) {
-			std::cerr << "TextureManager::createSprite > texRef " << texRef << " does not exist" << std::endl;
-			return false;
-		}
+	bool createSprite(const std::string& ref, const std::string& texRef, int num_frames = 0, int xoffset = 0, int left = 0, int top = 0, int width = 0, int height = 0, bool playingAnimation = false, float animationAdvanceTime = 0.1f, bool visible = true);
 
-		JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, xoffset, left, top, width, height, playingAnimation, animationAdvanceTime, -1, visible);
+	sf::Texture& getTexture(const std::string& ref);
 
-		sprites.emplace(ref, s);
-		spritesValues.push_back(sprites.at(ref));
-		return true;
-	}
+	const sf::Texture& getTexture(const std::string& ref) const;
 
-	sf::Texture& getTexture(const std::string& ref) {
-		return textures.at(ref);
-	}
+	JS_SPRITE& getSprite(const std::string& ref);
 
-	const sf::Texture& getTexture(const std::string& ref) const {
-		return textures.at(ref);
-	}
+	const JS_SPRITE& getSprite(const std::string& ref) const;
 
-	JS_SPRITE& getSprite(const std::string& ref) {
-		if (sprites.find(ref) == sprites.end()) throw std::runtime_error("Invalid sprite ref");
-		return sprites.at(ref);
-	}
+	const std::vector<std::reference_wrapper<JS_SPRITE>>& getAllSprites() const;
 
-	const JS_SPRITE& getSprite(const std::string& ref) const {
-		return sprites.at(ref);
-	}
+	sf::Text& registerText(const std::string& ref, const std::string& content, int fontSize);
 
-	const std::vector<std::reference_wrapper<JS_SPRITE>>& getAllSprites() const {
-		return spritesValues;
-	}
-
-	sf::Text& registerText(const std::string& ref, const std::string& content, int fontSize) {
-		if (texts.find(ref) != texts.end()) {
-			std::cerr << "TextureManager > drawText > ref " << ref << " is already in use" << std::endl;
-		}
-
-		// Create a Text object with the font first, then emplace it
-		auto [it, inserted] = texts.emplace(
-			std::piecewise_construct,
-			std::forward_as_tuple(ref),
-			std::forward_as_tuple(font)  // Construct sf::Text with font reference
-		);
-
-		// Now set the string and character size
-		it->second.setString(content);
-		it->second.setCharacterSize(fontSize);
-
-		return it->second;
-	}
-
-	void setTextContent(const std::string& ref, const std::string& content) {
-		if (texts.find(ref) == texts.end()) {
-			std::cerr << "TextureManager > drawText > ref " << ref << " does not exist" << std::endl;
-		}
-
-		sf::Text& text = texts.at(ref);
-		text.setString(content);
-		sf::FloatRect textBounds = text.getLocalBounds();
-		text.setOrigin(textBounds.position + textBounds.size / 2.f);
-		text.setOutlineColor({ 0,0,0, 255 });
-		text.setFillColor({ 255,255,255,255 });
-		text.setOutlineThickness(1.f);
-	}
+	void setTextContent(const std::string& ref, const std::string& content);
 };
