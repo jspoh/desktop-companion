@@ -57,7 +57,7 @@ public:
 
 		inline static unsigned long long count = 0;
 
-		static constexpr float lifespan_s = 5.f;
+		static constexpr float lifespan_s = 10.f;
 		inline static const std::string texRef = "poop";
 
 		Poop() {}
@@ -67,13 +67,14 @@ public:
 
 		static constexpr int texWidth = 315;
 		static constexpr int texHeight = 250;
+		static constexpr float FADE_OUT_IN_LAST_N_SECONDS = 3.f;
 
 #ifdef _DEBUG
 		static constexpr int MIN_POOP_INTERVAL_S = 5.f;
 		static constexpr int MAX_POOP_INTERVAL_S = 10.f;
 #else
-		static constexpr int MIN_POOP_INTERVAL_S = 1200.f;
-		static constexpr int MAX_POOP_INTERVAL_S = 3600.f;
+		static constexpr int MIN_POOP_INTERVAL_S = 60.f;
+		static constexpr int MAX_POOP_INTERVAL_S = 120.f;
 #endif
 
 		inline static std::chrono::system_clock::time_point lastPoopTime;

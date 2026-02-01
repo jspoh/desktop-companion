@@ -85,6 +85,7 @@ bool TextureManager::createSprite(
 	}
 
 	JS_SPRITE s(sf::Sprite(textures.at(texRef)), num_frames, xoffset, left, top, width, height, playingAnimation, animationAdvanceTime, -1, visible);
+	s.ref = ref;
 
 	sprites.emplace(ref, s);
 	spritesValues.push_back(sprites.at(ref));
@@ -151,4 +152,10 @@ void TextureManager::setTextContent(const std::string& ref, const std::string& c
 	text.setOutlineColor({ 0,0,0, 255 });
 	text.setFillColor({ 255,255,255,255 });
 	text.setOutlineThickness(1.f);
+}
+
+void TextureManager::deleteSprite(const std::string& ref) {
+	auto it = std::find_if(spritesValues.begin(), spritesValues.end(), [&ref](std::reference_wrapper<JS_SPRITE> s) {return s.get().ref == ref; });
+	spritesValues.erase(it);
+	sprites.erase(ref);
 }

@@ -43,6 +43,7 @@ public:
 
 		bool visible{ true };
 
+		std::string ref{};
 		int frame{};
 		int numFrames{};
 		float animationElapsed{};
@@ -112,4 +113,6 @@ public:
 	sf::Text& getText(const std::string& ref) {
 		return texts.at(ref);
 	}
+
+	void deleteSprite(const std::string& ref);
 };

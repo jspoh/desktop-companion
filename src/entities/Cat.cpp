@@ -324,15 +324,24 @@ void Cat::update(float dt) {
 	}
 
 	for (Poop& p : poops) {
-		sf::Color color = texM.getSprite(p.spriteRef).sprite.getColor();
-		color.a = static_cast<int>(255.f * (1.f - (p.elapsed_s / p.lifespan_s)));
-		texM.getSprite(p.spriteRef).sprite.setColor(color);
-
 		p.elapsed_s += dt;
+
+		if (p.lifespan_s - p.elapsed_s > p.FADE_OUT_IN_LAST_N_SECONDS) {
+			continue;
+		}
+
+		// fade out poop
+		sf::Color color = texM.getSprite(p.spriteRef).sprite.getColor();
+		color.a = static_cast<int>(255.f * (p.lifespan_s - p.elapsed_s) / p.FADE_OUT_IN_LAST_N_SECONDS);
+		texM.getSprite(p.spriteRef).sprite.setColor(color);
 	}
 
 	poops.erase(std::remove_if(poops.begin(), poops.end(), [](const Poop& pp) {
-		return pp.elapsed_s >= pp.lifespan_s;
+		if (pp.elapsed_s >= pp.lifespan_s) {
+			texM.deleteSprite(pp.spriteRef);
+			return true;
+		}
+		return false;
 		}), poops.end());
 
 
