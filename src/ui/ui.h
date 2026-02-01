@@ -11,6 +11,7 @@ class UI {
 private:
 	inline static const ImVec2 PADDING{ 5, 5 };
 	inline static ImVec2 lastWinSize{ PADDING };
+	inline static ImVec2 orientation{ 0,0 };
 
 public:
 	static void init() {
@@ -18,13 +19,8 @@ public:
 	}
 
 	template<typename fn>
-	static void renderImageButtons(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
-		ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
-
-		ImGui::Begin(title.c_str(), nullptr,
-			ImGuiWindowFlags_AlwaysAutoResize |
-			ImGuiWindowFlags_NoMove);
+	static void renderImageButtonsTab(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
+		if (!ImGui::BeginTabItem(title.c_str())) return;
 
 		ImGui::Text(instruction.c_str());
 		ImGui::Separator();
@@ -41,18 +37,31 @@ public:
 		}
 		ImGui::EndGroup();
 
-		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
+		ImGui::EndTabItem();
 
+
+	}
+
+	template<typename fn>
+	static void renderImageButtonsWindow(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
+		ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin(title.c_str(), nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		if (ImGui::BeginTabBar(title.c_str())) {
+			renderImageButtonsTab(pos, title, instruction, refs, entriesPerLine, w, h, callback);
+			ImGui::EndTabBar();
+		}
+
+		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
 		ImGui::End();
 	}
 
-	static void furniturePurchase() {
-		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, { 0, 0 });
-		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
-
-		ImGui::Begin("Furniture Shop", nullptr,
-			ImGuiWindowFlags_AlwaysAutoResize |
-			ImGuiWindowFlags_NoMove);
+	static void _furniturePurchase() {
+		if (!ImGui::BeginTabItem("Furniture shop")) return;
 
 		ImGui::Text("Click to purchase (Cost: %d)", Room::Furniture::COST);
 		ImGui::Separator();
@@ -84,22 +93,11 @@ public:
 		}
 		ImGui::EndGroup();
 		ImGui::EndChild();
-
-		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
-
-		ImGui::End();
+		ImGui::EndTabItem();
 	}
 
-	static void furnitureInventory() {
-		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-
-		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, { 1, 0 });
-		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
-
-		ImGui::Begin("Furniture Inventory", nullptr,
-			ImGuiWindowFlags_AlwaysAutoResize |
-			ImGuiWindowFlags_NoMove
-		);
+	static void _furnitureInventoryTab() {
+		if (!ImGui::BeginTabItem("Furniture inventory")) return;
 
 		ImGui::Text("Manage inventory", Room::Furniture::COST);
 		ImGui::Separator();
@@ -128,10 +126,7 @@ public:
 		}
 		ImGui::EndGroup();
 		ImGui::EndChild();
-
-		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
-
-		ImGui::End();
+		ImGui::EndTabItem();
 	}
 
 	static void skinSelect() {
@@ -140,19 +135,20 @@ public:
 			Cat::get().init(false);
 			};
 
-		renderImageButtons(lastWinSize, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
+		renderImageButtonsWindow(lastWinSize, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
 	}
 
-	static void roomSelect() {
+	static void _roomSelectTab() {
 		auto onChange = [](const std::string& ref) {
 			Room::get().sprite->sprite.setTexture(tm.getTexture(ref));
 			};
 
-		renderImageButtons(lastWinSize, "Room", "Select color", Room::get().getRoomRefs(), 3, 50.f, 50.f, onChange);
+
+		renderImageButtonsTab(lastWinSize, "Paint", "Select color", Room::get().getRoomRefs(), 6, 50.f, 50.f, onChange);
 	}
 
 	static void settingsView() {
-		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, { 0, 0 });
+		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, orientation);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
 		ImGui::Begin("Settings", nullptr,
@@ -181,7 +177,7 @@ public:
 	}
 
 	static void coinsView() {
-		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, { 0, 0 });
+		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, orientation);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
 		ImGui::Begin("Coins", nullptr,
@@ -197,17 +193,42 @@ public:
 		ImGui::End();
 	}
 
+	static void room() {
+		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, orientation);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Furniture Shop", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		if (ImGui::BeginTabBar("Room options")) {
+			// tabs
+			_roomSelectTab();
+			_furniturePurchase();
+			_furnitureInventoryTab();
+
+			ImGui::EndTabBar();
+		}
+
+
+
+		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
+		ImGui::End();
+	}
+
 	static void render() {
+		// left side of screen
+		lastWinSize = PADDING;
+		orientation = { 0, 0 };
+
 		coinsView();
 		skinSelect();
-		settingsView();
-		roomSelect();
-		furniturePurchase();
+		room();
 
+		// right side of screen
 		lastWinSize = { ImGui::GetIO().DisplaySize.x, PADDING.y };
+		orientation = { 1, 0 };
 
-		furnitureInventory();
-
-		lastWinSize = PADDING;
+		settingsView();
 	}
 };
