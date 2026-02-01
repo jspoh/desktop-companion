@@ -39,6 +39,13 @@ namespace nlohmann {
 
 // could pack struct to optimize space
 struct Settings {
+	// not to be saved
+
+	inline static bool paused = false;
+	inline static constexpr float MAX_WORK_DURATION_M = 60.f;
+	inline static constexpr float MIN_BREAK_DURATION_M = 0.1f;
+
+	// save
 	inline static bool unlockAll;
 
 	// coins
@@ -61,7 +68,6 @@ struct Settings {
 	inline static bool catTalks;
 
 	inline static bool catPoops;
-	inline static bool paused;
 
 	// save user furniture config
 	// inline static std::string favouriteBeanBag

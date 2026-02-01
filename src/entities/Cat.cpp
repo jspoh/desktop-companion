@@ -7,26 +7,26 @@ Cat::Cat() {
 	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (!entry.is_regular_file()) continue;
 		const auto filename = entry.path().filename().string();
-		tm.registerTexture(filename, path + "/" + filename);
+		texM.registerTexture(filename, path + "/" + filename);
 
-		tm.createSprite(filename, filename, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, false);
+		texM.createSprite(filename, filename, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, false);
 		catSpriteRefs.push_back(filename);
 	}
 
 	//catTextureRef = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
 	catTextureRef = Settings::catTexRef;
-	tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
-	tm.getSprite(catSpriteName).z = z;
+	texM.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
+	texM.getSprite(catSpriteName).z = z;
 
 	// text
 
-	speech = &tm.registerText(textRef, "", 16);
+	speech = &texM.registerText(textRef, "", 16);
 }
 
 
 void Cat::init(bool resetPos) {
 	//std::cout << resetPos << std::endl;
-	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
+	TextureManager::JS_SPRITE& catSprite = texM.getSprite(catSpriteName);
 	if (resetPos) {
 		pos = Window::get().getWindow().getSize() / 2.f;
 		catSprite.sprite.setPosition(pos);
@@ -39,7 +39,7 @@ void Cat::init(bool resetPos) {
 
 	// text
 
-	tm.setTextContent(textRef, "Yippee! I'm so happy to be here!");
+	texM.setTextContent(textRef, "Yippee! I'm so happy to be here!");
 }
 
 
@@ -81,7 +81,7 @@ void Cat::setEntityAnimationState(EntityAnimationStates s, std::optional<std::re
 void Cat::moveTo(float x, float y) {
 	if (!alive) return;
 
-	setEntityAnimationState(MOVEMENT_ANIMATION_STATES.at(rand() % (int)MOVEMENT_ANIMATION_STATES.size()), tm.getSprite(catSpriteName), -1);
+	setEntityAnimationState(MOVEMENT_ANIMATION_STATES.at(rand() % (int)MOVEMENT_ANIMATION_STATES.size()), texM.getSprite(catSpriteName), -1);
 
 	//static constexpr int w_offset = width / 2;
 	//static constexpr int h_offset = (height / 2) + yoffset;
@@ -107,7 +107,7 @@ void Cat::update(float dt) {
 	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
 	static bool prevIsMovingAnimationPlaying = false;
 
-	tm.getSprite(catSpriteName).sprite.setScale({SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale});
+	texM.getSprite(catSpriteName).sprite.setScale({SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale});
 
 	// happiness decrement
 	happiness -= dt * happiness_drain_rate_s;
@@ -130,11 +130,11 @@ void Cat::update(float dt) {
 
 	if (happiness <= 0) {
 		//alive = false;
-		happiness = 100;			// !TODO: disable reset for prod
+		happiness = 0;
 	}
 
 	if (!alive) {
-		setEntityState(EntityStates::DEAD, tm.getSprite(catSpriteName));
+		setEntityState(EntityStates::DEAD, texM.getSprite(catSpriteName));
 	}
 
 #pragma region user_dragging
@@ -160,9 +160,9 @@ void Cat::update(float dt) {
 
 		if (!handledUserDrag) {
 			handledUserDrag = true;
-			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, tm.getSprite(Cat::get().getCatSpriteName()));
-			setEntityAnimationState(STATE_ANIMATION_MAP.at(entityState).at(rand() % (int)STATE_ANIMATION_MAP.at(entityState).size()), tm.getSprite(Cat::get().getCatSpriteName()));
-			if (Settings::catTalks) tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
+			Cat::get().setEntityState(Cat::EntityStates::DRAGGED, texM.getSprite(Cat::get().getCatSpriteName()));
+			setEntityAnimationState(STATE_ANIMATION_MAP.at(entityState).at(rand() % (int)STATE_ANIMATION_MAP.at(entityState).size()), texM.getSprite(Cat::get().getCatSpriteName()));
+			if (Settings::catTalks) texM.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 	}
 
@@ -170,12 +170,12 @@ void Cat::update(float dt) {
 		//std::cout << "stopped dragging" << std::endl;
 		isUserDragging = false;
 		handledUserDrag = false;
-		setEntityState(lastState, tm.getSprite(catSpriteName));
+		setEntityState(lastState, texM.getSprite(catSpriteName));
 
 	}
 #pragma endregion user_dragging
 
-	TextureManager::JS_SPRITE& catSprite = tm.getSprite(catSpriteName);
+	TextureManager::JS_SPRITE& catSprite = texM.getSprite(catSpriteName);
 
 	// movement
 	if (!moveToComplete && (target - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
@@ -243,7 +243,7 @@ void Cat::update(float dt) {
 			//std::cout << "Idling for " << idleTimeLeft << std::endl;
 
 			// talk to user
-			tm.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
+			texM.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 
 		if (idleTimeLeft <= 0) {
@@ -265,7 +265,7 @@ void Cat::update(float dt) {
 
 	// summon cat to mouse
 	if (Settings::catFollowsMouseClick && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-		tm.setTextContent(textRef, "I'm cominggggggggg");
+		texM.setTextContent(textRef, "I'm cominggggggggg");
 		if ((sf::Vector2f(mX * 1.f, mY * 1.f) - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
 			moveTo((float)mX, (float)mY);
 		}

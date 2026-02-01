@@ -2,6 +2,7 @@
 #include "DefaultScene.h"
 #include "entities/Cat.h"
 #include "GameManager.h"
+#include "Window.h"
 
 //#define VIEW_FPS
 
@@ -29,7 +30,7 @@ void DefaultScene::init() {
 
 #ifdef VIEW_FPS
 #ifndef NDEBUG
-	fps_display_text = &tm.registerText("text", std::to_string(gm.getFps()), 50);
+	fps_display_text = &texM.registerText("text", std::to_string(gm.getFps()), 50);
 	fps_display_text->setPosition({ 10, 10 });
 #endif
 #endif
@@ -48,7 +49,7 @@ void DefaultScene::update(float dt) {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::N) && !prevIsNPressed) {
 		prevIsNPressed = true;
-		Cat::get().setEntityAnimationState((Cat::EntityAnimationStates)(((int)Cat::get().getActiveState() + 1) % (int)Cat::EntityAnimationStates::NUM_ENTITY_STATES), tm.getSprite(Cat::get().getCatSpriteName()));
+		Cat::get().setEntityAnimationState((Cat::EntityAnimationStates)(((int)Cat::get().getActiveState() + 1) % (int)Cat::EntityAnimationStates::NUM_ENTITY_STATES), texM.getSprite(Cat::get().getCatSpriteName()));
 		std::cout << "EntityState: " << (int)Cat::get().getActiveState() << std::endl;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::N)) {
@@ -64,7 +65,7 @@ void DefaultScene::update(float dt) {
 	static bool prevIsDownPressed = false;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right) && !prevIsRightPressed) {
-		++tm.getSprite(Cat::get().getCatSpriteName()).width;
+		++texM.getSprite(Cat::get().getCatSpriteName()).width;
 		prevIsRightPressed = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
@@ -72,7 +73,7 @@ void DefaultScene::update(float dt) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left) && !prevIsLeftPressed) {
-		--tm.getSprite(Cat::get().getCatSpriteName()).width;
+		--texM.getSprite(Cat::get().getCatSpriteName()).width;
 		prevIsLeftPressed = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
@@ -80,7 +81,7 @@ void DefaultScene::update(float dt) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up) && !prevIsUpPressed) {
-		++tm.getSprite(Cat::get().getCatSpriteName()).height;
+		++texM.getSprite(Cat::get().getCatSpriteName()).height;
 		prevIsUpPressed = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
@@ -88,7 +89,7 @@ void DefaultScene::update(float dt) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down) && !prevIsDownPressed) {
-		--tm.getSprite(Cat::get().getCatSpriteName()).height;
+		--texM.getSprite(Cat::get().getCatSpriteName()).height;
 		prevIsDownPressed = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
@@ -96,7 +97,7 @@ void DefaultScene::update(float dt) {
 	}
 
 
-	std::cout << tm.getSprite(Cat::get().getCatSpriteName()).width << ", " << tm.getSprite(Cat::get().getCatSpriteName()).height << std::endl;
+	std::cout << texM.getSprite(Cat::get().getCatSpriteName()).width << ", " << texM.getSprite(Cat::get().getCatSpriteName()).height << std::endl;
 #endif
 
 	Cat::get().update(dt);
@@ -108,12 +109,114 @@ void DefaultScene::update(float dt) {
 		sf::Vector2i mpos = sf::Mouse::getPosition();
 
 		Cat::get().moveTo(mpos.x, mpos.y);
-	}
+}
 #endif
+
+	// handle user events and cat happiness
+	auto now = std::chrono::system_clock::now();
+	static bool onBreak = false;
+	static bool prevOnBreak = false;
+
+	static float inactivitySeconds{};
+	static float prevInactivitySeconds = inactivitySeconds;
+
+	if (Window::get().userIsActive()) {
+		inactivitySeconds = 0;
+	}
+	else {
+		inactivitySeconds += dt;
+	}
+
+	//std::cout << secondsSinceLastActivity << std::endl;
+
+	if (inactivitySeconds >= Settings::MIN_BREAK_DURATION_M * 60) {
+		// last event was more than break time ago
+		onBreak = true;
+		//std::cout << "on break" << std::endl;
+	}
+	else {
+		onBreak = false;
+		//std::cout << "no longer on break" << std::endl;
+	}
+
+	if (prevOnBreak && !onBreak) {
+		// user just came back, store break data
+
+		std::time_t endBreakTime = std::chrono::system_clock::to_time_t(now);
+		std::time_t startBreakTime = std::chrono::system_clock::to_time_t(now - std::chrono::seconds((int64_t)prevInactivitySeconds));
+
+		gm.breaks.emplace_back(BreakData((uint64_t)startBreakTime, (uint64_t)endBreakTime));
+
+		//std::cout << "working" << std::endl;
+
+		if (gm.breaks.size() > gm.MAX_BREAKDATA_SIZE) {
+			gm.breaks.pop_front();
+		}
+	}
+
+	if (onBreak) {
+		Cat::get().setHappinessMax();
+	}
+
+	prevOnBreak = onBreak;
+	prevInactivitySeconds = inactivitySeconds;
+
+#ifdef PROMPT_USER_CONFIRM_BREAK
+	static bool breakPopupOpen = false;
+	if (secondsSinceLastActivity >= Settings::MIN_BREAK_DURATION_M * 60) {
+		// last event was more than break time ago
+
+		if (!breakPopupOpen) {
+			breakPopupOpen = true;
+			gm.showEditor = true;
+
+			sf::Vector2f ppp = win.getSize() / 2.f;
+			ImGui::SetNextWindowPos({ ppp.x, ppp.y }, ImGuiCond_Always, { 0, 0 });
+			ImGui::OpenPopup("Breaktime");
+		}
+	}
+
+	static auto handleBreaktimePopupBtn = [](bool tookBreak) {
+		if (tookBreak) {
+			Cat::get().setHappinessMax();
+		}
+		ImGui::CloseCurrentPopup();
+		breakPopupOpen = false;
+		};
+
+	const int iSecsInactivity = std::floor(secondsSinceLastActivity);
+	static int prevISecsInactivity = iSecsInactivity;
+	if (ImGui::BeginPopupModal("Breaktime", nullptr, 0)) {
+
+		ImGui::Text("Did you take a break?");
+
+		ImGui::Spacing();
+
+		ImGui::TextColored({ 0, 1, 0, 1 }, "Inactivity: %02d:%02d", prevISecsInactivity / 60, prevISecsInactivity % 60);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Yes")) {
+			handleBreaktimePopupBtn(true);
+		}
+		if (ImGui::Button("No")) {
+			handleBreaktimePopupBtn(false);
+		}
+		ImGui::EndPopup();
+	}
+	else {
+		prevISecsInactivity = 0;
+	}
+
+	prevISecsInactivity = std::max(iSecsInactivity, prevISecsInactivity);
+#endif
+
 
 
 }
 
 void DefaultScene::cleanup() {
-	tm.cleanup();
+	texM.cleanup();
 }

@@ -85,4 +85,13 @@ public:
 	void clear(const sf::Color& col) {
 		window.clear(col);
 	}
+
+
+	bool userIsActive(DWORD thresholdMs = 1000) {
+		LASTINPUTINFO lii{};
+		lii.cbSize = sizeof(LASTINPUTINFO);
+		if (!GetLastInputInfo(&lii)) return false; // fail-safe
+		DWORD idleTime = GetTickCount() - lii.dwTime;
+		return idleTime < thresholdMs; // user did something within threshold
+	}
 };

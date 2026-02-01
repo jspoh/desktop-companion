@@ -177,10 +177,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\entities\Cat.cpp" />
+    <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Room\Room.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\ui\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\imgui\include\imconfig-SFML.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="dependencies\imgui\include\imstb_rectpack.h" />
     <ClInclude Include="dependencies\imgui\include\imstb_textedit.h" />
     <ClInclude Include="dependencies\imgui\include\imstb_truetype.h" />
+    <ClInclude Include="src\BreakData.h" />
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\input\InputManager.h" />

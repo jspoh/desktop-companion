@@ -11,22 +11,22 @@ Room::Room() {
 		if (entry.is_directory()) continue;
 
 		const std::string filename = entry.path().filename().string();
-		tm.registerTexture(filename, path + "/" + filename);
+		texM.registerTexture(filename, path + "/" + filename);
 
 		// all sprites needed for imgui rendering
-		tm.createSprite(filename, filename, 0, 0, 0, 0, width, height, false, 0.1f, false);
+		texM.createSprite(filename, filename, 0, 0, 0, 0, width, height, false, 0.1f, false);
 		roomRefs.push_back(filename);
 	}
 
 	for (const auto& ref : roomRefs) {
-		auto& js = tm.getSprite(ref);
+		auto& js = texM.getSprite(ref);
 		auto& s = js.sprite;
 
 		js.visible = false;
 	}
 
-	tm.createSprite(ref, Settings::roomTexRef, 0, 0, 0, 0, width, height, false, 0.f, true);
-	sprite = &tm.getSprite(ref);
+	texM.createSprite(ref, Settings::roomTexRef, 0, 0, 0, 0, width, height, false, 0.f, true);
+	sprite = &texM.getSprite(ref);
 	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
 	localScale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;
 	sprite->sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
@@ -34,9 +34,9 @@ Room::Room() {
 
 	// load furniture
 	path = "assets/CatItems/Decorations/CatRoomDecorations.png";
-	tm.registerTexture(furnitureTextureRef, path);
-	//tm.createSprite(furnitureRef, furnitureTextureRef, 0, 0, 0, 0, 0, 0, false, 0.f, true);
-	//furnitureSprite = &tm.getSprite(furnitureRef);
+	texM.registerTexture(furnitureTextureRef, path);
+	//texM.createSprite(furnitureRef, furnitureTextureRef, 0, 0, 0, 0, 0, 0, false, 0.f, true);
+	//furnitureSprite = &texM.getSprite(furnitureRef);
 }
 
 Room::Furniture::Furniture() {
@@ -69,13 +69,13 @@ void Room::update(float dt) {
 		f.AABB_MIN = { f.pos.x - od.width / 2.f, f.pos.y - od.height / 2.f };
 		f.AABB_MAX = { f.pos.x + od.width / 2.f, f.pos.y + od.height / 2.f };
 
-		TextureManager::JS_SPRITE& furnitureSprite = tm.getSprite(f.spriteRef);
+		TextureManager::JS_SPRITE& furnitureSprite = texM.getSprite(f.spriteRef);
 
 		// update sprite pos
 		furnitureSprite.sprite.setPosition(f.pos);
 
 		// update visibility
-		if (gm.showEditor) {
+		if (gm.showEditor && !f.inInventory) {
 			furnitureSprite.visible = true;
 		}
 		else {
@@ -95,10 +95,13 @@ void Room::update(float dt) {
 	// check before running loop. cheaper this way
 	if (draggedFurnitureIdx == -1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && Cat::get().getEntityState() != Cat::EntityStates::DRAGGED) {
 		for (int i{}; i < (int)Settings::furnitures.size(); ++i) {
-			//tm.getSprite(f.spriteRef).visible = !f.inInventory;
-
-			if (Settings::furnitures[i].inInventory) continue;		// check before allocating memory for temp var. will be cheaper
 			Furniture& f = Settings::furnitures[i];
+
+			//texM.getSprite(f.spriteRef).visible = !f.inInventory;
+
+			if (f.inInventory) {
+				continue;
+			}
 
 
 			if (mPos.x >= f.AABB_MIN.x && mPos.x <= f.AABB_MAX.x && mPos.y >= f.AABB_MIN.y && mPos.y <= f.AABB_MAX.y) {
@@ -139,9 +142,9 @@ void Room::addFurniture(Furniture::TYPE type) {
 	f.AABB_MIN = { f.pos.x - od.width / 2.f, f.pos.y - od.height / 2.f };
 	f.AABB_MAX = { f.pos.x + od.width / 2.f, f.pos.y + od.height / 2.f };
 
-	tm.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
+	texM.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
 
-	TextureManager::JS_SPRITE& s = tm.getSprite(f.spriteRef);
+	TextureManager::JS_SPRITE& s = texM.getSprite(f.spriteRef);
 	s.sprite.setOrigin(s.sprite.getLocalBounds().size / 2.f);
 
 	Settings::furnitures.push_back(f);
@@ -152,8 +155,8 @@ void Room::addFurniture(Furniture::TYPE type) {
 
 void Room::addFurniture(const Furniture& f) {
 	const Furniture::OffsetData& od = Furniture::spritesheetOffsets.at(f.type);
-	tm.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
+	texM.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
 
-	TextureManager::JS_SPRITE& s = tm.getSprite(f.spriteRef);
+	TextureManager::JS_SPRITE& s = texM.getSprite(f.spriteRef);
 	s.sprite.setOrigin(s.sprite.getLocalBounds().size / 2.f);
 }

@@ -256,10 +256,10 @@ private:
 
 	static constexpr float MAX_HAPPINESS = 100.f;
 	float happiness{ MAX_HAPPINESS };
-	float HAPPINESS_LIFESPAN = 60.f;		// how many minutes before happiness fully drains
+	float HAPPINESS_LIFESPAN = Settings::MAX_WORK_DURATION_M;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = MAX_HAPPINESS / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
-	void setHappiness(int nh) {
+	void setHappiness(float nh) {
 		happiness = nh;
 		happiness_drain_rate_s = happiness / (HAPPINESS_LIFESPAN * 60.f);
 	}
@@ -331,8 +331,12 @@ public:
 		return happiness / MAX_HAPPINESS;
 	}
 
+	void setHappinessMax() {
+		happiness = MAX_HAPPINESS;
+	}
+
 	// get max minutes before break time
-	float getMaxWorkTime() const {
+	float getexMaxWorkTime() const {
 		return HAPPINESS_LIFESPAN;
 	}
 

@@ -20,6 +20,9 @@
 #include <fstream>
 #include <cstring>
 #include <sstream>
+#include <deque>
+#include <queue>
+#include <ctime>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
@@ -27,7 +30,7 @@
 #include "Settings.h"
 
 
-#define tm TextureManager::get()
+#define texM TextureManager::get()
 #define gm GameManager::get()
 #define sm SceneManager::get()
 #define win Window::get().getWindow()
