@@ -30,6 +30,10 @@ Cat::Cat() {
 	}
 
 	recalculateHappiness();
+
+	if (Settings::gf) {
+		enableGfLines();
+	}
 }
 
 Cat& Cat::get() {
@@ -61,6 +65,10 @@ void Cat::init(bool resetPos) {
 }
 
 void Cat::enableGfLines() {
+	static bool gfe = false;
+	if (gfe) return;
+
+	gfe = true;
 
 	for (const auto es : { EntityStates::HAPPY, EntityStates::WANDERING }) {
 		STATE_SPEECH_OPTIONS.at(es).push_back("how's my cutie doing?");
@@ -69,6 +77,7 @@ void Cat::enableGfLines() {
 		STATE_SPEECH_OPTIONS.at(es).push_back("you are the best!!!");
 		STATE_SPEECH_OPTIONS.at(es).push_back("you're so pretty.. yes you ms loh <3");
 		STATE_SPEECH_OPTIONS.at(es).push_back("how's your butthole surgery? :]");
+		STATE_SPEECH_OPTIONS.at(es).push_back("i'm a pirate arrrrrrrrrrrr");
 	}
 
 	for (const auto es : { EntityStates::ON_EDGE, EntityStates::SAD, EntityStates::ANGRY }) {

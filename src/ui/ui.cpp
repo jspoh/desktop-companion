@@ -371,6 +371,8 @@ void UI::cheatcode() {
 			Settings::save();
 
 			texM.setTextContent(Cat::getTextRef(), "Hey babygirl :)");
+
+			Cat::get().enableGfLines();
 		}
 
 		buf[0] = '\0';

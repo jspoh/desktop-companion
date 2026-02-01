@@ -124,7 +124,7 @@ void Settings::save() {
 	j["MAX_WORK_DURATION_M"] = MAX_WORK_DURATION_M;
 	j["MIN_BREAK_DURATION_M"] = MIN_BREAK_DURATION_M;
 	j["enforceBreaks"] = enforceBreaks;
-	j["gf"] = false;
+	j["gf"] = gf;
 
 	std::ofstream ofs(configFilePath);
 	ofs << j.dump();
