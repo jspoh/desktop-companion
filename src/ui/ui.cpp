@@ -366,6 +366,12 @@ void UI::cheatcode() {
 			Settings::onEnforcedBreak = false;
 			Cat::get().setHappinessMax();
 		}
+		else if (!strcmp(buf, "lohyilin")) {
+			Settings::gf = true;
+			Settings::save();
+
+			texM.setTextContent(Cat::getTextRef(), "Hey babygirl :)");
+		}
 
 		buf[0] = '\0';
 	}

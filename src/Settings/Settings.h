@@ -56,6 +56,8 @@ struct Settings {
 	// coins
 	inline static int coins;
 
+	inline static bool gf = false;
+
 	// unlocked skins
 	inline static std::unordered_set<std::string> unlockedSkins;
 

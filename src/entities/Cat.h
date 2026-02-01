@@ -195,7 +195,7 @@ private:
 		EntityAnimationStates::RUNNING,
 	};
 
-	const std::unordered_map<EntityStates, std::vector<std::string>> STATE_SPEECH_OPTIONS{
+	std::unordered_map<EntityStates, std::vector<std::string>> STATE_SPEECH_OPTIONS{
 		{EntityStates::HAPPY, {
 			"Press ` or ~ to see my room ;D",
 			"I am nature's most ferocious hunter",
@@ -373,6 +373,7 @@ public:
 
 	static Cat& get();
 
+	void enableGfLines();
 
 	// get current happiness value in range [0,1]
 	float getHappinessPercentage() {

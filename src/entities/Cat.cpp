@@ -53,11 +53,41 @@ void Cat::init(bool resetPos) {
 
 	// text
 
-	if (Settings::catTalks) texM.setTextContent(textRef, "Yippee! I'm so happy to be here!");
+	if (Settings::catTalks) texM.setTextContent(textRef, Settings::gf ? "Yippee! I'm so happy to see you again bbygirl <3" : "Yippee! I'm so happy to be here!");
 
 	// poop
 	Poop::lastPoopTime = std::chrono::system_clock::now();
 	Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
+}
+
+void Cat::enableGfLines() {
+
+	for (const auto es : { EntityStates::HAPPY, EntityStates::WANDERING }) {
+		STATE_SPEECH_OPTIONS.at(es).push_back("how's my cutie doing?");
+		STATE_SPEECH_OPTIONS.at(es).push_back("I really do find you cute all the time");
+		STATE_SPEECH_OPTIONS.at(es).push_back("I love youuuu");
+		STATE_SPEECH_OPTIONS.at(es).push_back("you are the best!!!");
+		STATE_SPEECH_OPTIONS.at(es).push_back("you're so pretty.. yes you ms loh <3");
+		STATE_SPEECH_OPTIONS.at(es).push_back("how's your butthole surgery? :]");
+	}
+
+	for (const auto es : { EntityStates::ON_EDGE, EntityStates::SAD, EntityStates::ANGRY }) {
+		STATE_SPEECH_OPTIONS.at(es).push_back("Break soon okay baby?");
+		STATE_SPEECH_OPTIONS.at(es).push_back("sleep is important okay bby");
+		STATE_SPEECH_OPTIONS.at(es).push_back("Rest first, i send you heart sticker okay");
+		STATE_SPEECH_OPTIONS.at(es).push_back("baby please take a break, i want you to be happy :)");
+		STATE_SPEECH_OPTIONS.at(es).push_back("eat some fruits?");
+		STATE_SPEECH_OPTIONS.at(es).push_back("how's your butthole surgery? :]");
+	}
+
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("haha okay you can touch me ;]");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("you watch out later i tickle you");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("haha i love picking you up toooo");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("let's always be happy together okay");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("i love youuuuuuuu");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("no angy me okay? :')");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("i love my considerate sensible girl");
+	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("how's your butthole surgery? :]");
 }
 
 void Cat::recalculateHappiness() {

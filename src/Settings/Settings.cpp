@@ -26,7 +26,7 @@ void Settings::initConfig() {
 	furnitures = {};
 	catPoops = true;
 	paused = false;
-
+	gf = false;
 }
 
 
@@ -66,6 +66,7 @@ void Settings::init() {
 		MAX_WORK_DURATION_M = j.value("MAX_WORK_DURATION_M", 60.f);
 		MIN_BREAK_DURATION_M = j.value("MIN_BREAK_DURATION_M", 5.f);
 		enforceBreaks = j.value("enforceBreaks", false);
+		gf = j.value("gf", false);
 		paused = false;
 	}
 	else {
@@ -123,6 +124,7 @@ void Settings::save() {
 	j["MAX_WORK_DURATION_M"] = MAX_WORK_DURATION_M;
 	j["MIN_BREAK_DURATION_M"] = MIN_BREAK_DURATION_M;
 	j["enforceBreaks"] = enforceBreaks;
+	j["gf"] = false;
 
 	std::ofstream ofs(configFilePath);
 	ofs << j.dump();
