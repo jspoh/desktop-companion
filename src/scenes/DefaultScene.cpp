@@ -17,9 +17,6 @@ DefaultScene::~DefaultScene() {
 void DefaultScene::load() {
 
 	//music = sf::Music("assets/Cutie-Patootie.mp3");
-
-	Room::get();
-	Cat::get();
 }
 
 void DefaultScene::init() {
@@ -37,6 +34,11 @@ void DefaultScene::init() {
 }
 
 void DefaultScene::update(float dt) {
+
+	if (Settings::onEnforcedBreak) return;
+
+
+
 #ifdef VIEW_FPS
 #ifndef NDEBUG
 	fps_display_text->setString(std::to_string(gm.getFps()));
@@ -154,6 +156,7 @@ void DefaultScene::update(float dt) {
 		}
 
 		Settings::coins += 20;
+		Settings::save();
 	}
 
 	if (onBreak) {
@@ -214,8 +217,6 @@ void DefaultScene::update(float dt) {
 
 	prevISecsInactivity = std::max(iSecsInactivity, prevISecsInactivity);
 #endif
-
-
 
 }
 

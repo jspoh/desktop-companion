@@ -26,6 +26,7 @@ void Settings::initConfig() {
 	furnitures = {};
 	catPoops = true;
 	paused = false;
+
 }
 
 
@@ -62,6 +63,9 @@ void Settings::init() {
 		catTalks = j.value("catTalks", true);
 		furnitures = j.value("furnitures", std::vector<Room::Furniture>{});
 		catPoops = j.value("catPoops", true);
+		MAX_WORK_DURATION_M = j.value("MAX_WORK_DURATION_M", 60.f);
+		MIN_BREAK_DURATION_M = j.value("MIN_BREAK_DURATION_M", 5.f);
+		enforceBreaks = j.value("enforceBreaks", false);
 		paused = false;
 	}
 	else {
@@ -75,6 +79,17 @@ void Settings::init() {
 	}
 
 	_resetLockedSkins();
+
+#ifdef _DEBUG
+
+#define DBG_ENFORCE
+#ifdef DBG_ENFORCE
+	MAX_WORK_DURATION_M = 1;
+	MIN_BREAK_DURATION_M = 1;
+	Cat::get().recalculateHappiness();
+#endif
+
+#endif
 }
 
 
@@ -105,6 +120,9 @@ void Settings::save() {
 	j["catTalks"] = catTalks;
 	j["furnitures"] = furnitures;
 	j["catPoops"] = catPoops;
+	j["MAX_WORK_DURATION_M"] = MAX_WORK_DURATION_M;
+	j["MIN_BREAK_DURATION_M"] = MIN_BREAK_DURATION_M;
+	j["enforceBreaks"] = enforceBreaks;
 
 	std::ofstream ofs(configFilePath);
 	ofs << j.dump();

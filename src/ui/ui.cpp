@@ -86,7 +86,7 @@ void UI::_furniturePurchase() {
 
 		if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), tempSprite, sf::Vector2f(CELL_WIDTH, CELL_WIDTH))) {
 			if (Settings::coins < Room::Furniture::COST) {
-				texM.setTextContent(Cat::getTextRef(), "You can't afford this :(");
+				if (Settings::catTalks) texM.setTextContent(Cat::getTextRef(), "You can't afford this :(");
 				continue;
 			}
 
@@ -148,7 +148,7 @@ void UI::skinSelect() {
 			// user doesnt own skin
 
 			if (Settings::coins < Cat::SKIN_COST) {
-				texM.setTextContent(Cat::getTextRef(), "You can't afford this :(");
+				if (Settings::catTalks) texM.setTextContent(Cat::getTextRef(), "You can't afford this :(");
 				return;
 			}
 
@@ -207,12 +207,38 @@ void UI::settingsView() {
 	if (ImGui::DragFloat("Cat scale", &Settings::catScale, 0.01f, 0.1f, 10.f, "%.1f")) changed = true;
 	//if (ImGui::DragFloat("Room scale", &Settings::roomScale, 0.01f, 1.f, 2.f, "%.1f")) changed = true;
 
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	if (ImGui::InputInt("Max working duration without breaks (minutes)", &Settings::MAX_WORK_DURATION_M)) {
+		changed = true;
+
+		if (Settings::MAX_WORK_DURATION_M < 5) {
+			Settings::MAX_WORK_DURATION_M = 5;
+		}
+
+		Cat::get().recalculateHappiness();
+	}
+	if (ImGui::InputInt("Min break duration (minutes)", &Settings::MIN_BREAK_DURATION_M)) changed = true;
+
+	ImGui::Spacing();
+
+	ImGui::TextColored({ 1, 0, 0, 1 }, "Warning: You will be locked out of your computer until the mandated min break duration has elapsed.");
+	if (ImGui::Checkbox("Enforce breaks", &Settings::enforceBreaks)) changed = true;
+
 
 	lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
 
 	ImGui::End();
 
-	if (changed) Settings::save();
+	if (changed) {
+		if (Settings::MIN_BREAK_DURATION_M < 1) {
+			Settings::MIN_BREAK_DURATION_M = 1;
+		}
+
+		Settings::save();
+	}
 }
 
 void UI::coinsView() {
@@ -253,18 +279,22 @@ void UI::coinsView() {
 	ImGui::Spacing();
 
 	// time left before break
-	const float minsLeft = Cat::get().getHappiness() * Cat::get().getexMaxWorkTime();
-	const int iMinsLeft = std::floor(minsLeft);
-	const int iSecsLeft = static_cast<int>((minsLeft - iMinsLeft) * 60);
+	const float totalSecondsLeft = Cat::get().getHappinessPercentage() * Settings::MAX_WORK_DURATION_M * 60;
+	const int iTotalSecondsLeft = std::ceil(totalSecondsLeft);
 
-	ImGui::TextColored({ 0, 1, 0, 1 }, "Time to next break: %02d:%02d", iMinsLeft, iSecsLeft);
+
+	const int iHoursLeft = iTotalSecondsLeft / 3600;
+	const int iMinsLeft = (iTotalSecondsLeft - (iHoursLeft * 3600)) / 60;
+	const int iSecsLeft = iTotalSecondsLeft - (iHoursLeft * 3600) - (iMinsLeft * 60);
+
+	ImGui::TextColored({ 0, 1, 0, 1 }, "Time to next break: %02d:%02d:%02d", iHoursLeft, iMinsLeft, iSecsLeft);
 	ImGui::Text("Take breaks punctually to earn coins!");
 
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	ImGui::Text("Past %d breaks:", gm.MAX_BREAKDATA_SIZE);
+	ImGui::Text("Past %d breaks (voluntary):", gm.MAX_BREAKDATA_SIZE);
 	ImGui::Spacing();
 
 	for (const BreakData& bd : gm.breaks) {
@@ -332,6 +362,11 @@ void UI::cheatcode() {
 				Settings::coins += ADD_AMOUNT;
 			Settings::save();
 		}
+		else if (!strcmp(buf, "exit")) {
+			Settings::onEnforcedBreak = false;
+			Cat::get().setHappinessMax();
+		}
+
 		buf[0] = '\0';
 	}
 
@@ -382,20 +417,22 @@ void UI::manageFurniture() {
 }
 
 void UI::render() {
-	// left side of screen
-	lastWinSize = PADDING;
-	orientation = { 0, 0 };
+	if (!Settings::onEnforcedBreak) {
+		// left side of screen
+		lastWinSize = PADDING;
+		orientation = { 0, 0 };
 
-	coinsView();
-	skinSelect();
-	room();
+		coinsView();
+		skinSelect();
+		room();
 
-	// right side of screen
-	lastWinSize = { ImGui::GetIO().DisplaySize.x - PADDING.x, PADDING.y };
-	orientation = { 1, 0 };
+		// right side of screen
+		lastWinSize = { ImGui::GetIO().DisplaySize.x - PADDING.x, PADDING.y };
+		orientation = { 1, 0 };
 
-	settingsView();
-	manageFurniture();
+		settingsView();
+		manageFurniture();
+	}
 
 	// top center of screen
 	lastWinSize = { ImGui::GetIO().DisplaySize.x / 2.f, PADDING.y };

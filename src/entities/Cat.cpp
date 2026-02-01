@@ -26,8 +26,10 @@ Cat::Cat() {
 
 	bool success = texM.registerTexture(Poop::texRef, "assets/poop.png");
 	if (!success) {
-		std::cout << "poop texture registration failed" << std::endl;
+		std::cerr << "poop texture registration failed" << std::endl;
 	}
+
+	recalculateHappiness();
 }
 
 Cat& Cat::get() {
@@ -51,12 +53,17 @@ void Cat::init(bool resetPos) {
 
 	// text
 
-	texM.setTextContent(textRef, "Yippee! I'm so happy to be here!");
+	if (Settings::catTalks) texM.setTextContent(textRef, "Yippee! I'm so happy to be here!");
 
 	// poop
-
 	Poop::lastPoopTime = std::chrono::system_clock::now();
 	Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
+}
+
+void Cat::recalculateHappiness() {
+	HAPPINESS_LIFESPAN = Settings::MAX_WORK_DURATION_M;
+	happiness_drain_rate_s = MAX_HAPPINESS / (HAPPINESS_LIFESPAN * 60.f);
+	setHappinessMax();
 }
 
 
@@ -117,6 +124,8 @@ void Cat::moveTo(float x, float y) {
 }
 
 void Cat::update(float dt) {
+	if (Settings::onEnforcedBreak) return;
+
 	const auto [winX, winY] = win.getSize();
 	const auto [mX, mY] = sf::Mouse::getPosition();
 	static bool handledStopMoving = true;
@@ -124,7 +133,7 @@ void Cat::update(float dt) {
 	bool isMovingAnimationPlaying = std::find(MOVEMENT_ANIMATION_STATES.begin(), MOVEMENT_ANIMATION_STATES.end(), activeAnimationState) != MOVEMENT_ANIMATION_STATES.end();
 	static bool prevIsMovingAnimationPlaying = false;
 
-	texM.getSprite(catSpriteName).sprite.setScale({SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale});
+	texM.getSprite(catSpriteName).sprite.setScale({ SPRITE_SCALE * Settings::catScale, SPRITE_SCALE * Settings::catScale });
 
 	// happiness decrement
 	happiness -= dt * happiness_drain_rate_s;
@@ -135,15 +144,17 @@ void Cat::update(float dt) {
 	timeToNextIdleAnimation -= dt;
 
 	// fade out speech
-	sf::Color sfc = speech->getFillColor();
-	sf::Color soc = speech->getOutlineColor();
-	int alpha = static_cast<int>(sfc.a);
-	alpha -= dt * 255.f / SPEECH_FADE_OUT_S;
-	if (alpha < 0) alpha = 0;
-	sfc.a = alpha;
-	speech->setFillColor(sfc);
-	soc.a = alpha;
-	speech->setOutlineColor(soc);
+	if (Settings::catTalks) {
+		sf::Color sfc = speech->getFillColor();
+		sf::Color soc = speech->getOutlineColor();
+		int alpha = static_cast<int>(sfc.a);
+		alpha -= dt * 255.f / SPEECH_FADE_OUT_S;
+		if (alpha < 0) alpha = 0;
+		sfc.a = alpha;
+		speech->setFillColor(sfc);
+		soc.a = alpha;
+		speech->setOutlineColor(soc);
+	}
 
 	if (happiness <= 0) {
 		//alive = false;
@@ -260,15 +271,15 @@ void Cat::update(float dt) {
 			//std::cout << "Idling for " << idleTimeLeft << std::endl;
 
 			// talk to user
-			texM.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
+			if (Settings::catTalks) texM.setTextContent(textRef, STATE_SPEECH_OPTIONS.at(entityState).at(rand() % (int)STATE_SPEECH_OPTIONS.at(entityState).size()));
 		}
 
 		if (idleTimeLeft <= 0) {
 			//std::cout << "Idle time over" << std::endl;
 			idleTimeLeft = std::numeric_limits<float>::max();
 			moveTo(
-				winX* RAND_POS_PADDING + rand() % (int)(winX * (1.f - 2.f * RAND_POS_PADDING)),
-				winY* RAND_POS_PADDING + rand() % (int)(winY * (1.f - 2.f * RAND_POS_PADDING))
+				winX * RAND_POS_PADDING + rand() % (int)(winX * (1.f - 2.f * RAND_POS_PADDING)),
+				winY * RAND_POS_PADDING + rand() % (int)(winY * (1.f - 2.f * RAND_POS_PADDING))
 			);
 		}
 		else {
@@ -282,7 +293,7 @@ void Cat::update(float dt) {
 
 	// summon cat to mouse
 	if (Settings::catFollowsMouseClick && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-		texM.setTextContent(textRef, "I'm cominggggggggg");
+		if (Settings::catTalks) texM.setTextContent(textRef, "I'm cominggggggggg");
 		if ((sf::Vector2f(mX * 1.f, mY * 1.f) - pos).lengthSquared() > std::pow(MOVEMENT_EPSILON, 2.f)) {
 			moveTo((float)mX, (float)mY);
 		}
@@ -291,7 +302,7 @@ void Cat::update(float dt) {
 	catSprite.sprite.setPosition(pos);
 
 
-	speech->setPosition({ pos.x + width / 2.f, pos.y - height / 2.f });
+	if (Settings::catTalks) speech->setPosition({ pos.x + width / 2.f, pos.y - height / 2.f });
 	//if (facing == FACING_DIRECTIONS::LEFT) {
 	//	speech->setPosition({ pos.x, pos.y });
 	//}
@@ -306,43 +317,45 @@ void Cat::update(float dt) {
 
 
 #pragma region poop
-	auto now = std::chrono::system_clock::now();
-	if ((now - Poop::nextPoopTime).count() > 0) {
-		Poop::lastPoopTime = now;
-		Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
-		
-		Poop p(pos);
+	if (Settings::catPoops) {
+		auto now = std::chrono::system_clock::now();
+		if ((now - Poop::nextPoopTime).count() > 0) {
+			Poop::lastPoopTime = now;
+			Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
 
-		texM.createSprite(p.spriteRef, p.texRef, 0, 0, 0, 0, p.texWidth, p.texHeight, false, 0.f, true);
-		texM.getSprite(p.spriteRef).sprite.setScale({ 1.f / p.texWidth * 30.f * Settings::catScale, 1.f / p.texWidth * 30.f * Settings::catScale });
-		texM.getSprite(p.spriteRef).sprite.setPosition(p.pos);
+			Poop p(pos);
 
-		poops.emplace_back(std::move(p));
+			texM.createSprite(p.spriteRef, p.texRef, 0, 0, 0, 0, p.texWidth, p.texHeight, false, 0.f, true);
+			texM.getSprite(p.spriteRef).sprite.setScale({ 1.f / p.texWidth * 30.f * Settings::catScale, 1.f / p.texWidth * 30.f * Settings::catScale });
+			texM.getSprite(p.spriteRef).sprite.setPosition(p.pos);
 
-		texM.setTextContent(textRef, POOP_LINES.at(rand() % (int)POOP_LINES.size()));
-		idleTimeLeft = 0.f;
-	}
+			poops.emplace_back(std::move(p));
 
-	for (Poop& p : poops) {
-		p.elapsed_s += dt;
-
-		if (p.lifespan_s - p.elapsed_s > p.FADE_OUT_IN_LAST_N_SECONDS) {
-			continue;
+			if (Settings::catTalks) texM.setTextContent(textRef, POOP_LINES.at(rand() % (int)POOP_LINES.size()));
+			idleTimeLeft = 0.f;
 		}
 
-		// fade out poop
-		sf::Color color = texM.getSprite(p.spriteRef).sprite.getColor();
-		color.a = static_cast<int>(255.f * (p.lifespan_s - p.elapsed_s) / p.FADE_OUT_IN_LAST_N_SECONDS);
-		texM.getSprite(p.spriteRef).sprite.setColor(color);
-	}
+		for (Poop& p : poops) {
+			p.elapsed_s += dt;
 
-	poops.erase(std::remove_if(poops.begin(), poops.end(), [](const Poop& pp) {
-		if (pp.elapsed_s >= pp.lifespan_s) {
-			texM.deleteSprite(pp.spriteRef);
-			return true;
+			if (p.lifespan_s - p.elapsed_s > p.FADE_OUT_IN_LAST_N_SECONDS) {
+				continue;
+			}
+
+			// fade out poop
+			sf::Color color = texM.getSprite(p.spriteRef).sprite.getColor();
+			color.a = static_cast<int>(255.f * (p.lifespan_s - p.elapsed_s) / p.FADE_OUT_IN_LAST_N_SECONDS);
+			texM.getSprite(p.spriteRef).sprite.setColor(color);
 		}
-		return false;
-		}), poops.end());
+
+		poops.erase(std::remove_if(poops.begin(), poops.end(), [](const Poop& pp) {
+			if (pp.elapsed_s >= pp.lifespan_s) {
+				texM.deleteSprite(pp.spriteRef);
+				return true;
+			}
+			return false;
+			}), poops.end());
+	}
 
 
 #pragma endregion poop

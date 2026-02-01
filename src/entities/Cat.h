@@ -375,7 +375,7 @@ public:
 
 
 	// get current happiness value in range [0,1]
-	float getHappiness() {
+	float getHappinessPercentage() {
 		return happiness / MAX_HAPPINESS;
 	}
 
@@ -383,9 +383,8 @@ public:
 		happiness = MAX_HAPPINESS;
 	}
 
-	// get max minutes before break time
-	float getexMaxWorkTime() const {
-		return HAPPINESS_LIFESPAN;
+	static float getMaxHappiness() {
+		return MAX_HAPPINESS;
 	}
 
 	static std::string getTextRef() {
@@ -431,4 +430,6 @@ public:
 		if (p.y < pos.y - (height * Settings::catScale) / 2.f || p.y > pos.y + (height * Settings::catScale) / 2.f) return false;
 		return true;
 	}
+
+	void recalculateHappiness();
 };

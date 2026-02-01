@@ -42,12 +42,15 @@ struct Settings {
 	// not to be saved
 
 	inline static bool paused = false;
-	inline static constexpr float MAX_WORK_DURATION_M = 60.f;
-	inline static constexpr float MIN_BREAK_DURATION_M = 5.f;
+	inline static bool onEnforcedBreak = false;
 
 	inline static std::vector<bool> lockedSkins;		// for fast access and reduce computation for unlockedSkins ImGui disabling in ui.cpp
 
 	// save
+	inline static int MAX_WORK_DURATION_M = 60.f;
+	inline static int MIN_BREAK_DURATION_M = 5.f;
+	inline static bool enforceBreaks{ false };
+
 	inline static bool unlockAll;
 
 	// coins

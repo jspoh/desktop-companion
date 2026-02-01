@@ -23,9 +23,6 @@ void GameManager::init(const sf::Color& win32_transparent_color) {
 
 	sm.setScene(std::make_shared<DefaultScene>());
 
-	Room::get();
-	Cat::get();
-
 	// no modal background
 	ImGui::GetStyle().Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 }
@@ -66,6 +63,10 @@ void GameManager::update() {
 			prevGravePressed = false;
 		}
 
+		if (Settings::onEnforcedBreak) {
+			showEditor = true;
+		}
+
 		if (showEditor) {
 			clearColor = { 0, 0, 0, 220 };
 			Window::get().setClickThrough(false);
@@ -85,24 +86,85 @@ void GameManager::update() {
 		//ImGui::Button("Look at this pretty button");
 		//ImGui::End();
 
-		UI::render();
+		if (Settings::enforceBreaks) {
+			static float enforcedBreakElapsed{};
+
+			if (Cat::get().getHappinessPercentage() == 0 && !Settings::onEnforcedBreak) {
+				Settings::onEnforcedBreak = true;
+			}
+
+			if (Settings::onEnforcedBreak) {
+				if (enforcedBreakElapsed >= Settings::MIN_BREAK_DURATION_M * 60.f) {
+					Settings::onEnforcedBreak = false;
+				}
+
+				enforcedBreakElapsed += dt;
+
+				//std::cout << enforcedBreakElapsed << " | " << Settings::MIN_BREAK_DURATION_M * 60.f << std::endl;
+
+				{
+					const float totalSecondsLeft = Settings::MIN_BREAK_DURATION_M * 60.f - enforcedBreakElapsed;
+					const int iTotalSecondsLeft = std::ceil(totalSecondsLeft);
+
+					const int iHoursLeft = iTotalSecondsLeft / 3600;
+					const int iMinsLeft = (iTotalSecondsLeft - (iHoursLeft * 3600)) / 60;
+					const int iSecsLeft = iTotalSecondsLeft - (iHoursLeft * 3600) - (iMinsLeft * 60);
+
+					sf::Vector2f ppp = win.getSize() / 2.f;
+					ImGui::SetNextWindowPos({ ppp.x, ppp.y }, ImGuiCond_Always, { 0.5f, 0.5f });
+					ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always);
+
+					char buf[24] = {};
+					if (ImGui::Begin("Enforced break", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
+
+						ImGui::TextColored({ 1, 0, 0, 1 }, "ON ENFORCED BREAK");
+						ImGui::TextColored({ 1, 0, 0, 1 }, "%02d:%02d:%02d remaining", iHoursLeft, iMinsLeft, iSecsLeft);
+
+						ImGui::Spacing();
+						ImGui::Separator();
+						ImGui::Spacing();
+
+						static const std::string exitCmd = "I am done with my break";
+						ImGui::Text("Force end break");
+						if (ImGui::InputTextWithHint("##Force end break", exitCmd.c_str(), buf, 24, 0)) {
+							if (!strcmp(buf, exitCmd.c_str())) {
+								enforcedBreakElapsed = 0.f;
+								Settings::onEnforcedBreak = false;
+								Cat::get().setHappinessMax();
+							}
+						}
+
+						ImGui::End();
+					}
+
+					if (!Settings::onEnforcedBreak) {
+						buf[0] = '\0';
+						enforcedBreakElapsed = 0.f;
+						Cat::get().setHappinessMax();
+					}
+				}
+			}
+
+		}
+
 
 		// 
 		win.clear(clearColor);
-		if (!Settings::paused) {
+		if (!Settings::paused && !Settings::onEnforcedBreak) {
 			sm.update(dt);
 			texM.render(dt);
 		}
 
+		UI::render();
 		if (showEditor) {
 			ImGui::SFML::Render(win);
 		}
 
-		if (!Settings::paused) {
+		if (!Settings::paused && !Settings::onEnforcedBreak) {
 			// render cat again to be on top of imgui windows
 
 			texM._render(0, texM.getSprite(Cat::getCatSpriteName()));
-			win.draw(texM.getText(Cat::getTextRef()));
+			if (Settings::catTalks) win.draw(texM.getText(Cat::getTextRef()));
 		}
 
 		win.display();
