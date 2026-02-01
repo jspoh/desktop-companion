@@ -263,3 +263,4 @@ public:
 
 	void addFurniture(const Furniture& f);
 };
+

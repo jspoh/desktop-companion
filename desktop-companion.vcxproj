@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(SolutionDir)dependencies\json\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\intermediate\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\imgui\include;$(SolutionDir)dependencies\SFML-3.0.2\include;$(SolutionDir)src;$(SolutionDir)dependencies\json\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\intermediate\</IntDir>
     <LinkIncremental>false</LinkIncremental>

@@ -1,7 +1,37 @@
 #pragma once
 #include "pch.h"
 #include "Room/Room.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
+
+namespace nlohmann {
+	template <>
+	struct adl_serializer<Room::Furniture> {
+		static void to_json(json& j, const Room::Furniture& f) {
+			j = json{
+				{"type", static_cast<int>(f.type)},
+				{"inInventory", f.inInventory},
+				{"pos", {f.pos.x, f.pos.y}},
+				{"spriteRef", f.spriteRef},
+				{"AABB_MIN", {f.AABB_MIN.x, f.AABB_MIN.y}},
+				{"AABB_MAX", {f.AABB_MAX.x, f.AABB_MAX.y}}
+			};
+		}
+
+		static void from_json(const json& j, Room::Furniture& f) {
+			f.type = static_cast<Room::Furniture::TYPE>(j.at("type").get<int>());
+			f.inInventory = j.at("inInventory").get<bool>();
+			f.pos.x = j.at("pos")[0].get<float>();
+			f.pos.y = j.at("pos")[1].get<float>();
+			f.spriteRef = j.at("spriteRef").get<std::string>();
+			f.AABB_MIN.x = j.at("AABB_MIN")[0].get<float>();
+			f.AABB_MIN.y = j.at("AABB_MIN")[1].get<float>();
+			f.AABB_MAX.x = j.at("AABB_MAX")[0].get<float>();
+			f.AABB_MAX.y = j.at("AABB_MAX")[1].get<float>();
+		}
+	};
+}
 
 // could pack struct to optimize space
 struct Settings {
@@ -74,41 +104,22 @@ struct Settings {
 		configFilePath = docsPath / configDirName / configFileName;
 		bool configExists = fs::exists(configFilePath);
 		if (configExists) {
-			std::ifstream ifs(configFilePath, std::ios::binary);
-			if (ifs.is_open()) {
-				ifs.read((char*)&unlockAll, sizeof(bool));
-				ifs.read((char*)&coins, sizeof(int));
-				size_t vecSize;
-				ifs.read((char*)&vecSize, sizeof(size_t));
-				unlockedSkins.resize(vecSize);
-				for (size_t i = 0; i < vecSize; ++i) {
-					size_t strLen;
-					ifs.read((char*)&strLen, sizeof(size_t));
-					unlockedSkins[i].resize(strLen);
-					ifs.read(&unlockedSkins[i][0], strLen);
-				}
-				size_t strLen;
-				ifs.read((char*)&strLen, sizeof(size_t));
-				catTexRef.resize(strLen);
-				ifs.read(&catTexRef[0], strLen);
-				ifs.read((char*)&strLen, sizeof(size_t));
-				roomTexRef.resize(strLen);
-				ifs.read(&roomTexRef[0], strLen);
-				ifs.read((char*)&catScale, sizeof(float));
-				ifs.read((char*)&roomScale, sizeof(float));
-				ifs.read((char*)&catFollowsMouseClick, sizeof(bool));
-				ifs.read((char*)&catTalks, sizeof(bool));
-				ifs.read((char*)&vecSize, sizeof(size_t));
-				furnitures.resize(vecSize);
-				for (size_t i = 0; i < vecSize; ++i) {
-					ifs.read((char*)&furnitures[i], sizeof(Room::Furniture));
-				}
-			}
-			else {
-				configExists = false;
-			}
+			std::ifstream ifs(configFilePath);
+			json j;
+			ifs >> j;
+
+			unlockAll = j.value("unlockAll", false);
+			coins = j.value("coins", 0);
+			unlockedSkins = j.value("unlockedSkins", std::vector<std::string>{"AllCats.png"});
+			catTexRef = j.value("catTexRef", "AllCats.png");
+			roomTexRef = j.value("roomTexRef", "Room1.png");
+			catScale = j.value("catScale", 1.f);
+			roomScale = j.value("roomScale", 1.f);
+			catFollowsMouseClick = j.value("catFollowsMouseClick", false);
+			catTalks = j.value("catTalks", true);
+			furnitures = j.value("furnitures", std::vector<Room::Furniture>{});
 		}
-		if (!configExists) {
+		else {
 			initConfig();
 			save();
 		}
@@ -121,31 +132,20 @@ struct Settings {
 
 
 	static void save() {
-		std::ofstream ofs(configFilePath, std::ios::binary);
-		ofs.write((char*)&unlockAll, sizeof(unlockAll));
-		ofs.write((char*)&coins, sizeof(coins));
-		size_t vecSize = unlockedSkins.size();
-		ofs.write((char*)&vecSize, sizeof(size_t));
-		for (const auto& str : unlockedSkins) {
-			size_t strLen = str.size();
-			ofs.write((char*)&strLen, sizeof(size_t));
-			ofs.write(str.data(), strLen);
-		}
-		size_t strLen = catTexRef.size();
-		ofs.write((char*)&strLen, sizeof(size_t));
-		ofs.write(catTexRef.data(), strLen);
-		strLen = roomTexRef.size();
-		ofs.write((char*)&strLen, sizeof(size_t));
-		ofs.write(roomTexRef.data(), strLen);
-		ofs.write((char*)&catScale, sizeof(catScale));
-		ofs.write((char*)&roomScale, sizeof(roomScale));
-		ofs.write((char*)&catFollowsMouseClick, sizeof(catFollowsMouseClick));
-		ofs.write((char*)&catTalks, sizeof(catTalks));
-		vecSize = furnitures.size();
-		ofs.write((char*)&vecSize, sizeof(size_t));
-		for (const auto& furniture : furnitures) {
-			ofs.write((char*)&furniture, sizeof(Room::Furniture));
-		}
+		json j;
+		j["unlockAll"] = unlockAll;
+		j["coins"] = coins;
+		j["unlockedSkins"] = unlockedSkins;
+		j["catTexRef"] = catTexRef;
+		j["roomTexRef"] = roomTexRef;
+		j["catScale"] = catScale;
+		j["roomScale"] = roomScale;
+		j["catFollowsMouseClick"] = catFollowsMouseClick;
+		j["catTalks"] = catTalks;
+		j["furnitures"] = furnitures;
+
+		std::ofstream ofs(configFilePath);
+		ofs << j.dump(4);  // Pretty print with 4 spaces
 	}
 };
 
