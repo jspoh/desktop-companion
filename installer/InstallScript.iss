@@ -10,6 +10,8 @@
 ; (To generate a new GUID, click "Tools" | "Create GUID" inside the Visual Studio IDE.)
 AppId={{79E42D11-8735-42FB-9023-92E3B334F323}
 
+ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode=x64
 
 ; Standard app data stuff
 ; !!NOTE!!: Replace all instances of "Desktop-Companion" with your game name.
@@ -63,6 +65,13 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 ; delete cofig/data file in ~/Documents
 [UninstallDelete]
 Type: files; Name: "{userdocs}\jspoh desktop companion\jdc"
+Type: filesandordirs; Name: "{userdocs}\jspoh desktop companion"
+Type: filesandordirs; Name: "{userdocs}\jspoh desktop companion"
+Type: filesandordirs; Name: "{pf}\jspoh"
+
+
+[UninstallRun]
+Filename: "taskkill.exe"; Parameters: "/F /IM desktop-companion.exe"; Flags: runhidden
 
 ;
 ; !!NOTE!!: Your game may not require the VC or DX redistributable installers.
