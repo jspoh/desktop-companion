@@ -227,6 +227,8 @@ public:
 
 		sf::Vector2f AABB_MIN{};
 		sf::Vector2f AABB_MAX{};
+
+		bool mirrored{};
 	};
 
 private:
@@ -240,6 +242,8 @@ public:
 		static Room instance;
 		return instance;
 	}
+
+	int selectedFurnitureIdx = -1;		// for editing. (mirror, bring to front, send to back)
 	
 	static constexpr const char* ref = "room";
 	TextureManager::JS_SPRITE* sprite = nullptr;

@@ -39,6 +39,9 @@ public:
 		WIN32_TRANSPARENT_COLOR = win32_transparent_color;
 
 		sm.setScene(std::make_shared<DefaultScene>());
+
+		Room::get();
+		Cat::get();
 	}
 
 	bool showEditor{};

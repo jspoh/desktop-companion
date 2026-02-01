@@ -83,7 +83,7 @@ void Room::update(float dt) {
 		}
 
 		// update scale
-		furnitureSprite.sprite.setScale({ localScale * Settings::roomScale, localScale * Settings::roomScale });
+		furnitureSprite.sprite.setScale({ localScale * Settings::roomScale * (f.mirrored ? -1.f : 1.f), localScale * Settings::roomScale});
 	}
 
 	// drag furniture to reposition them
@@ -100,6 +100,7 @@ void Room::update(float dt) {
 
 			if (mPos.x >= f.AABB_MIN.x && mPos.x <= f.AABB_MAX.x && mPos.y >= f.AABB_MIN.y && mPos.y <= f.AABB_MAX.y) {
 				draggedFurnitureIdx = i;
+				selectedFurnitureIdx = i;
 				break;			// only drag one at atime
 			}
 		}

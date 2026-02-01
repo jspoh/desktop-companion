@@ -45,5 +45,11 @@ inline sf::Vector2f operator*(const sf::Vector2i& v, float mul) {
 	return { v.x * mul, v.y * mul };
 }
 
+inline ImVec2& operator+=(ImVec2& lhs, const ImVec2& rhs) {
+	lhs.x += rhs.x;
+	lhs.y += rhs.y;
+	return lhs;
+}
+
 
 #endif

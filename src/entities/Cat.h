@@ -166,7 +166,7 @@ private:
 			"body scrubbers? who needs them?",
 			"*yawns",
 			"bow down to me puny human",
-			"I once caught a mouse all by myself",
+			"I once defeated an entire army of mice all by myself",
 			"My secret is no cigarette",
 			"mmm french toast",
 			"I pooped a real big one the other day",
@@ -190,7 +190,7 @@ private:
 			"FOCUSSS",
 			"Stay hydrated"
 			"I am so smart",
-			"I once caught a mouse all by myself",
+			"I once defeated an entire army of mice all by myself",
 			"So why did the chicken cross the road?",
 			"God I am cute",
 			"I rubbed my butt on your pillow",

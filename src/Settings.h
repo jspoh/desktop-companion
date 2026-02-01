@@ -15,7 +15,8 @@ namespace nlohmann {
 				{"pos", {f.pos.x, f.pos.y}},
 				{"spriteRef", f.spriteRef},
 				{"AABB_MIN", {f.AABB_MIN.x, f.AABB_MIN.y}},
-				{"AABB_MAX", {f.AABB_MAX.x, f.AABB_MAX.y}}
+				{"AABB_MAX", {f.AABB_MAX.x, f.AABB_MAX.y}},
+				{"mirrored", f.mirrored}
 			};
 		}
 
@@ -29,38 +30,42 @@ namespace nlohmann {
 			f.AABB_MIN.y = j.at("AABB_MIN")[1].get<float>();
 			f.AABB_MAX.x = j.at("AABB_MAX")[0].get<float>();
 			f.AABB_MAX.y = j.at("AABB_MAX")[1].get<float>();
+			f.mirrored = j.at("mirrored").get<bool>();
 		}
 	};
 }
 
 // could pack struct to optimize space
 struct Settings {
-	static bool unlockAll;
+	inline static bool unlockAll;
 
 	// coins
-	static int coins;
+	inline static int coins;
 
 	// unlocked skins
-	static std::vector<std::string> unlockedSkins;
+	inline static std::vector<std::string> unlockedSkins;
 
 	// save user cat skin and room
-	static std::string catTexRef;
-	static std::string roomTexRef;
+	inline static std::string catTexRef;
+	inline static std::string roomTexRef;
 
 	// furnitures
-	static std::vector<Room::Furniture> furnitures;
+	inline static std::vector<Room::Furniture> furnitures;
 
 	// save user behaviour preferences
-	static float catScale;
-	static float roomScale;
-	static bool catFollowsMouseClick;
-	static bool catTalks;
+	inline static float catScale;
+	inline static float roomScale;
+	inline static bool catFollowsMouseClick;
+	inline static bool catTalks;
+
+	inline static bool catPoops;
+	inline static bool paused;
 
 	// save user furniture config
-	// static std::string favouriteBeanBag
-	// static sf::Vector2f beanBagOffset;		// offset from center of room
+	// inline static std::string favouriteBeanBag
+	// inline static sf::Vector2f beanBagOffset;		// offset from center of room
 
-	static std::filesystem::path configFilePath;
+	inline static std::filesystem::path configFilePath;
 
 	static void cleanup() {
 		unlockedSkins.clear();
@@ -83,6 +88,8 @@ struct Settings {
 		catFollowsMouseClick = false;
 		catTalks = true;
 		furnitures = {};
+		catPoops = true;
+		paused = false;
 	}
 
 
@@ -118,6 +125,8 @@ struct Settings {
 			catFollowsMouseClick = j.value("catFollowsMouseClick", false);
 			catTalks = j.value("catTalks", true);
 			furnitures = j.value("furnitures", std::vector<Room::Furniture>{});
+			catPoops = j.value("catPoops", true);
+			paused = false;
 		}
 		else {
 			initConfig();
@@ -143,21 +152,10 @@ struct Settings {
 		j["catFollowsMouseClick"] = catFollowsMouseClick;
 		j["catTalks"] = catTalks;
 		j["furnitures"] = furnitures;
+		j["catPoops"] = catPoops;
 
 		std::ofstream ofs(configFilePath);
 		ofs << j.dump();
 	}
 };
 
-
-inline bool Settings::unlockAll;
-inline int Settings::coins;
-inline std::vector<std::string> Settings::unlockedSkins;
-inline std::string Settings::catTexRef;
-inline std::string Settings::roomTexRef;
-inline float Settings::catScale;
-inline float Settings::roomScale;
-inline bool Settings::catFollowsMouseClick;
-inline bool Settings::catTalks;
-inline std::filesystem::path Settings::configFilePath;
-inline std::vector<Room::Furniture> Settings::furnitures;
