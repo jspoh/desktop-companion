@@ -48,6 +48,8 @@ public:
 
 	static constexpr int z = 1000;
 
+	static constexpr int SKIN_COST = 1000;
+
 private:
 
 	Cat();
@@ -256,7 +258,7 @@ private:
 
 	static constexpr float MAX_HAPPINESS = 100.f;
 	float happiness{ MAX_HAPPINESS };
-	float HAPPINESS_LIFESPAN = Settings::MAX_WORK_DURATION_M;		// how many minutes before happiness fully drains
+	inline static float HAPPINESS_LIFESPAN = Settings::MAX_WORK_DURATION_M;		// how many minutes before happiness fully drains
 	float happiness_drain_rate_s = MAX_HAPPINESS / (HAPPINESS_LIFESPAN * 60.f);		// how much happiness drains per second
 
 	void setHappiness(float nh) {
@@ -321,10 +323,8 @@ private:
 	static constexpr float RAND_POS_PADDING = 0.05f;		// do not go to extreme 5% of screen
 public:
 
-	static Cat& get() {
-		static Cat instance;
-		return instance;
-	}
+	static Cat& get();
+
 
 	// get current happiness value in range [0,1]
 	float getHappiness() {

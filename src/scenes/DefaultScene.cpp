@@ -152,6 +152,8 @@ void DefaultScene::update(float dt) {
 		if (gm.breaks.size() > gm.MAX_BREAKDATA_SIZE) {
 			gm.breaks.pop_front();
 		}
+
+		Settings::coins += 20;
 	}
 
 	if (onBreak) {

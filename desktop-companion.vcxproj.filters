@@ -54,6 +54,9 @@
     <ClCompile Include="src\ui\ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Settings\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\TextureManager.h">
@@ -116,7 +119,7 @@
     <ClInclude Include="src\Room\Room.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Settings.h">
+    <ClInclude Include="src\Settings\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BreakData.h">

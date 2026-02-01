@@ -11,7 +11,7 @@ void UI::init() {
 }
 
 template<typename fn>
-void UI::renderImageButtonsTab(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
+void UI::renderImageButtonsTab(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback, const std::vector<bool>& disabled) {
 	if (!ImGui::BeginTabItem(title.c_str())) return;
 
 	ImGui::Text(instruction.c_str());
@@ -20,12 +20,26 @@ void UI::renderImageButtonsTab(const ImVec2& pos, const std::string& title, cons
 	ImGui::BeginGroup();
 
 	int entries{};
-	for (const std::string& ref : refs) {
+	for (int i{}; i < (int)refs.size(); ++i) {
+
+		const std::string& ref = refs[i];
+
 		if (entries++ % entriesPerLine != 0) ImGui::SameLine();
 
+		//if (disabled.size() && disabled[i]) ImGui::BeginDisabled();
+		if (disabled.size() && disabled[i]) {
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3f, 0.3f, 0.3f, 0.5f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.3f, 0.3f, 0.5f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.25f, 0.25f, 0.25f, 0.5f));
+		}
 		if (ImGui::ImageButton(ref.c_str(), texM.getSprite(ref).sprite, sf::Vector2f(w, h))) {
 			callback(ref);
 		}
+		if (disabled.size() && disabled[i]) {
+			ImGui::PopStyleColor(3);
+		}
+		//if (disabled.size() && disabled[i]) ImGui::EndDisabled();
+
 	}
 	ImGui::EndGroup();
 
@@ -35,7 +49,7 @@ void UI::renderImageButtonsTab(const ImVec2& pos, const std::string& title, cons
 }
 
 template<typename fn>
-void UI::renderImageButtonsWindow(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback) {
+void UI::renderImageButtonsWindow(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback, const std::vector<bool>& disabled) {
 	ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
@@ -44,7 +58,7 @@ void UI::renderImageButtonsWindow(const ImVec2& pos, const std::string& title, c
 		ImGuiWindowFlags_NoMove);
 
 	if (ImGui::BeginTabBar(title.c_str())) {
-		renderImageButtonsTab(pos, title, instruction, refs, entriesPerLine, w, h, callback);
+		renderImageButtonsTab(pos, title, instruction, refs, entriesPerLine, w, h, callback, disabled);
 		ImGui::EndTabBar();
 	}
 
@@ -123,14 +137,32 @@ void UI::_furnitureInventoryTab() {
 
 void UI::skinSelect() {
 	auto onChange = [](const std::string& ref) {
+		if (Settings::unlockedSkins.find(ref) == Settings::unlockedSkins.end()) {
+			// user doesnt own skin
+
+			if (Settings::coins < Cat::SKIN_COST) {
+				texM.setTextContent(Cat::getTextRef(), "You can't afford this :(");
+				return;
+			}
+
+			Settings::coins -= Cat::SKIN_COST;
+			Settings::unlockedSkins.insert(ref);
+		}
+
 		texM.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(texM.getTexture(ref));
 		Cat::get().init(false);
 
 		Settings::catTexRef = ref;
 		Settings::save();
+
+		Settings::_resetLockedSkins();
+		
 		};
 
-	renderImageButtonsWindow(lastWinSize, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
+	std::stringstream ss;
+	ss << "Click to select/purchase skin. (Cost: " << Cat::SKIN_COST << ")";
+
+	renderImageButtonsWindow(lastWinSize, "Companion skin", ss.str(), Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange, Settings::lockedSkins);
 }
 
 void UI::_roomSelectTab() {
@@ -141,7 +173,7 @@ void UI::_roomSelectTab() {
 		};
 
 
-	renderImageButtonsTab(lastWinSize, "Paint", "Select color", Room::get().getRoomRefs(), 6, 50.f, 50.f, onChange);
+	renderImageButtonsTab(lastWinSize, "Paint", "Select color", Room::get().getRoomRefs(), 6, 50.f, 50.f, onChange, {});
 }
 
 void UI::settingsView() {
@@ -285,7 +317,7 @@ void UI::cheatcode() {
 	ImGui::InputText("##cheatcode", buf, IPT_SIZE);
 	if (ImGui::Button("hackerman")) {
 		if (!strcmp(buf, "kaching")) {
-			static constexpr int ADD_AMOUNT = 1000;
+			static constexpr int ADD_AMOUNT = 10000;
 			if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
 				Settings::coins += ADD_AMOUNT;
 			Settings::save();
@@ -323,7 +355,8 @@ void UI::manageFurniture() {
 
 	bool changed = false;
 	if (ImGui::Checkbox("Flip horizontally", &f.mirrored)) changed = true;
-	if (ImGui::InputInt("Z value (larger values are on top)", &f.z)) changed = true;
+	ImGui::Text("Z value (larger values are on top)");
+	if (ImGui::InputInt("##Z value (larger values are on top)", &f.z)) changed = true;
 	if (ImGui::Checkbox("Keep in inventory", &f.inInventory)) changed = true;
 
 	if (changed) {

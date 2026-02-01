@@ -23,6 +23,11 @@ Cat::Cat() {
 	speech = &texM.registerText(textRef, "", 16);
 }
 
+Cat& Cat::get() {
+	static Cat instance;
+	return instance;
+}
+
 
 void Cat::init(bool resetPos) {
 	//std::cout << resetPos << std::endl;

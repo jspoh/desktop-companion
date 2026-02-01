@@ -182,6 +182,7 @@
     <ClCompile Include="src\Room\Room.cpp" />
     <ClCompile Include="src\scenes\DefaultScene.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Settings\Settings.cpp" />
     <ClCompile Include="src\ui\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +204,7 @@
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\entities\Cat.h" />
     <ClInclude Include="src\scenes\DefaultScene.h" />
-    <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\Settings\Settings.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\ui\ui.h" />
     <ClInclude Include="src\Window.h" />

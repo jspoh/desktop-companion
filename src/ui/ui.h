@@ -19,10 +19,10 @@ public:
 	static void init();
 
 	template<typename fn>
-	static void renderImageButtonsTab(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback);
+	static void renderImageButtonsTab(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback, const std::vector<bool>& disabled);
 
 	template<typename fn>
-	static void renderImageButtonsWindow(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback);
+	static void renderImageButtonsWindow(const ImVec2& pos, const std::string& title, const std::string& instruction, const std::vector<std::string>& refs, int entriesPerLine, float w, float h, fn callback, const std::vector<bool>& disabled);
 
 	static void _furnitureInventoryTab();
 

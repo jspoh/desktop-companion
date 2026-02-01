@@ -27,7 +27,7 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 
 
 #define texM TextureManager::get()
