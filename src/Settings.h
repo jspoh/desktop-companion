@@ -145,7 +145,7 @@ struct Settings {
 		j["furnitures"] = furnitures;
 
 		std::ofstream ofs(configFilePath);
-		ofs << j.dump(4);  // Pretty print with 4 spaces
+		ofs << j.dump();
 	}
 };
 
