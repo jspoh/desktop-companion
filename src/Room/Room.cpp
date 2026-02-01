@@ -90,7 +90,7 @@ void Room::update(float dt) {
 	static int draggedFurnitureIdx = -1;		// is ok, because is singleton
 
 	// check before running loop. cheaper this way
-	if (draggedFurnitureIdx == -1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+	if (draggedFurnitureIdx == -1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && Cat::get().getEntityState() != Cat::EntityStates::DRAGGED) {
 		for (int i{}; i < (int)Settings::furnitures.size(); ++i) {
 			//tm.getSprite(f.spriteRef).visible = !f.inInventory;
 
@@ -135,7 +135,7 @@ void Room::addFurniture(Furniture::TYPE type) {
 
 	Settings::furnitures.push_back(f);
 
-	Settings::save();
+	//Settings::save();
 }
 
 

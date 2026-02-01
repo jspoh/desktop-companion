@@ -43,7 +43,7 @@ public:
 		ImGui::End();
 	}
 
-	static void furnitureSelect() {
+	static void furniturePurchase() {
 		ImGui::SetNextWindowPos({5, 750}, ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
@@ -51,7 +51,7 @@ public:
 			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoMove);
 
-		ImGui::Text("Click to purchase (Cost: 100)");
+		ImGui::Text("Click to purchase (Cost: %d)", Room::Furniture::COST);
 		ImGui::Separator();
 
 		static constexpr int NUM_COLUMNS = 6;
@@ -67,7 +67,16 @@ public:
 			tempSprite.setTextureRect(sf::IntRect({ od.left, od.top }, { od.width, od.height }));
 
 			if (ImGui::ImageButton(("furniture" + std::to_string(entries)).c_str(), tempSprite, sf::Vector2f(CELL_WIDTH, CELL_WIDTH))) {
+				if (Settings::coins < Room::Furniture::COST) {
+					tm.setTextContent(Cat::getTextRef(), "You can't afford this :(");
+					continue;
+				}
+
+				Settings::coins -= Room::Furniture::COST;
+
 				Room::get().addFurniture(type);
+
+				Settings::save();
 			}
 		}
 		ImGui::EndGroup();
@@ -137,6 +146,6 @@ public:
 		roomSelect();
 		skinSelect();
 		settingsView();
-		furnitureSelect();
+		furniturePurchase();
 	}
 };

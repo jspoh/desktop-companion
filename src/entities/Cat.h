@@ -324,6 +324,10 @@ public:
 		return instance;
 	}
 
+	static std::string getTextRef() {
+		return textRef;
+	}
+
 	void init(bool resetPos = true);
 
 	void update(float dt);

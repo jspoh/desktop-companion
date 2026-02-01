@@ -19,6 +19,8 @@ public:
 	class Furniture {
 	public:
 
+		static const int COST = 100;
+
 		struct OffsetData {
 			int left, top, width, height;
 		};
