@@ -39,6 +39,14 @@ Room::Room() {
 	//furnitureSprite = &tm.getSprite(furnitureRef);
 }
 
+Room::Furniture::Furniture() {
+
+}
+
+Room::Furniture::~Furniture() {
+
+}
+
 void Room::init() {
 
 }
@@ -128,4 +136,13 @@ void Room::addFurniture(Furniture::TYPE type) {
 	Settings::furnitures.push_back(f);
 
 	Settings::save();
+}
+
+
+void Room::addFurniture(const Furniture& f) {
+	const Furniture::OffsetData& od = Furniture::spritesheetOffsets.at(f.type);
+	tm.createSprite(f.spriteRef, furnitureTextureRef, 0, 0, od.left, od.top, od.width, od.height, false, 0.f, !f.inInventory);
+
+	TextureManager::JS_SPRITE& s = tm.getSprite(f.spriteRef);
+	s.sprite.setOrigin(s.sprite.getLocalBounds().size / 2.f);
 }

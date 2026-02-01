@@ -213,6 +213,8 @@ public:
 
 
 	public:
+		Furniture();
+		~Furniture();
 
 		inline static int count{};
 
@@ -258,4 +260,6 @@ public:
 	}
 
 	void addFurniture(Furniture::TYPE type);
+
+	void addFurniture(const Furniture& f);
 };

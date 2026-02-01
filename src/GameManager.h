@@ -126,7 +126,10 @@ public:
 	}
 
 	void cleanup() {
+		Settings::save();
+
 		sm.cleanup();
 		tm.cleanup();
+		Settings::cleanup();
 	}
 };

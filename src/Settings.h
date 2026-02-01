@@ -32,6 +32,14 @@ struct Settings {
 
 	static std::filesystem::path configFilePath;
 
+	static void cleanup() {
+		unlockedSkins.clear();
+		catTexRef.clear();
+		roomTexRef.clear();
+		furnitures.clear();
+		configFilePath.clear();
+	}
+
 
 	static void initConfig() {
 		// default values
@@ -103,6 +111,11 @@ struct Settings {
 		if (!configExists) {
 			initConfig();
 			save();
+		}
+
+		// init furnitures
+		for (const Room::Furniture& f : furnitures) {
+			Room::get().addFurniture(f);
 		}
 	}
 
