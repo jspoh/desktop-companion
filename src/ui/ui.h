@@ -193,12 +193,26 @@ public:
 		ss << "Coins: " << Settings::coins;
 		ImGui::Text(ss.str().c_str());
 
-		if (ImGui::Button("hackerman")) {
-			static constexpr int ADD_AMOUNT = 1000;
-			if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
-				Settings::coins += ADD_AMOUNT;
-			Settings::save();
-		}
+		//#ifdef _DEBUG
+		//		if (ImGui::Button("hackerman")) {
+		//			static constexpr int ADD_AMOUNT = 1000;
+		//			if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
+		//				Settings::coins += ADD_AMOUNT;
+		//			Settings::save();
+		//		}
+		//#endif
+				//static bool prev1Pressed = false;
+				//if (!prev1Pressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
+				//	static constexpr int ADD_AMOUNT = 1000;
+				//	if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
+				//		Settings::coins += ADD_AMOUNT;
+				//	Settings::save();
+
+				//	prev1Pressed = true;
+				//}
+				//else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
+				//	prev1Pressed = false;
+				//}
 
 		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
 
@@ -228,6 +242,34 @@ public:
 		ImGui::End();
 	}
 
+	static void cheatcode() {
+		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, orientation);
+		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
+
+		ImGui::Begin("Cheat", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoMove);
+
+		static constexpr int IPT_SIZE = 20;
+		static char buf[IPT_SIZE] = {};
+
+		ImGui::Text("Code:");
+		ImGui::InputText("##cheatcode", buf, IPT_SIZE);
+		if (ImGui::Button("hackerman")) {
+			if (!strcmp(buf, "kaching")) {
+				static constexpr int ADD_AMOUNT = 1000;
+				if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
+					Settings::coins += ADD_AMOUNT;
+				Settings::save();
+			}
+			buf[0] = '\0';
+		}
+
+		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
+
+		ImGui::End();
+	}
+
 	static void render() {
 		// left side of screen
 		lastWinSize = PADDING;
@@ -242,5 +284,11 @@ public:
 		orientation = { 1, 0 };
 
 		settingsView();
+
+		// top center of screen
+		lastWinSize = { ImGui::GetIO().DisplaySize.x / 2.f, PADDING.y };
+		orientation = { 0.5f, 0 };
+
+		cheatcode();
 	}
 };
