@@ -62,7 +62,7 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 ; delete cofig/data file in ~/Documents
 [UninstallDelete]
-Type: filesanddirsrecursively; Name: "{userdocs}\jspoh desktop companion\jdc"
+Type: files; Name: "{userdocs}\jspoh desktop companion\jdc"
 
 ;
 ; !!NOTE!!: Your game may not require the VC or DX redistributable installers.
