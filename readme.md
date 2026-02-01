@@ -1,5 +1,15 @@
 # Desktop Companion
 
+## Usage
+
+use ` or ~ to open cat room and settings 
+
+## Cheat codes
+
+`kaching` - adds money
+
+`exit` - bypasses the enforced break lock
+
 ### Problem impact
 
 ![Impact of problem (sitting too long) on university population](readme_assets/image-3.png)
