@@ -21,6 +21,13 @@ Cat::Cat() {
 	// text
 
 	speech = &texM.registerText(textRef, "", 16);
+
+	// poop
+
+	bool success = texM.registerTexture(Poop::texRef, "assets/poop.png");
+	if (!success) {
+		std::cout << "poop texture registration failed" << std::endl;
+	}
 }
 
 Cat& Cat::get() {
@@ -45,6 +52,11 @@ void Cat::init(bool resetPos) {
 	// text
 
 	texM.setTextContent(textRef, "Yippee! I'm so happy to be here!");
+
+	// poop
+
+	Poop::lastPoopTime = std::chrono::system_clock::now();
+	Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
 }
 
 
@@ -291,4 +303,38 @@ void Cat::update(float dt) {
 
 	// dbg
 	//std::cout << catSprite.animationLoopCount << std::endl;
+
+
+#pragma region poop
+	auto now = std::chrono::system_clock::now();
+	if ((now - Poop::nextPoopTime).count() > 0) {
+		Poop::lastPoopTime = now;
+		Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
+		
+		Poop p(pos);
+
+		texM.createSprite(p.spriteRef, p.texRef, 0, 0, 0, 0, p.texWidth, p.texHeight, false, 0.f, true);
+		texM.getSprite(p.spriteRef).sprite.setScale({ 1.f / p.texWidth * 30.f * Settings::catScale, 1.f / p.texWidth * 30.f * Settings::catScale });
+		texM.getSprite(p.spriteRef).sprite.setPosition(p.pos);
+
+		poops.emplace_back(std::move(p));
+
+		texM.setTextContent(textRef, POOP_LINES.at(rand() % (int)POOP_LINES.size()));
+		idleTimeLeft = 0.f;
+	}
+
+	for (Poop& p : poops) {
+		sf::Color color = texM.getSprite(p.spriteRef).sprite.getColor();
+		color.a = static_cast<int>(255.f * (1.f - (p.elapsed_s / p.lifespan_s)));
+		texM.getSprite(p.spriteRef).sprite.setColor(color);
+
+		p.elapsed_s += dt;
+	}
+
+	poops.erase(std::remove_if(poops.begin(), poops.end(), [](const Poop& pp) {
+		return pp.elapsed_s >= pp.lifespan_s;
+		}), poops.end());
+
+
+#pragma endregion poop
 }

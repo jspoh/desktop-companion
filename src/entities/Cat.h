@@ -50,6 +50,38 @@ public:
 
 	static constexpr int SKIN_COST = 1000;
 
+	struct Poop {
+		sf::Vector2f pos{};
+		float elapsed_s{};
+		std::string spriteRef{};
+
+		inline static unsigned long long count = 0;
+
+		static constexpr float lifespan_s = 5.f;
+		inline static const std::string texRef = "poop";
+
+		Poop() {}
+		Poop(const sf::Vector2f& pos) : pos(pos) {
+			spriteRef = "poop_" + std::to_string(count++);
+		}
+
+		static constexpr int texWidth = 315;
+		static constexpr int texHeight = 250;
+
+#ifdef _DEBUG
+		static constexpr int MIN_POOP_INTERVAL_S = 5.f;
+		static constexpr int MAX_POOP_INTERVAL_S = 10.f;
+#else
+		static constexpr int MIN_POOP_INTERVAL_S = 1200.f;
+		static constexpr int MAX_POOP_INTERVAL_S = 3600.f;
+#endif
+
+		inline static std::chrono::system_clock::time_point lastPoopTime;
+		inline static std::chrono::system_clock::time_point nextPoopTime;
+	};
+
+	std::deque<Poop> poops;
+
 private:
 
 	Cat();
@@ -254,6 +286,21 @@ private:
 			"PUT ME DOWN",
 }
 }
+	};
+
+	inline static const std::vector<std::string> POOP_LINES{
+		"oops i dropped a dookie",
+		"left a little something for ya!",
+		"left you a little present ;]",
+		"hnghhhhh",
+		"EW WHAT IS THAT",
+		"phew it smells",
+		"hehheheheheh",
+		"I wonder how I can wipe my butt",
+		"*poops",
+		"i swear i thought that was a fart",
+		"oh man i farted too hard",
+		"aaaaaaaaaaaaaaaaaaaaa"
 	};
 
 	static constexpr float MAX_HAPPINESS = 100.f;

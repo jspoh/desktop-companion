@@ -101,7 +101,7 @@ void GameManager::update() {
 		if (!Settings::paused) {
 			// render cat again to be on top of imgui windows
 
-			texM._render(dt, texM.getSprite(Cat::getCatSpriteName()));
+			texM._render(0, texM.getSprite(Cat::getCatSpriteName()));
 			win.draw(texM.getText(Cat::getTextRef()));
 		}
 

@@ -23,6 +23,7 @@
 #include <deque>
 #include <queue>
 #include <ctime>
+#include <algorithm>
 
 #include "imgui.h"
 #include "imgui-SFML.h"
