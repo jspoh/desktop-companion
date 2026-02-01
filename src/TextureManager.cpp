@@ -10,33 +10,38 @@ void TextureManager::cleanup() {
 }
 
 
+void TextureManager::_render(float dt, JS_SPRITE& s) {
+	if (!s.visible) return;
+
+	if (s.playingAnimation) {
+		const int absoluteFrame = (int)std::floor(s.animationElapsed / s.animationAdvanceTime);
+		s.frame = absoluteFrame % s.numFrames;
+
+		if (absoluteFrame != 0 && absoluteFrame % s.numFrames == 0) {
+			++s.animationElapsedLoops;
+			//std::cout << s.animationElapsedLoops << std::endl;
+		}
+
+		if (s.animationLoopCount >= 0 && s.animationElapsedLoops > s.animationLoopCount) {
+			s.playingAnimation = false;
+			s.frame = s.staticFrameIdx;
+		}
+
+		s.animationElapsed += dt;
+
+	}
+	s.sprite.setTextureRect(sf::IntRect(
+		{ s.left + s.frame * (s.width + s.xoffset), s.top },
+		{ s.width, s.height }
+	));
+
+	win.draw(s.sprite);
+}
+
+
 void TextureManager::render(float dt) {
 	for (JS_SPRITE& s : spritesValues) {
-		if (!s.visible) continue;
-
-		if (s.playingAnimation) {
-			const int absoluteFrame = (int)std::floor(s.animationElapsed / s.animationAdvanceTime);
-			s.frame = absoluteFrame % s.numFrames;
-
-			if (absoluteFrame != 0 && absoluteFrame % s.numFrames == 0) {
-				++s.animationElapsedLoops;
-				//std::cout << s.animationElapsedLoops << std::endl;
-			}
-
-			if (s.animationLoopCount >= 0 && s.animationElapsedLoops > s.animationLoopCount) {
-				s.playingAnimation = false;
-				s.frame = s.staticFrameIdx;
-			}
-
-			s.animationElapsed += dt;
-
-		}
-		s.sprite.setTextureRect(sf::IntRect(
-			{ s.left + s.frame * (s.width + s.xoffset), s.top },
-			{ s.width, s.height }
-		));
-
-		win.draw(s.sprite);
+		_render(dt, s);
 	}
 
 	for (const auto& [ref, txt] : texts) {

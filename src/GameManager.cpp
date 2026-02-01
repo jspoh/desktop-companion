@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "GameManager.h"
+#include "TextureManager.h"
 
 
 GameManager& GameManager::get() {
@@ -96,6 +97,14 @@ void GameManager::update() {
 		if (showEditor) {
 			ImGui::SFML::Render(win);
 		}
+
+		if (!Settings::paused) {
+			// render cat again to be on top of imgui windows
+
+			texM._render(dt, texM.getSprite(Cat::getCatSpriteName()));
+			win.draw(texM.getText(Cat::getTextRef()));
+		}
+
 		win.display();
 
 		ImGui::EndFrame();

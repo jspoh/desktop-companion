@@ -83,6 +83,8 @@ public:
 
 	void cleanup();
 
+	void _render(float dt, JS_SPRITE& s);
+
 	void render(float dt);
 
 	bool registerTexture(const std::string& ref, const std::string& path);
@@ -106,4 +108,8 @@ public:
 
 	// sort sprites by z value
 	void sortSprites();
+
+	sf::Text& getText(const std::string& ref) {
+		return texts.at(ref);
+	}
 };

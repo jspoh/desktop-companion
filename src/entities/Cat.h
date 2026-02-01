@@ -364,7 +364,7 @@ public:
 		return entityState;
 	}
 
-	std::string getCatSpriteName() {
+	static std::string getCatSpriteName() {
 		return catSpriteName;
 	}
 
