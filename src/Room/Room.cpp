@@ -25,7 +25,7 @@ Room::Room() {
 		js.visible = false;
 	}
 
-	tm.createSprite(ref, roomRefs.at(0), 0, 0, 0, 0, width, height, false, 0.f, true);
+	tm.createSprite(ref, Settings::roomTexRef, 0, 0, 0, 0, width, height, false, 0.f, true);
 	sprite = &tm.getSprite(ref);
 	sprite->sprite.setOrigin(sprite->sprite.getLocalBounds().size / 2.f);
 	localScale = win.getSize().x / 2.f < 1.f / width * MAX_WIDTH ? (int)(1.f / width * (win.getSize().x / 2.f)) : 1.f / width * MAX_WIDTH;

@@ -133,6 +133,9 @@ public:
 		auto onChange = [](const std::string& ref) {
 			tm.getSprite(Cat::get().getCatSpriteName()).sprite.setTexture(tm.getTexture(ref));
 			Cat::get().init(false);
+
+			Settings::catTexRef = ref;
+			Settings::save();
 			};
 
 		renderImageButtonsWindow(lastWinSize, "Companion skin", "Select skin", Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange);
@@ -141,6 +144,8 @@ public:
 	static void _roomSelectTab() {
 		auto onChange = [](const std::string& ref) {
 			Room::get().sprite->sprite.setTexture(tm.getTexture(ref));
+			Settings::roomTexRef = ref;
+			Settings::save();
 			};
 
 
