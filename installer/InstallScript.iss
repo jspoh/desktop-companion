@@ -60,6 +60,10 @@ Name: "startup"; Description: "Run Desktop-Companion at Windows startup"; GroupD
 ; Add to Windows startup if the user checked the option
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Desktop-Companion"; ValueData: """{app}\desktop-companion.exe"""; Flags: uninsdeletevalue; Tasks: startup
 
+; delete cofig/data file in ~/Documents
+[UninstallDelete]
+Type: filesanddirsrecursively; Name: "{userdocs}\jspoh desktop companion\jdc"
+
 ;
 ; !!NOTE!!: Your game may not require the VC or DX redistributable installers.
 ;	Update the [Files] and [Run] lists (below) as necessary for your game.
