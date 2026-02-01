@@ -136,8 +136,15 @@ void UI::_furnitureInventoryTab() {
 }
 
 void UI::skinSelect() {
+	std::string setSkinRef{};
+
+	auto triggerOnChange = [&setSkinRef](const std::string& ref) {
+		setSkinRef = ref;
+		};
+
 	auto onChange = [](const std::string& ref) {
 		if (Settings::unlockedSkins.find(ref) == Settings::unlockedSkins.end()) {
+
 			// user doesnt own skin
 
 			if (Settings::coins < Cat::SKIN_COST) {
@@ -156,13 +163,16 @@ void UI::skinSelect() {
 		Settings::save();
 
 		Settings::_resetLockedSkins();
-		
+
 		};
 
 	std::stringstream ss;
 	ss << "Click to select/purchase skin. (Cost: " << Cat::SKIN_COST << ")";
 
-	renderImageButtonsWindow(lastWinSize, "Companion skin", ss.str(), Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), onChange, Settings::lockedSkins);
+	renderImageButtonsWindow(lastWinSize, "Companion skin", ss.str(), Cat::get().catSpriteRefs, 999, (float)Cat::get().getWidth(), (float)Cat::get().getHeight(), triggerOnChange, Settings::lockedSkins);
+
+	// do work (need to reset disabled vector, so unsafe to perform in the renderImageButtonsWindow function)
+	if (setSkinRef.size()) onChange(setSkinRef);
 }
 
 void UI::_roomSelectTab() {

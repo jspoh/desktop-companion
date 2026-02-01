@@ -88,8 +88,11 @@ void GameManager::update() {
 
 		// 
 		win.clear(clearColor);
-		sm.update(dt);
-		texM.render(dt);
+		if (!Settings::paused) {
+			sm.update(dt);
+			texM.render(dt);
+		}
+
 		if (showEditor) {
 			ImGui::SFML::Render(win);
 		}

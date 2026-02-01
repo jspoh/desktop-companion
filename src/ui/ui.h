@@ -29,7 +29,7 @@ public:
 	static void _furniturePurchase();
 
 	static void skinSelect();
-
+	
 	static void _roomSelectTab();
 
 	static void settingsView();
