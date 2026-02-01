@@ -16,7 +16,8 @@ namespace nlohmann {
 				{"spriteRef", f.spriteRef},
 				{"AABB_MIN", {f.AABB_MIN.x, f.AABB_MIN.y}},
 				{"AABB_MAX", {f.AABB_MAX.x, f.AABB_MAX.y}},
-				{"mirrored", f.mirrored}
+				{"mirrored", f.mirrored},
+				{"z", f.z}
 			};
 		}
 
@@ -31,6 +32,7 @@ namespace nlohmann {
 			f.AABB_MAX.x = j.at("AABB_MAX")[0].get<float>();
 			f.AABB_MAX.y = j.at("AABB_MAX")[1].get<float>();
 			f.mirrored = j.at("mirrored").get<bool>();
+			f.z = j.at("z").get<int>();
 		}
 	};
 }

@@ -16,7 +16,7 @@ Cat::Cat() {
 	//catTextureRef = catSpriteRefs.at(rand() % (int)catSpriteRefs.size());
 	catTextureRef = Settings::catTexRef;
 	tm.createSprite(catSpriteName, catTextureRef, EntityAnimationDatas.at(activeAnimationState).frameCount, xoffset, leftOffset, topOffset, width, height, true, animationAdvanceTime, true);
-
+	tm.getSprite(catSpriteName).z = z;
 
 	// text
 

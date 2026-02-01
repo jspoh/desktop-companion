@@ -83,7 +83,14 @@ bool TextureManager::createSprite(
 
 	sprites.emplace(ref, s);
 	spritesValues.push_back(sprites.at(ref));
+
+	sortSprites();
+
 	return true;
+}
+
+void TextureManager::sortSprites() {
+	std::sort(spritesValues.begin(), spritesValues.end(), [](const auto& lhs, const auto& rhs) {return lhs.get().z < rhs.get().z; });
 }
 
 

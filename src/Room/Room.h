@@ -228,6 +228,8 @@ public:
 		sf::Vector2f AABB_MIN{};
 		sf::Vector2f AABB_MAX{};
 
+		int z{};
+
 		bool mirrored{};
 	};
 

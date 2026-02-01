@@ -46,6 +46,8 @@ public:
 
 	std::vector<std::string> catSpriteRefs;		// sprite and texture refs share same name
 
+	static constexpr int z = 1000;
+
 private:
 
 	Cat();
@@ -322,6 +324,16 @@ public:
 	static Cat& get() {
 		static Cat instance;
 		return instance;
+	}
+
+	// get current happiness value in range [0,1]
+	float getHappiness() {
+		return happiness / MAX_HAPPINESS;
+	}
+
+	// get max minutes before break time
+	float getMaxWorkTime() const {
+		return HAPPINESS_LIFESPAN;
 	}
 
 	static std::string getTextRef() {

@@ -53,6 +53,7 @@ public:
 		int xoffset{};
 		int staticFrameIdx{};		// for when no animation or animation ends, which frame to display
 		//int yoffset{};
+		int z = 0;					// OpenGL like. looking down neg z axis.
 
 		int left{};
 		int top{};
@@ -102,4 +103,7 @@ public:
 	sf::Text& registerText(const std::string& ref, const std::string& content, int fontSize);
 
 	void setTextContent(const std::string& ref, const std::string& content);
+
+	// sort sprites by z value
+	void sortSprites();
 };

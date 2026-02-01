@@ -221,7 +221,7 @@ public:
 		// time left before break
 		const float minsLeft = Cat::get().getHappiness() * Cat::get().getMaxWorkTime();
 		const int iMinsLeft = std::floor(minsLeft);
-		const int iSecsLeft = static_cast<int>((minsLeft - iMinsLeft) * 60);
+		const int iSecsLeft = (minsLeft - iMinsLeft) * 60;
 
 		ImGui::TextColored({ 0, 1, 0, 1 }, "Time to next break: %02d:%02d", iMinsLeft, iSecsLeft);
 		ImGui::Text("Take breaks punctually to earn coins!");
