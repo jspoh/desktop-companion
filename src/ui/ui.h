@@ -9,7 +9,7 @@
 
 class UI {
 private:
-	inline static const ImVec2 PADDING{ 5, 5 };
+	inline static const ImVec2 PADDING{ 20, 20 };
 	inline static ImVec2 lastWinSize{ PADDING };
 	inline static ImVec2 orientation{ 0,0 };
 
@@ -188,6 +188,13 @@ public:
 		ss << "Coins: " << Settings::coins;
 		ImGui::Text(ss.str().c_str());
 
+		if (ImGui::Button("hackerman")) {
+			static constexpr int ADD_AMOUNT = 1000;
+			if (Settings::coins + ADD_AMOUNT <= std::numeric_limits<int>::max())
+				Settings::coins += ADD_AMOUNT;
+			Settings::save();
+		}
+
 		lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
 
 		ImGui::End();
@@ -197,7 +204,7 @@ public:
 		ImGui::SetNextWindowPos(lastWinSize, ImGuiCond_Always, orientation);
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always); // Auto-size
 
-		ImGui::Begin("Furniture Shop", nullptr,
+		ImGui::Begin("Room", nullptr,
 			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoMove);
 
@@ -226,7 +233,7 @@ public:
 		room();
 
 		// right side of screen
-		lastWinSize = { ImGui::GetIO().DisplaySize.x, PADDING.y };
+		lastWinSize = { ImGui::GetIO().DisplaySize.x - PADDING.x, PADDING.y };
 		orientation = { 1, 0 };
 
 		settingsView();

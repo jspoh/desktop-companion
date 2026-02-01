@@ -86,9 +86,12 @@ void Room::update(float dt) {
 		furnitureSprite.sprite.setScale({ localScale * Settings::roomScale * (f.mirrored ? -1.f : 1.f), localScale * Settings::roomScale});
 	}
 
+#pragma region drag_furniture
 	// drag furniture to reposition them
 	static int draggedFurnitureIdx = -1;		// is ok, because is singleton
 
+	static bool isDragging = false;
+	static bool prevIsDragging = false;
 	// check before running loop. cheaper this way
 	if (draggedFurnitureIdx == -1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && Cat::get().getEntityState() != Cat::EntityStates::DRAGGED) {
 		for (int i{}; i < (int)Settings::furnitures.size(); ++i) {
@@ -100,6 +103,7 @@ void Room::update(float dt) {
 
 			if (mPos.x >= f.AABB_MIN.x && mPos.x <= f.AABB_MAX.x && mPos.y >= f.AABB_MIN.y && mPos.y <= f.AABB_MAX.y) {
 				draggedFurnitureIdx = i;
+				isDragging = true;
 				selectedFurnitureIdx = i;
 				break;			// only drag one at atime
 			}
@@ -107,14 +111,20 @@ void Room::update(float dt) {
 	}
 	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		draggedFurnitureIdx = -1;		// reset drag furniture state once user releases
+		isDragging = false;
 	}
 
-	if (draggedFurnitureIdx != -1) {
+	if (!isDragging && prevIsDragging) {
+		Settings::save();
+	}
+
+	prevIsDragging = isDragging;
+
+	if (isDragging && draggedFurnitureIdx != -1) {
 		Settings::furnitures[draggedFurnitureIdx].pos = sf::Mouse::getPosition() * 1.f;
-		//Settings::save();``
 	}
 
-
+#pragma endregion drag_furniture
 }
 
 void Room::addFurniture(Furniture::TYPE type) {

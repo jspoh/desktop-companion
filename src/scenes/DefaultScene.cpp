@@ -3,6 +3,8 @@
 #include "entities/Cat.h"
 #include "GameManager.h"
 
+//#define VIEW_FPS
+
 DefaultScene::DefaultScene() {
 
 }
@@ -12,7 +14,7 @@ DefaultScene::~DefaultScene() {
 }
 
 void DefaultScene::load() {
-	
+
 	//music = sf::Music("assets/Cutie-Patootie.mp3");
 
 	Room::get();
@@ -25,18 +27,22 @@ void DefaultScene::init() {
 
 	//music.play();
 
+#ifdef VIEW_FPS
 #ifndef NDEBUG
 	fps_display_text = &tm.registerText("text", std::to_string(gm.getFps()), 50);
-	fps_display_text->setPosition({ 10, 10});
+	fps_display_text->setPosition({ 10, 10 });
+#endif
 #endif
 }
 
 void DefaultScene::update(float dt) {
+#ifdef VIEW_FPS
 #ifndef NDEBUG
 	fps_display_text->setString(std::to_string(gm.getFps()));
 #endif
+#endif
 
-//#define DEBUG_ANIMATIONS
+	//#define DEBUG_ANIMATIONS
 #ifdef DEBUG_ANIMATIONS
 	static bool prevIsNPressed = false;
 
@@ -50,7 +56,7 @@ void DefaultScene::update(float dt) {
 	}
 #endif
 
-//#define DEBUG_SS
+	//#define DEBUG_SS
 #ifdef DEBUG_SS
 	static bool prevIsRightPressed = false;
 	static bool prevIsLeftPressed = false;
@@ -60,11 +66,11 @@ void DefaultScene::update(float dt) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right) && !prevIsRightPressed) {
 		++tm.getSprite(Cat::get().getCatSpriteName()).width;
 		prevIsRightPressed = true;
-	} 
+	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
 		prevIsRightPressed = false;
 	}
-	
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left) && !prevIsLeftPressed) {
 		--tm.getSprite(Cat::get().getCatSpriteName()).width;
 		prevIsLeftPressed = true;
@@ -96,7 +102,7 @@ void DefaultScene::update(float dt) {
 	Cat::get().update(dt);
 	Room::get().update(dt);
 
-//#define MOVE_TO_MOUSE
+	//#define MOVE_TO_MOUSE
 #ifdef MOVE_TO_MOUSE
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		sf::Vector2i mpos = sf::Mouse::getPosition();
