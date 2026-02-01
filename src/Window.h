@@ -70,6 +70,10 @@ public:
 	}
 
 	void setClickThrough(bool ct) {
+//#ifdef _DEBUG
+//		ct = true;
+//#endif
+
 		if (ct) SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
 		else SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);		// NAND
 	}

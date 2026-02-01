@@ -221,6 +221,8 @@ public:
 		sf::Vector2f pos{};
 		std::string spriteRef{};
 
+		sf::Vector2f AABB_MIN{};
+		sf::Vector2f AABB_MAX{};
 	};
 
 private:
@@ -234,13 +236,13 @@ public:
 		static Room instance;
 		return instance;
 	}
-
+	
 	static constexpr const char* ref = "room";
 	TextureManager::JS_SPRITE* sprite = nullptr;
 
 	static constexpr const char* furnitureTextureRef = "all_furnitures";
-	static constexpr const char* furnitureRef = "furniture";
-	TextureManager::JS_SPRITE* furnitureSprite = nullptr;
+	//static constexpr const char* furnitureRef = "furniture";
+	//TextureManager::JS_SPRITE* furnitureSprite = nullptr;
 	Furniture::TYPE currentFurniture = Furniture::TYPE::NONE;
 
 	void init();
