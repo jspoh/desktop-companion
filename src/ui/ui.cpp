@@ -227,6 +227,26 @@ void UI::settingsView() {
 	ImGui::TextColored({ 1, 0, 0, 1 }, "Warning: You will be locked out of your computer until the mandated min break duration has elapsed.");
 	if (ImGui::Checkbox("Enforce breaks", &Settings::enforceBreaks)) changed = true;
 
+	if (Settings::gf) {
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::TextColored({ 1.f, 0.3f, 0.3f, 1.f }, "YiLin mode <3");
+
+		if (ImGui::Checkbox("GF mode", &Settings::gf)) Window::get().restartSelf();
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	if (ImGui::Checkbox("Particles", &Settings::particles)) changed = true;
+	if (Settings::particles) {
+		if (ImGui::DragFloat("Particle spawn interval (seconds)", &Settings::particleSpawnInterval_s, 0.01f, 0.01f, 5.f, "% .2f")) changed = true;
+	}
+
 
 	lastWinSize.y += ImGui::GetWindowSize().y + PADDING.y;
 
@@ -365,10 +385,11 @@ void UI::cheatcode() {
 		else if (!strcmp(buf, "exit")) {
 			Settings::onEnforcedBreak = false;
 			Cat::get().setHappinessMax();
+			gm.showEditor = false;				// catch if accidentally opened multiple lol
 		}
 		else if (!strcmp(buf, "lohyilin")) {
 			Settings::gf = true;
-			Settings::save();
+			//Settings::save();
 
 			texM.setTextContent(Cat::getTextRef(), "Hey babygirl :)");
 

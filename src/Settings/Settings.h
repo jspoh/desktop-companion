@@ -76,6 +76,9 @@ struct Settings {
 
 	inline static bool catPoops;
 
+	inline static bool particles = false;
+	inline static float particleSpawnInterval_s = 0.2f;
+
 	// save user furniture config
 	// inline static std::string favouriteBeanBag
 	// inline static sf::Vector2f beanBagOffset;		// offset from center of room

@@ -94,4 +94,30 @@ public:
 		DWORD idleTime = GetTickCount() - lii.dwTime;
 		return idleTime < thresholdMs; // user did something within threshold
 	}
+
+	void restartSelf()
+	{
+		char exePath[MAX_PATH];
+		GetModuleFileNameA(NULL, exePath, MAX_PATH);
+
+		STARTUPINFOA si{};
+		si.cb = sizeof(si);
+
+		PROCESS_INFORMATION pi{};
+
+		if (CreateProcessA(
+			exePath,      // same executable
+			NULL,         // command line (optional)
+			NULL,
+			NULL,
+			FALSE,
+			0,
+			NULL,
+			NULL,
+			&si,
+			&pi))
+		{
+			window.close();
+		}
+	}
 };

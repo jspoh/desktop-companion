@@ -6,6 +6,22 @@
 
 class TextureManager {
 public:
+	struct JS_PARTICLE {
+		float lifespan = 1.f;
+		float lifetime = 0.f;
+		sf::Vector2f d{};
+		float speed{ 100.f };
+		float accel{ 100.f };
+		std::string texRef{};
+		float initialWidth{};
+		float width{};		//height same as width
+		sf::Vector2f pos{};
+		sf::Vector2f origin{};
+		float rotation{};		// radians
+
+		static constexpr int MAX_PARTICLE_COUNT = 100;
+	};
+
 	struct JS_SPRITE {
 		JS_SPRITE(const sf::Sprite& s) : sprite(s) {}
 		JS_SPRITE(
@@ -76,6 +92,10 @@ private:
 	std::vector<std::reference_wrapper<JS_SPRITE>> spritesValues;						// for fast access of sprites.values()
 	std::unordered_map<std::string, sf::Text> texts;
 
+
+	std::unordered_map<std::string, std::deque<JS_PARTICLE>> particles;
+	std::unordered_map<std::string, sf::VertexArray> vao_cache;		// vao cache for texture type for particle
+
 public:
 	static TextureManager& get() {
 		static TextureManager instance;
@@ -115,4 +135,8 @@ public:
 	}
 
 	void deleteSprite(const std::string& ref);
+
+	auto& getParticles(const std::string& ref) {
+		return particles[ref];
+	}
 };

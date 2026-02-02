@@ -29,6 +29,15 @@ Cat::Cat() {
 		std::cerr << "poop texture registration failed" << std::endl;
 	}
 
+	// particles
+
+	texM.registerTexture("heart_particle", "assets/particles/heart.png");
+	texM.registerTexture("cat_particle", "assets/particles/cat.png");
+
+	activeParticleTexRef = "cat_particle";
+
+	// --
+
 	recalculateHappiness();
 
 	if (Settings::gf) {
@@ -81,12 +90,11 @@ void Cat::enableGfLines() {
 	}
 
 	for (const auto es : { EntityStates::ON_EDGE, EntityStates::SAD, EntityStates::ANGRY }) {
-		STATE_SPEECH_OPTIONS.at(es).push_back("Break soon okay baby?");
-		STATE_SPEECH_OPTIONS.at(es).push_back("sleep is important okay bby");
 		STATE_SPEECH_OPTIONS.at(es).push_back("Rest first, i send you heart sticker okay");
-		STATE_SPEECH_OPTIONS.at(es).push_back("baby please take a break, i want you to be happy :)");
 		STATE_SPEECH_OPTIONS.at(es).push_back("eat some fruits?");
-		STATE_SPEECH_OPTIONS.at(es).push_back("how's your butthole surgery? :]");
+		//STATE_SPEECH_OPTIONS.at(es).push_back("Break soon okay baby?");
+		//STATE_SPEECH_OPTIONS.at(es).push_back("sleep is important okay bby");
+		//STATE_SPEECH_OPTIONS.at(es).push_back("baby please take a break, i want you to be happy :)");
 	}
 
 	STATE_SPEECH_OPTIONS.at(EntityStates::DRAGGED).push_back("haha okay you can touch me ;]");
@@ -398,4 +406,41 @@ void Cat::update(float dt) {
 
 
 #pragma endregion poop
+
+	// particle sys
+
+	if (Settings::particles) {
+		if (Settings::gf) activeParticleTexRef = "heart_particle";
+		else activeParticleTexRef = "cat_particle";
+
+		std::deque<TextureManager::JS_PARTICLE>& particles = texM.getParticles(activeParticleTexRef);
+
+		static auto lastSpawnParticleTime = std::chrono::system_clock::now();
+		auto now = std::chrono::system_clock::now();
+		if (particles.size() < TextureManager::JS_PARTICLE::MAX_PARTICLE_COUNT && std::chrono::duration_cast<std::chrono::milliseconds>(now - lastSpawnParticleTime).count() >= Settings::particleSpawnInterval_s * 1000) {
+			lastSpawnParticleTime = now;
+
+			TextureManager::JS_PARTICLE newP;
+			newP.origin = pos + particleOffset;
+			newP.pos = newP.origin;
+
+			// degrees
+			const int randAngleDeg = -120 + rand() % 60;
+			const float rot = toRadians((float)randAngleDeg);
+			
+			newP.d = { cosf(rot), sinf(rot) };
+
+			newP.rotation = toRadians((float)randAngleDeg + 90);
+
+			newP.speed = 50.f;
+			newP.accel = rand() % 20 + 20.f;
+
+			newP.initialWidth = Cat::width / 2.f;
+			newP.width = newP.initialWidth;
+
+			newP.texRef = activeParticleTexRef;
+
+			particles.push_back(std::move(newP));
+		}
+	}
 }

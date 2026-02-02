@@ -64,7 +64,7 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 ; delete cofig/data file in ~/Documents
 [UninstallDelete]
-Type: files; Name: "{userdocs}\jspoh desktop companion\jdc"
+; Type: files; Name: "{userdocs}\jspoh desktop companion\jdc"
 Type: filesandordirs; Name: "{userdocs}\jspoh desktop companion"
 Type: filesandordirs; Name: "{userdocs}\jspoh desktop companion"
 Type: filesandordirs; Name: "{pf}\jspoh"

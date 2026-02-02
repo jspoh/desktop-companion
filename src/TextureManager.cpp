@@ -44,6 +44,87 @@ void TextureManager::render(float dt) {
 		_render(dt, s);
 	}
 
+	for (auto& [pTexRef, pData] : particles) {
+
+		// techincally update code, but whatever
+
+		for (auto it{ pData.begin() }; it != pData.end();) {
+			auto& p = *it;
+			p.lifetime += dt;
+
+			p.pos += dt * p.speed * p.d;
+			p.width = lerp(p.initialWidth, 0, p.lifetime / p.lifespan);
+			p.speed += p.accel * dt;
+
+			// consistent lifespan. will always be removing from front, O(1)
+			if (p.lifetime >= p.lifespan) {
+				it = pData.erase(it);
+				continue;
+			}
+			++it;
+		}
+
+
+		// real render 
+
+		if (vao_cache.find(pTexRef) == vao_cache.end()) {
+			vao_cache[pTexRef] = sf::VertexArray(sf::PrimitiveType::Triangles, JS_PARTICLE::MAX_PARTICLE_COUNT * 6);		// 2 tri / quad. 6 vertices
+		}
+
+		sf::VertexArray& vao = vao_cache.at(pTexRef);
+		vao.resize(pData.size() * 6);
+
+		const sf::Vector2u texSize = textures.at(pTexRef).getSize();
+		for (int i{}; i < pData.size(); ++i) {
+			JS_PARTICLE& p = pData[i];
+
+			const float halfWidth = p.width * 0.5f;		// cache
+
+			sf::Vector2f corners[4] = {
+				{ -halfWidth, -halfWidth },  // top-left
+				{  halfWidth, -halfWidth },  // top-right
+				{ -halfWidth,  halfWidth },  // bottom-left
+				{  halfWidth,  halfWidth }   // bottom-right
+			};
+
+			// would be faster if rot mtx was gpu bound but eh
+			float cosA = cosf(p.rotation);
+			float sinA = sinf(p.rotation);
+
+			for (int c = 0; c < 4; ++c) {
+				float x = corners[c].x;
+				float y = corners[c].y;
+				corners[c].x = x * cosA - y * sinA;
+				corners[c].y = x * sinA + y * cosA;
+				corners[c] += p.pos;  // translate to world position
+			}
+
+			// tri 1 (top-left, top-right, bottom-left)
+			vao[i * 6 + 0].position = corners[0];
+			vao[i * 6 + 1].position = corners[1];
+			vao[i * 6 + 2].position = corners[2];
+
+			// tri 2 (top-right, bottom-right, bottom-left)
+			vao[i * 6 + 3].position = corners[1];
+			vao[i * 6 + 4].position = corners[3];
+			vao[i * 6 + 5].position = corners[2];
+
+			// texcoords
+			vao[i * 6 + 0].texCoords = sf::Vector2f{ 0, 0 };
+			vao[i * 6 + 1].texCoords = sf::Vector2f{ (float)texSize.x, 0 };
+			vao[i * 6 + 2].texCoords = sf::Vector2f{ 0, (float)texSize.y };
+			vao[i * 6 + 3].texCoords = sf::Vector2f{ (float)texSize.x, 0 };
+			vao[i * 6 + 4].texCoords = sf::Vector2f{ (float)texSize.x, (float)texSize.y };
+			vao[i * 6 + 5].texCoords = sf::Vector2f{ 0, (float)texSize.y };
+
+			for (int v = 0; v < 6; ++v) {
+				vao[i * 6 + v].color.a = (uint8_t)(1.f - (p.lifetime / p.lifespan) * 255);
+			}
+		}
+
+		win.draw(vao, &textures.at(pTexRef));
+	}
+
 	for (const auto& [ref, txt] : texts) {
 		win.draw(txt);
 	}

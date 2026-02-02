@@ -55,5 +55,19 @@ inline ImVec2& operator+=(ImVec2& lhs, const ImVec2& rhs) {
 	return lhs;
 }
 
+#define M_PI 3.14159265358979323846f
+
+inline float toRadians(float degrees) {
+	return degrees * (M_PI / 180.0f);
+}
+
+inline float toDegrees(float radians) {
+	return radians * (180.0f / M_PI);
+}
+
+inline float lerp(float a, float b, float t) {
+	return a + (b - a) * t;
+}
+
 
 #endif

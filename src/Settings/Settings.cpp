@@ -27,6 +27,8 @@ void Settings::initConfig() {
 	catPoops = true;
 	paused = false;
 	gf = false;
+	particles = false;
+	particleSpawnInterval_s = 0.2f;
 }
 
 
@@ -67,6 +69,8 @@ void Settings::init() {
 		MIN_BREAK_DURATION_M = j.value("MIN_BREAK_DURATION_M", 5.f);
 		enforceBreaks = j.value("enforceBreaks", false);
 		gf = j.value("gf", false);
+		particles = j.value("particles", false);
+		particleSpawnInterval_s = j.value("particleSpawnInterval_s", 0.2f);
 		paused = false;
 	}
 	else {
@@ -124,7 +128,9 @@ void Settings::save() {
 	j["MAX_WORK_DURATION_M"] = MAX_WORK_DURATION_M;
 	j["MIN_BREAK_DURATION_M"] = MIN_BREAK_DURATION_M;
 	j["enforceBreaks"] = enforceBreaks;
-	j["gf"] = gf;
+	//j["gf"] = gf;
+	j["particles"] = particles;
+	j["particleSpawnInterval_s"] = particleSpawnInterval_s;
 
 	std::ofstream ofs(configFilePath);
 	ofs << j.dump();

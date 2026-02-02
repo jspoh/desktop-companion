@@ -369,6 +369,9 @@ private:
 	static constexpr float SPRITE_SCALE = 1.f;
 
 	static constexpr float RAND_POS_PADDING = 0.05f;		// do not go to extreme 5% of screen
+
+	inline static std::string activeParticleTexRef = "";
+	inline static sf::Vector2f particleOffset{ 0.f, -10.f };
 public:
 
 	static Cat& get();
