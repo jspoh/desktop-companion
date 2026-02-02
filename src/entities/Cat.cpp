@@ -71,6 +71,9 @@ void Cat::init(bool resetPos) {
 	// poop
 	Poop::lastPoopTime = std::chrono::system_clock::now();
 	Poop::nextPoopTime = Poop::lastPoopTime + std::chrono::seconds(rand() % (Poop::MAX_POOP_INTERVAL_S - Poop::MIN_POOP_INTERVAL_S) + Poop::MIN_POOP_INTERVAL_S);
+
+	// box animations
+	if (Settings::furnitures.size() > 0) addBoxAnimations();
 }
 
 void Cat::enableGfLines() {

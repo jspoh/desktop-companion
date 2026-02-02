@@ -130,14 +130,14 @@ private:
 	const std::map<int, EntityStates> entityStateThresholds{
 		{std::numeric_limits<int>::max(), EntityStates::HAPPY},
 		{80, EntityStates::WANDERING},
-		{20, EntityStates::ON_EDGE},
-		{10, EntityStates::SAD},
-		{0, EntityStates::ANGRY},
+		//{20, EntityStates::ON_EDGE},
+		{0, EntityStates::SAD},
+		//{0, EntityStates::ANGRY},
 		//{0, EntityStates::DEAD}
 		{std::numeric_limits<int>::min(), EntityStates::SAD},
 	};
 
-	const std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
+	std::unordered_map<EntityStates, std::vector<EntityAnimationStates>> STATE_ANIMATION_MAP{
 		{EntityStates::HAPPY,			// movement to leaping
 			{
 			EntityAnimationStates::EXCITED,
@@ -436,4 +436,18 @@ public:
 	}
 
 	void recalculateHappiness();
+
+	void addBoxAnimations() {
+		static bool added = false;
+
+		if (added) return;
+
+		added = true;
+
+		for (auto es : { EntityStates::HAPPY, EntityStates::WANDERING }) {
+			STATE_ANIMATION_MAP[es].push_back(EntityAnimationStates::BOX_1);
+			STATE_ANIMATION_MAP[es].push_back(EntityAnimationStates::BOX_2);
+			STATE_ANIMATION_MAP[es].push_back(EntityAnimationStates::BOX_3);
+		}
+	}
 };

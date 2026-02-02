@@ -94,6 +94,8 @@ void UI::_furniturePurchase() {
 
 			Room::get().addFurniture(type);
 
+			Cat::get().addBoxAnimations();
+
 			Settings::save();
 		}
 	}
