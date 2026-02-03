@@ -38,7 +38,7 @@ If you have not taken a break in the predefined time, and enforce breaks is turn
 
 <hr />
 
-![alt text](<Screenshot 2026-02-02 202717.png>)
+![alt text](<readme_assets/Screenshot 2026-02-02 202717.png>)
 
 There are many more hidden features and secrets to discover, so try it!
 
