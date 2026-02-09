@@ -6,9 +6,9 @@
 //#define SFML_STATIC
 
 #ifdef _WIN32
-	#include <windows.h>
-	#include <dwmapi.h>
-	#pragma comment(lib, "dwmapi.lib")
+#include <windows.h>
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
 #endif
 
 
@@ -70,9 +70,9 @@ public:
 	}
 
 	void setClickThrough(bool ct) {
-//#ifdef _DEBUG
-//		ct = true;
-//#endif
+		//#ifdef _DEBUG
+		//		ct = true;
+		//#endif
 
 		if (ct) SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
 		else SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);		// NAND
@@ -119,5 +119,33 @@ public:
 		{
 			window.close();
 		}
+	}
+
+	void aggressivelyStayOnTop() {
+#ifdef _WIN32
+		static auto lastCheck = std::chrono::steady_clock::now();
+		auto now = std::chrono::steady_clock::now();
+
+		// Check frequently - every 500ms
+		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastCheck).count() >= 500) {
+			// Re-assert topmost position
+			SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+
+			// Also check and restore extended styles if they got stripped
+			LONG exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+			LONG requiredStyles = WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
+
+			if ((exStyle & requiredStyles) != requiredStyles) {
+				SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | requiredStyles);
+
+				// Re-apply DWM transparency
+				MARGINS margins = { -1, -1, -1, -1 };
+				DwmExtendFrameIntoClientArea(hwnd, &margins);
+			}
+
+			lastCheck = now;
+		}
+#endif
 	}
 };
